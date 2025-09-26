@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package server.shop.user.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/user/v1";
+
+service UserService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Users and Players"
+    description: "Unauthenticated user and authenticated player management endpoints"
+  };
+  rpc GetPlayer(GetPlayerRequest) returns (GetPlayerResponse) {
+    option (google.api.http) = {get: "/api/v1/player"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get player by ID"
+      description: "Retrieves an existing player by ID. Returns player information including profile data and in-game currency balance."
+      security: [
+        {
+          security_requirement: {key: "apiKey"}
+        }
+      ]
+    };
+  }
+}
+
+message GetPlayerRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Player Request"
+      description: "Request to retrieve a player by ID"
+      required: ["player_id"]
+    }
+  };
+  string player_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player ID to retrieve"}
+  ];
+}
+
+message GetPlayerResponse {
+  message Player {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Player"
+        description: "Represents a player in the system"
+        required: ["player_id"]
+      }
+    };
+    string player_id = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique identifier for the player"}
+    ];
+    string name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player name"}];
+    string avatar_url = 3 [
+      (validate.rules).string.uri = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to player avatar image"}
+    ];
+    string language = 4 [
+      (validate.rules).string.min_len = 2,
+      (validate.rules).string.max_len = 3,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
+    ];
+    uint32 in_game_level = 5 [
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player in-game level (must be positive, default 1)"}
+    ];
+    uint32 in_game_currency = 6 [
+      (validate.rules).uint32.gte = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount of in-game currency owned by player (must be non-negative, default 0)"}
+    ];
+  }
+  Player player = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player information"}];
+}

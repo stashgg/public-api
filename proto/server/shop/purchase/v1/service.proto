@@ -1,0 +1,276 @@
+syntax = "proto3";
+
+package server.shop.purchase.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "server/shop/purchase/v1/enums.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/purchase/v1";
+
+service PurchaseService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Purchases"
+    description: "Purchase processing and transaction management endpoints for server-to-server communication"
+  };
+  rpc RegisterPayment(RegisterPaymentRequest) returns (RegisterPaymentResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/purchase/register"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Register payment intent"
+      description: "Step 1: Registers a purchase intent with the game backend. The game backend is expected to reserve inventory for the purchase. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body."
+      security: [
+        {
+          security_requirement: {key: "apiKey"}
+        }
+      ]
+    };
+  }
+
+  rpc ConfirmPayment(ConfirmPaymentRequest) returns (ConfirmPaymentResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/purchase/confirm"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Confirm payment completion"
+      description: "(Optional) Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. This step is optional as purchases can also be confirmed/cancelled asynchronously via webhook events."
+      security: [
+        {
+          security_requirement: {key: "apiKey"}
+        }
+      ]
+    };
+  }
+
+  rpc CancelPayment(CancelPaymentRequest) returns (CancelPaymentResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/purchase/cancel"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Cancel pending payment"
+      description: "(Optional) Step 2B: Cancels a pending purchase that was previously registered. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body. This step is optional as purchases can also be cancelled asynchronously via webhook events."
+      security: [
+        {
+          security_requirement: {key: "apiKey"}
+        }
+      ]
+    };
+  }
+}
+
+message RegisterPaymentRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Register Payment Request"
+      description: "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase."
+      required: [
+        "player_id",
+        "transaction_id",
+        "registrations"
+      ]
+    }
+  };
+  string player_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user making the purchase"}
+  ];
+  string transaction_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique transaction identifier for this purchase session"}
+  ];
+  PurchasePlatform platform = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Platform making the purchase"}];
+  string browser = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Browser information for web purchases (e.g., 'Chrome/91.0', 'Firefox/89.0', 'Safari/14.1', 'any')"}];
+  string device_id = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Device identifier for tracking and fraud prevention (can be generated client-side)"}];
+  PurchaseSource source = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Source of the purchase for analytics"}];
+
+  message PurchaseRegistration {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Purchase Registration"
+        description: "Represents a single item registration in a purchase"
+        required: ["quantity"]
+      }
+    };
+    oneof offer_identifier {
+      string product_id = 1 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU being purchased (providing this OR guid is required)"}
+      ];
+      string guid = 2 [
+        (validate.rules).string.uuid = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID being purchased (providing this OR product_id is required)"}
+      ];
+    }
+    message PriceAmount {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Price Amount"
+          description: "Price amount for the offer"
+          required: [
+            "currency",
+            "amount"
+          ]
+        }
+      };
+      string currency = 4 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 3,
+        (validate.rules).string.max_len = 3,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+      ];
+      uint32 cents = 5 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).uint32.gt = 0,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}
+      ];
+    }
+    oneof price {
+      PriceAmount amount = 3;
+      string price_id = 4 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price ID for the offer"}
+      ];
+    }
+    uint32 quantity = 6 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity being purchased (must be positive, no bigint support)"}
+    ];
+  }
+  repeated PurchaseRegistration registrations = 7 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).repeated.min_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of items to register for purchase"}
+  ];
+}
+
+message RegisterPaymentResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Register Payment Response"
+      description: "Expected response format for the RegisterPayment endpoint from the game backend (response body includes status indicating success or failure)."
+    }
+  };
+  message OfferStatus {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Offer Status"
+        description: "Represents the status of a registered offer"
+      }
+    };
+    oneof offer_identifier {
+      string product_id = 1 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
+      ];
+      string guid = 2 [
+        (validate.rules).string.uuid = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
+      ];
+    }
+    PurchaseRegistrationStatus status = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of the offer registration"}];
+    optional string message = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional human-readable status message for debugging"}];
+  }
+  repeated OfferStatus statuses = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of each registered offer"}];
+}
+
+message CancelPaymentRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Cancel Payment Request"
+      description: "Request to cancel a pending purchase that was previously registered."
+      required: [
+        "player_id",
+        "transaction_id"
+      ]
+    }
+  };
+  string player_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user canceling the purchase"}
+  ];
+  string transaction_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to cancel"}
+  ];
+}
+
+message CancelPaymentResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Cancel Payment Response"
+      description: "Expected response format for the CancelPayment endpoint from the game backend (response body includes status indicating success or failure)."
+    }
+  };
+  PurchaseCancellationStatus status = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of the cancellation"}];
+  optional string message = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional human-readable status message"}];
+}
+
+message ConfirmPaymentRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Confirm Payment Request"
+      description: "Request to confirm and complete a pending purchase that was previously registered."
+      required: [
+        "player_id",
+        "transaction_id"
+      ]
+    }
+  };
+  string player_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The user confirming the purchase"}
+  ];
+  string transaction_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to confirm"}
+  ];
+  optional uint32 extra_in_game_currency = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra in-game currency bonus"}];
+  optional uint32 extra_loyalty_points = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty points bonus"}];
+  optional uint32 extra_loyalty_credits = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty credits bonus"}];
+}
+
+message ConfirmPaymentResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Confirm Payment Response"
+      description: "Expected response format for the ConfirmPayment endpoint from the game backend (presence of results in response body indicates success)."
+      required: ["results"]
+    }
+  };
+  message ConfirmPaymentResult {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Confirm Payment Result"
+        description: "Represents the result of a confirmed purchase"
+      }
+    };
+    oneof offer_identifier {
+      string product_id = 1 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was purchased (providing this OR guid is required)"}
+      ];
+      string guid = 2 [
+        (validate.rules).string.uuid = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was purchased (providing this OR product_id is required)"}
+      ];
+    }
+  }
+  repeated ConfirmPaymentResult results = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).repeated.min_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Results of the confirmed purchases"}
+  ];
+}

@@ -1,0 +1,462 @@
+syntax = "proto3";
+
+package server.shop.catalog.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "server/shop/catalog/v1/enums.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/catalog/v1";
+
+service CatalogService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Catalog"
+    description: "Product catalog management and retrieval endpoints"
+  };
+  rpc GetCatalog(GetCatalogRequest) returns (GetCatalogResponse) {
+    option (google.api.http) = {get: "/api/v1/catalog"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get product catalog"
+      description: "Retrieves the complete product catalog including all purchasable items, offer chains, and non-purchasable display items organized in rows."
+      security: [
+        {
+          security_requirement: {key: "apiKey"}
+        }
+      ]
+    };
+  }
+}
+
+message GetCatalogRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Catalog Request"
+      description: "Request to retrieve the product catalog"
+    }
+  };
+  optional CatalogPlatform platform = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional platform filter to get platform-specific catalog items"}];
+  optional string region = 2 [
+    (validate.rules).string.min_len = 2,
+    (validate.rules).string.max_len = 3,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional region filter using ISO-3166-1 alpha-2 country code (e.g., 'US', 'EU', 'JP')"}
+  ];
+  optional string language = 3 [
+    (validate.rules).string.min_len = 2,
+    (validate.rules).string.max_len = 3,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional language code filter using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
+  ];
+}
+
+message GetCatalogResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Catalog Response"
+      description: "Contains the catalog data"
+    }
+  };
+  message LocalizableText {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Localizable Text"
+        description: "Text content that can be localized for a specific language"
+      }
+    };
+    string default_text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"}];
+    oneof localization {
+      string localization_key = 2 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique key used to identify the localized text content for a specific language"}
+      ];
+      string localized_text = 3 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Localized text content for the language specified by the code sent in the request filters"}
+      ];
+    }
+  }
+
+  message Banner {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Banner"
+        description: "Generic banner for an emphasized title or heading, e.g. 'New Items', 'Limited Time', etc."
+      }
+    };
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Banner text content for emphasized title or heading"}];
+  }
+
+  message Badge {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Badge"
+        description: "Generic badge for a status or label, e.g. 'New', 'Bonus', 'Free', etc."
+      }
+    };
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')"}];
+  }
+
+  message Button {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Button"
+        description: "Generic button for an action, e.g. 'Buy Now', 'View Details', etc."
+      }
+    };
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button text for action (e.g., 'Buy Now', 'View Details')"}];
+  }
+
+  message Background {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Background"
+        description: "Contains styling information for backgrounds. Note: At least one of image_url or background_style must be provided, and both can be provided when styles should be combined with the image."
+      }
+    };
+    string image_url = 1 [
+      (validate.rules).string.uri = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to background image"}
+    ];
+    string background_style = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CSS-style background styling information"}];
+  }
+
+  message Decal {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Decal"
+        description: "Contains an image to be displayed beside the main element, e.g. an offer."
+      }
+    };
+    string image_url = 1 [
+      (validate.rules).string.uri = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to decal image displayed beside the main element"}
+    ];
+  }
+
+  message Tooltip {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Tooltip"
+        description: "Generic tooltip for additional information about any element."
+      }
+    };
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tooltip text providing additional information"}];
+  }
+
+  message PriceAmountOrId {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Price Amount Or ID"
+        description: "Represents a monetary price for display purposes"
+      }
+    };
+    message PriceAmount {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Price Amount"
+          description: "Price amount for the offer"
+          required: [
+            "currency",
+            "amount"
+          ]
+        }
+      };
+      string currency = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 3,
+        (validate.rules).string.max_len = 3,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+      ];
+      uint32 cents = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).uint32.gt = 0,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}
+      ];
+    }
+    oneof price {
+      PriceAmount amount = 1;
+      string price_id = 2 [
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price ID identifier"}
+      ];
+    }
+  }
+
+  message CatalogItem {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Catalog Item"
+        description: "Represents any type of catalog item using oneof for polymorphism"
+      }
+    };
+    message PurchasableItem {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Purchasable Item"
+          description: "Represents a purchasable product"
+          required: [
+            "product_id",
+            "price"
+          ]
+        }
+      };
+      optional string guid = 1 [
+        (validate.rules).string.uuid = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
+      ];
+      string product_id = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier"}
+      ];
+      LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
+      LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the item"}];
+      string image = 5 [
+        (validate.rules).string.uri = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
+      ];
+      optional uint32 max_purchasable = 6 [
+        (validate.rules).uint32.gt = 0,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this item can be purchased"}
+      ];
+      PriceAmountOrId price = 7 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price of the item"}
+      ];
+
+      message PurchasableAttributes {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Purchasable Attributes"
+            description: "Contains optional attributes for purchasable items"
+          }
+        };
+        optional Banner banner = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner for the item"}];
+        optional Badge badge = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge for the item"}];
+        optional Background background = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for the item"}];
+        optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
+      }
+      optional PurchasableAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual and behavioral attributes"}];
+
+      message ContentItem {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Content Item"
+            description: "Represents an in-game item obtainable as part of this bundle"
+            required: ["quantity"]
+          }
+        };
+        optional string guid = 1 [
+          (validate.rules).string.uuid = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."}
+        ];
+        LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
+        LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
+        string image = 5 [
+          (validate.rules).string.uri = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
+        ];
+        string quantity = 6 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string.min_len = 1,
+          (validate.rules).string.pattern = "^[0-9]+$",
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
+        ];
+        optional string unit_image = 7 [
+          (validate.rules).string.uri = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+        ];
+      }
+      repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
+    }
+
+    message OfferChainItem {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Offer Chain Item"
+          description: "Represents a chain of both purchasable and free-to-claim item links, where each link may represent a bundle of in-game items."
+        }
+      };
+      optional string guid = 1 [
+        (validate.rules).string.uuid = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The chain's unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used for the chain itself (the chain is not purchasable), but rather for the individual links in the chain."}
+      ];
+      LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Chain name"}];
+      LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional chain description"}];
+      optional google.protobuf.Timestamp expiration = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional expiration time for the chain"}];
+      bool repeatable = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this chain can be repeated after completion"}];
+
+      message OfferChainLink {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Offer Chain Link"
+            description: "Represents a single link in an offer chain, which may represent a purchasable item (bundle) or a free-to-claim item (bundle)."
+            required: ["product_id"]
+          }
+        };
+        optional string guid = 1 [
+          (validate.rules).string.uuid = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
+        ];
+        string product_id = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string.min_len = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier"}
+        ];
+        optional PriceAmountOrId price = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price for this link (if not provided, the price is free)"}];
+        optional uint32 max_purchasable = 4 [
+          (validate.rules).uint32.gt = 0,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this link can be purchased"}
+        ];
+
+        message ObtainableItem {
+          option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+            json_schema: {
+              title: "Obtainable Item"
+              description: "Represents an in-game item that can be obtained from this chain link"
+              required: ["quantity"]
+            }
+          };
+          optional string guid = 1 [
+            (validate.rules).string.uuid = true,
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c the obtainable items are only for display purposes, and only the link is purchasable."}
+          ];
+          LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
+          LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
+          string image = 5 [
+            (validate.rules).string.uri = true,
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
+          ];
+          string quantity = 6 [
+            (google.api.field_behavior) = REQUIRED,
+            (validate.rules).string.min_len = 1,
+            (validate.rules).string.pattern = "^[0-9]+$",
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
+          ];
+          optional string unit_image = 7 [
+            (validate.rules).string.uri = true,
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+          ];
+        }
+        repeated ObtainableItem items = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items obtained from this chain link as a bundle"}];
+        ChainLinkStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Current status of this chain link"}];
+        optional string bundle_image = 7 [
+          (validate.rules).string.uri = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional image representing the bundle of items obtained from this chain link. If not provided, an individual item image will be displayed to represent the bundle in the user's cart."}
+        ];
+      }
+      repeated OfferChainLink links = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Sequential links in the offer chain"}];
+
+      message ChainBanner {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Chain Banner"
+            description: "Contains visual information for the offer chain promotion"
+          }
+        };
+        Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Background styling"}];
+        Button reveal_button = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button to reveal chain rewards"}];
+        optional Decal left_decal = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional left decal"}];
+        optional Decal right_decal = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional right decal"}];
+      }
+      optional ChainBanner banner = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual banner for the chain"}];
+    }
+
+    message NonPurchasableItem {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Non-Purchasable Item"
+          description: "Represents a non-purchasable item (banner, etc.)"
+          required: [
+            "item_id",
+            "type"
+          ]
+        }
+      };
+      optional string guid = 1 [
+        (validate.rules).string.uuid = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
+      ];
+      string item_id = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier for the non-purchasable item"}
+      ];
+      NonPurchasableItemType type = 3 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Type of non-purchasable item"}
+      ];
+      LocalizableText title = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item title"}];
+      LocalizableText body = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item body content"}];
+
+      message NonPurchasableAttributes {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Non-Purchasable Attributes"
+            description: "Visual attributes for non-purchasable items"
+          }
+        };
+        optional Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling"}];
+      }
+      optional NonPurchasableAttributes attributes = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual attributes"}];
+
+      message NonPurchasableContentItem {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Non-Purchasable Content Item"
+            description: "Represents an in-game item obtainable as part of a non-purchasable item bundle"
+          }
+        };
+        optional string guid = 1 [
+          (validate.rules).string.uuid = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that item_id is not used b/c the in-game items are only for display purposes."}
+        ];
+        LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
+        LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
+        string image = 5 [
+          (validate.rules).string.uri = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
+        ];
+        string quantity = 6 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string.min_len = 1,
+          (validate.rules).string.pattern = "^[0-9]+$",
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
+        ];
+        optional string unit_image = 7 [
+          (validate.rules).string.uri = true,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+        ];
+      }
+      repeated NonPurchasableContentItem contents = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Content items within a non-purchasable item bundle"}];
+    }
+
+    oneof item {
+      PurchasableItem purchasable_item = 1;
+      OfferChainItem offer_chain_item = 2;
+      NonPurchasableItem non_purchasable_item = 3;
+    }
+  }
+
+  message Catalog {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Catalog"
+        description: "Represents the complete product catalog"
+      }
+    };
+    message Row {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Catalog Row"
+          description: "Represents a row of catalog items with a header"
+        }
+      };
+      LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Row header text"}];
+      repeated CatalogItem items = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog items in this row"}];
+    }
+    repeated Row rows = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog rows"}];
+  }
+  Catalog catalog = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The product catalog organized in rows"}];
+}

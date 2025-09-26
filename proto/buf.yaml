@@ -1,0 +1,13 @@
+version: v1
+name: buf.build/stashgg/public-api
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+  - buf.build/envoyproxy/protoc-gen-validate
+lint:
+  allow_comment_ignores: true
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE

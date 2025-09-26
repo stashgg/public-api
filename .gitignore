@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Generated clients
+# - We don't want to commit these so that each
+#   project can build their own clients as needed
+gen/
+
+# Build artifacts
+*.log
+*.tmp
+
+# IDE files
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

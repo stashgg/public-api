@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package server.shop.catalog.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/catalog/v1";
+
+enum CatalogPlatform {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the platform of the user viewing the catalog"};
+  // Default unknown platform
+  CATALOG_PLATFORM_UNSPECIFIED = 0;
+  CATALOG_PLATFORM_IOS = 1;
+  CATALOG_PLATFORM_ANDROID = 2;
+  CATALOG_PLATFORM_WEBSTORE = 3;
+}
+
+enum NonPurchasableItemType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of non-purchasable item"};
+  // Default non-purchasable item type
+  NON_PURCHASABLE_ITEM_TYPE_UNSPECIFIED = 0;
+  // Banner type non-purchasable item for emphasized full-width display
+  NON_PURCHASABLE_ITEM_TYPE_BANNER = 1;
+}
+
+enum ChainLinkStatus {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the status of a chain link"};
+  CHAIN_LINK_STATUS_UNSPECIFIED = 0;
+  CHAIN_LINK_STATUS_CLAIMED = 1;
+  CHAIN_LINK_STATUS_UNLOCKED = 2;
+  CHAIN_LINK_STATUS_LOCKED = 3;
+}

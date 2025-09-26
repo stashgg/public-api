@@ -1,0 +1,5 @@
+# Generated files
+gen/
+
+# Buf cache
+.buf/

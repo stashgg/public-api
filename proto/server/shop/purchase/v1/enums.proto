@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package server.shop.purchase.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/purchase/v1";
+
+enum PurchaseRegistrationStatus {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the status of a purchase registration"};
+  // Default unknown registration error status
+  PURCHASE_REGISTRATION_STATUS_UNSPECIFIED = 0;
+  // Registration was successful
+  PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED = 1;
+  // Registration failed due to invalid offer
+  PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER = 2;
+  // Registration failed due to insufficient inventory
+  PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY = 3;
+  // Registration failed due to purchase limit exceeded
+  PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED = 4;
+  // Registration failed due to invalid pricing
+  PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE = 5;
+}
+
+enum PurchaseCancellationStatus {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the status of a purchase cancellation"};
+  // Default unknown cancellation error status
+  PURCHASE_CANCELLATION_STATUS_UNSPECIFIED = 0;
+  // Cancellation was successful
+  PURCHASE_CANCELLATION_STATUS_SUCCESS_CANCELLED = 1;
+  // Cancellation failed because transaction was not found
+  PURCHASE_CANCELLATION_STATUS_FAILED_TRANSACTION_NOT_FOUND = 2;
+  // Cancellation failed because transaction was already completed
+  PURCHASE_CANCELLATION_STATUS_FAILED_ALREADY_COMPLETED = 3;
+  // Cancellation failed because transaction was already cancelled
+  PURCHASE_CANCELLATION_STATUS_FAILED_ALREADY_CANCELLED = 4;
+}
+
+enum PurchasePlatform {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the platform of the user making the purchase"};
+  // Default unknown platform
+  PURCHASE_PLATFORM_UNSPECIFIED = 0;
+  PURCHASE_PLATFORM_IOS = 1;
+  PURCHASE_PLATFORM_ANDROID = 2;
+  PURCHASE_PLATFORM_WEBSTORE = 3;
+}
+
+enum PurchaseSource {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the source of the purchase for analytics"};
+  // Default unknown source
+  PURCHASE_SOURCE_UNSPECIFIED = 0;
+  // Purchase initiated from cart in webstore
+  PURCHASE_SOURCE_CART = 1;
+  // Purchase initiated from direct StashPay checkout link
+  PURCHASE_SOURCE_DIRECT = 2;
+}
