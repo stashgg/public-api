@@ -8,9 +8,9 @@ gen:
 clean:
 	rm -rf gen/
 
-# Lint protobuf files
+# Lint protobuf files and check formatting
 lint:
-	cd proto && buf lint
+	cd proto && buf lint && buf format -d
 
 # Format protobuf files
 format:
@@ -22,11 +22,11 @@ update:
 
 # Check for breaking changes (requires baseline)
 breaking:
-	cd proto && buf breaking --against '.git#branch=main'
+	cd proto && buf breaking --against '../.git#branch=main,subdir=proto'
 
 # Install required tools with specific versions
 install-tools:
 	./install-tool.sh
 
 # Check everything
-check: lint gen
+check: lint breaking gen

@@ -433,9 +433,9 @@ message GetCatalogResponse {
     }
 
     oneof item {
-      PurchasableItem purchasable_item = 1;
-      OfferChainItem offer_chain_item = 2;
-      NonPurchasableItem non_purchasable_item = 3;
+      PurchasableItem product = 1;
+      OfferChainItem chain = 2;
+      NonPurchasableItem info = 3;
     }
   }
 
