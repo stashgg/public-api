@@ -10,7 +10,7 @@ clean:
 
 # Lint protobuf files and check formatting
 lint:
-	cd proto && buf lint && buf format -d
+	cd proto && buf lint && buf format -d --exit-code
 
 # Format protobuf files
 format:
