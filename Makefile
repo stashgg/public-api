@@ -22,7 +22,7 @@ update:
 
 # Check for breaking changes (requires baseline)
 breaking:
-	buf breaking --against '.git#branch=main,subdir=proto'
+	buf breaking --against '.git#branch=main'
 
 # Install required tools with specific versions
 install-tools:
