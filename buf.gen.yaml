@@ -1,3 +1,6 @@
+# IMPORTANT: This file is purely for validation purposes. Each project using
+# these protos should use their own buf.gen.yaml file to generate their own
+# clients as needed. Feel free to copy this file and modify it.
 version: v2
 managed:
   enabled: true
@@ -6,15 +9,15 @@ managed:
       value: github.com/stashgg/public-api/gen/proto
 plugins:
   - local: protoc-gen-go
-    out: ../gen/proto
+    out: gen/proto
     opt:
       - paths=source_relative
   - local: protoc-gen-go-grpc
-    out: ../gen/proto
+    out: gen/proto
     opt:
       - paths=source_relative
   - local: protoc-gen-grpc-gateway
-    out: ../gen/proto
+    out: gen/proto
     opt:
       - paths=source_relative
       - generate_unbound_methods=true

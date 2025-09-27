@@ -6,6 +6,9 @@ node_modules/
 #   project can build their own clients as needed
 gen/
 
+# Buf cache
+.buf/
+
 # Build artifacts
 *.log
 *.tmp

@@ -10,19 +10,19 @@ clean:
 
 # Lint protobuf files and check formatting
 lint:
-	cd proto && buf lint && buf format -d --exit-code
+	buf lint && buf format -d --exit-code
 
 # Format protobuf files
 format:
-	cd proto && buf format -w
+	buf format -w
 
 # Update protobuf dependencies in buf.lock
 update:
-	cd proto && buf dep update
+	buf dep update
 
 # Check for breaking changes (requires baseline)
 breaking:
-	cd proto && buf breaking --against '../.git#branch=main,subdir=proto'
+	buf breaking --against '.git#branch=main,subdir=proto'
 
 # Install required tools with specific versions
 install-tools:

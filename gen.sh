@@ -13,7 +13,7 @@ set -ex # halt on error + print commands
 rm -rf gen/
 
 # Generate Go code, gRPC services, gateway code, and OpenAPI docs
-cd proto && buf generate
+buf generate
 
 # Generate TypeScript clients from OpenAPI specs
 cd ..  # Go back to repo root

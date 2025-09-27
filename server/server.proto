@@ -5,14 +5,13 @@ package server;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/stashgg/public-api/proto/server";
+option go_package = "github.com/stashgg/public-api/gen/proto/server";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Stash Server-side API"
     description: "Server-side APIs for Stash game integration. This API set includes catalog management, purchase processing, and user management endpoints designed for server-to-server communication between game backends and Stash services (from Stash services to Game Backend, unless otherwise specified)."
     version: "1.0"
   }
-  host: "test-api.stash.gg"
   schemes: HTTPS
   consumes: "application/json"
   produces: "application/json"
