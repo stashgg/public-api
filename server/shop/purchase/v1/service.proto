@@ -12,8 +12,8 @@ option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/purchas
 
 service PurchaseService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "Purchases"
-    description: "Purchase processing and transaction management endpoints for server-to-server communication"
+    name: "Purchase"
+    description: "Purchase processing endpoints"
   };
   rpc RegisterPayment(RegisterPaymentRequest) returns (RegisterPaymentResponse) {
     option (google.api.http) = {

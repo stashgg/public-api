@@ -11,8 +11,8 @@ option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/user/v1
 
 service UserService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "Users and Players"
-    description: "Unauthenticated user and authenticated player management endpoints"
+    name: "Players"
+    description: "Player management endpoints"
   };
   rpc GetPlayer(GetPlayerRequest) returns (GetPlayerResponse) {
     option (google.api.http) = {get: "/api/v1/player"};

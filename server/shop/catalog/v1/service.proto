@@ -14,7 +14,7 @@ option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/catalog
 service CatalogService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
     name: "Catalog"
-    description: "Product catalog management and retrieval endpoints"
+    description: "Product catalog endpoints"
   };
   rpc GetCatalog(GetCatalogRequest) returns (GetCatalogResponse) {
     option (google.api.http) = {get: "/api/v1/catalog"};
