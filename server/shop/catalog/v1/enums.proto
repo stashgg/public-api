@@ -30,3 +30,10 @@ enum ChainLinkStatus {
   CHAIN_LINK_STATUS_UNLOCKED = 2;
   CHAIN_LINK_STATUS_LOCKED = 3;
 }
+
+enum RewardBuffType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of reward buff applied to an item"};
+  REWARD_BUFF_TYPE_UNSPECIFIED = 0;
+  REWARD_BUFF_TYPE_ADDITIVE = 1;
+  REWARD_BUFF_TYPE_MULTIPLIER = 2;
+}
