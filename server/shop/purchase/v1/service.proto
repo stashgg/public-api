@@ -116,17 +116,17 @@ message RegisterPaymentRequest {
           description: "Price amount for the offer"
           required: [
             "currency",
-            "amount"
+            "cents"
           ]
         }
       };
-      string currency = 4 [
+      string currency = 1 [
         (google.api.field_behavior) = REQUIRED,
         (validate.rules).string.min_len = 3,
         (validate.rules).string.max_len = 3,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
       ];
-      uint32 cents = 5 [
+      uint32 cents = 2 [
         (google.api.field_behavior) = REQUIRED,
         (validate.rules).uint32.gt = 0,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}

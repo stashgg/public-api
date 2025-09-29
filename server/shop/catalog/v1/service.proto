@@ -158,7 +158,7 @@ message GetCatalogResponse {
           description: "Price amount for the offer"
           required: [
             "currency",
-            "amount"
+            "cents"
           ]
         }
       };
