@@ -1,0 +1,43 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Stash Web Shop API",
+    "description": "Server-side APIs for Stash web shop integration. This API set includes catalog management, purchase processing, and user management endpoints designed for server-to-server communication between game backends and Stash services.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "https://docs.stash.gg/",
+      "email": "help@stash.gg"
+    }
+  },
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "tags": [
+    {
+      "name": "Players",
+      "description": "Player management endpoints"
+    },
+    {
+      "name": "Catalog",
+      "description": "Product catalog endpoints"
+    },
+    {
+      "name": "Purchase",
+      "description": "Purchase processing endpoints"
+    }
+  ],
+  "paths": {
+    "$ref": "../../gen/openapiv2/server/shop/catalog/v1/service.swagger.json#paths",
+    "$ref": "../../gen/openapiv2/server/shop/user/v1/service.swagger.json#paths",
+    "$ref": "../../gen/openapiv2/server/shop/purchase/v1/service.swagger.json#paths"
+  },
+  "definitions": {
+    "$ref": "../../gen/openapiv2/server/shop/catalog/v1/service.swagger.json#definitions",
+    "$ref": "../../gen/openapiv2/server/shop/user/v1/service.swagger.json#definitions",
+    "$ref": "../../gen/openapiv2/server/shop/purchase/v1/service.swagger.json#definitions"
+  },
+  "securityDefinitions": {
+    "$ref": "../../gen/openapiv2/server/server.swagger.json#securityDefinitions"
+  }
+}

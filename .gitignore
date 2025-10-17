@@ -1,10 +1,11 @@
 # Dependencies
 node_modules/
 
-# Generated clients
+# Generated clients and intermediary OpenAPI specs
 # - We don't want to commit these so that each
 #   project can build their own clients as needed
-gen/
+# - Merged OpenAPI specs are committed in docs/gen/
+/gen/
 
 # Buf cache
 .buf/
