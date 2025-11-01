@@ -15,6 +15,14 @@ enum CatalogPlatform {
   CATALOG_PLATFORM_WEBSTORE = 3;
 }
 
+enum CatalogSectionDisplayType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Display type of a catalog section"};
+  // Default responsive grid layout
+  CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED = 0;
+  // Carousel displays items in a horizontal scrollable area
+  CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL = 1;
+}
+
 enum NonPurchasableItemType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of non-purchasable item"};
   // Default non-purchasable item type

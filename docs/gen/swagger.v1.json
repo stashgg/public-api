@@ -49,7 +49,7 @@
                 "catalog": {
                   "type": "object",
                   "properties": {
-                    "rows": {
+                    "sections": {
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -1070,21 +1070,37 @@
                               "description": "Represents any type of catalog item using oneof for polymorphism",
                               "title": "Catalog Item"
                             },
-                            "description": "List of catalog items in this row"
+                            "description": "List of catalog items in this section to be displayed in the order they are provided"
+                          },
+                          "displayType": {
+                            "type": "string",
+                            "enum": [
+                              "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+                              "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                            ],
+                            "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+                            "description": "How the section should be displayed on the screen",
+                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
                           }
                         },
-                        "description": "Represents a row of catalog items with a header",
-                        "title": "Catalog Row"
+                        "description": "Represents a section of catalog items with a header, items and display type",
+                        "title": "Catalog Section",
+                        "required": [
+                          "items"
+                        ]
                       },
-                      "description": "List of catalog rows"
+                      "description": "List of catalog sections to be displayed in the order they are provided"
                     }
                   },
-                  "description": "The product catalog organized in rows",
+                  "description": "The product catalog organized in sections",
                   "title": "Catalog"
                 }
               },
               "description": "Contains the catalog data",
-              "title": "Get Catalog Response"
+              "title": "Get Catalog Response",
+              "required": [
+                "catalog"
+              ]
             }
           },
           "default": {
@@ -2790,7 +2806,7 @@
         "price"
       ]
     },
-    "CatalogRow": {
+    "CatalogSection": {
       "type": "object",
       "properties": {
         "header": {
@@ -3809,11 +3825,24 @@
             "description": "Represents any type of catalog item using oneof for polymorphism",
             "title": "Catalog Item"
           },
-          "description": "List of catalog items in this row"
+          "description": "List of catalog items in this section to be displayed in the order they are provided"
+        },
+        "displayType": {
+          "type": "string",
+          "enum": [
+            "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+            "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+          ],
+          "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+          "description": "How the section should be displayed on the screen",
+          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
         }
       },
-      "description": "Represents a row of catalog items with a header",
-      "title": "Catalog Row"
+      "description": "Represents a section of catalog items with a header, items and display type",
+      "title": "Catalog Section",
+      "required": [
+        "items"
+      ]
     },
     "GetCatalogResponseBackground": {
       "type": "object",
@@ -3975,7 +4004,7 @@
     "GetCatalogResponseCatalog": {
       "type": "object",
       "properties": {
-        "rows": {
+        "sections": {
           "type": "array",
           "items": {
             "type": "object",
@@ -4996,13 +5025,26 @@
                   "description": "Represents any type of catalog item using oneof for polymorphism",
                   "title": "Catalog Item"
                 },
-                "description": "List of catalog items in this row"
+                "description": "List of catalog items in this section to be displayed in the order they are provided"
+              },
+              "displayType": {
+                "type": "string",
+                "enum": [
+                  "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+                  "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                ],
+                "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+                "description": "How the section should be displayed on the screen",
+                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
               }
             },
-            "description": "Represents a row of catalog items with a header",
-            "title": "Catalog Row"
+            "description": "Represents a section of catalog items with a header, items and display type",
+            "title": "Catalog Section",
+            "required": [
+              "items"
+            ]
           },
-          "description": "List of catalog rows"
+          "description": "List of catalog sections to be displayed in the order they are provided"
         }
       },
       "description": "Represents the complete product catalog",
@@ -7028,6 +7070,16 @@
       "description": "Represents the platform of the user viewing the catalog",
       "title": "- CATALOG_PLATFORM_UNSPECIFIED: Default unknown platform"
     },
+    "v1CatalogSectionDisplayType": {
+      "type": "string",
+      "enum": [
+        "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+        "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+      ],
+      "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+      "description": "Display type of a catalog section",
+      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+    },
     "v1ChainLinkStatus": {
       "type": "string",
       "enum": [
@@ -7045,7 +7097,7 @@
         "catalog": {
           "type": "object",
           "properties": {
-            "rows": {
+            "sections": {
               "type": "array",
               "items": {
                 "type": "object",
@@ -8066,21 +8118,37 @@
                       "description": "Represents any type of catalog item using oneof for polymorphism",
                       "title": "Catalog Item"
                     },
-                    "description": "List of catalog items in this row"
+                    "description": "List of catalog items in this section to be displayed in the order they are provided"
+                  },
+                  "displayType": {
+                    "type": "string",
+                    "enum": [
+                      "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+                      "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                    ],
+                    "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
+                    "description": "How the section should be displayed on the screen",
+                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
                   }
                 },
-                "description": "Represents a row of catalog items with a header",
-                "title": "Catalog Row"
+                "description": "Represents a section of catalog items with a header, items and display type",
+                "title": "Catalog Section",
+                "required": [
+                  "items"
+                ]
               },
-              "description": "List of catalog rows"
+              "description": "List of catalog sections to be displayed in the order they are provided"
             }
           },
-          "description": "The product catalog organized in rows",
+          "description": "The product catalog organized in sections",
           "title": "Catalog"
         }
       },
       "description": "Contains the catalog data",
-      "title": "Get Catalog Response"
+      "title": "Get Catalog Response",
+      "required": [
+        "catalog"
+      ]
     },
     "v1NonPurchasableItemType": {
       "type": "string",

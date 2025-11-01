@@ -61,6 +61,7 @@ message GetCatalogResponse {
     json_schema: {
       title: "Get Catalog Response"
       description: "Contains the catalog data"
+      required: ["catalog"]
     }
   };
   message LocalizableText {
@@ -595,17 +596,26 @@ message GetCatalogResponse {
         description: "Represents the complete product catalog"
       }
     };
-    message Row {
+    message Section {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
-          title: "Catalog Row"
-          description: "Represents a row of catalog items with a header"
+          title: "Catalog Section"
+          description: "Represents a section of catalog items with a header, items and display type"
+          required: ["items"]
         }
       };
       LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Row header text"}];
-      repeated CatalogItem items = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog items in this row"}];
+      repeated CatalogItem items = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).repeated.min_items = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog items in this section to be displayed in the order they are provided"}
+      ];
+      CatalogSectionDisplayType display_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the section should be displayed on the screen"}];
     }
-    repeated Row rows = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog rows"}];
+    repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
   }
-  Catalog catalog = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The product catalog organized in rows"}];
+  Catalog catalog = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The product catalog organized in sections"}
+  ];
 }
