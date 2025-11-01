@@ -38,7 +38,7 @@ service PurchaseService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Confirm payment completion"
-      description: "(Optional) Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. This step is optional as purchases can also be confirmed/cancelled asynchronously via webhook events."
+      description: "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases."
       security: [
         {
           security_requirement: {key: "apiKey"}
@@ -54,7 +54,7 @@ service PurchaseService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Cancel pending payment"
-      description: "(Optional) Step 2B: Cancels a pending purchase that was previously registered. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body. This step is optional as purchases can also be cancelled asynchronously via webhook events."
+      description: "Step 2B: Cancels a pending purchase that was previously registered. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body."
       security: [
         {
           security_requirement: {key: "apiKey"}
@@ -72,6 +72,7 @@ message RegisterPaymentRequest {
       required: [
         "player_id",
         "transaction_id",
+        "currency",
         "registrations"
       ]
     }
@@ -86,69 +87,70 @@ message RegisterPaymentRequest {
     (validate.rules).string.min_len = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique transaction identifier for this purchase session"}
   ];
-  PurchasePlatform platform = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Platform making the purchase"}];
-  string browser = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Browser information for web purchases (e.g., 'Chrome/91.0', 'Firefox/89.0', 'Safari/14.1', 'any')"}];
-  string device_id = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Device identifier for tracking and fraud prevention (can be generated client-side)"}];
-  PurchaseSource source = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Source of the purchase for analytics"}];
+  optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
+
+  string currency = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {
+      min_len: 3
+      max_len: 3
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+  ];
 
   message PurchaseRegistration {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
         title: "Purchase Registration"
         description: "Represents a single item registration in a purchase"
-        required: ["quantity"]
+        required: [
+          "guid",
+          "product_id",
+          "cents",
+          "quantity"
+        ]
       }
     };
-    oneof offer_identifier {
-      string product_id = 1 [
-        (validate.rules).string.min_len = 1,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU being purchased (providing this OR guid is required)"}
-      ];
-      string guid = 2 [
-        (validate.rules).string.uuid = true,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID being purchased (providing this OR product_id is required)"}
-      ];
-    }
-    message PriceAmount {
-      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-        json_schema: {
-          title: "Price Amount"
-          description: "Price amount for the offer"
-          required: [
-            "currency",
-            "cents"
-          ]
-        }
-      };
-      string currency = 1 [
-        (google.api.field_behavior) = REQUIRED,
-        (validate.rules).string.min_len = 3,
-        (validate.rules).string.max_len = 3,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
-      ];
-      uint32 cents = 2 [
-        (google.api.field_behavior) = REQUIRED,
-        (validate.rules).uint32.gt = 0,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}
-      ];
-    }
-    oneof price {
-      PriceAmount amount = 3;
-      string price_id = 4 [
-        (validate.rules).string.min_len = 1,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price ID for the offer"}
-      ];
-    }
-    uint32 quantity = 6 [
+    string guid = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.uuid = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"}
+    ];
+    string product_id = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU being purchased"}
+    ];
+    uint32 cents = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}
+    ];
+    uint32 quantity = 4 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity being purchased (must be positive, no bigint support)"}
     ];
+    map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
-  repeated PurchaseRegistration registrations = 7 [
+  repeated PurchaseRegistration registrations = 5 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).repeated.min_items = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of items to register for purchase"}
+  ];
+
+  PurchasePlatform platform = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Platform making the purchase"}];
+  string browser = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Browser information for web purchases (e.g., 'Chrome/91.0', 'Firefox/89.0', 'Safari/14.1', 'any')"}];
+  string device_id = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Device identifier for tracking and fraud prevention (can be generated client-side)"}];
+  PurchaseSource source = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Source of the purchase for analytics"}];
+  string ip_address = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Customer IP address for fraud prevention and compliance"}];
+  string region = 11 [
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"}
   ];
 }
 
@@ -157,6 +159,7 @@ message RegisterPaymentResponse {
     json_schema: {
       title: "Register Payment Response"
       description: "Expected response format for the RegisterPayment endpoint from the game backend (response body includes status indicating success or failure)."
+      required: ["statuses"]
     }
   };
   message OfferStatus {
@@ -164,22 +167,36 @@ message RegisterPaymentResponse {
       json_schema: {
         title: "Offer Status"
         description: "Represents the status of a registered offer"
+        required: ["status"]
       }
     };
     oneof offer_identifier {
-      string product_id = 1 [
-        (validate.rules).string.min_len = 1,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
-      ];
-      string guid = 2 [
-        (validate.rules).string.uuid = true,
+      string guid = 1 [
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
       ];
+      string product_id = 2 [
+        (validate.rules).string = {
+          min_len: 1
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
+      ];
     }
-    PurchaseRegistrationStatus status = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of the offer registration"}];
+    PurchaseRegistrationStatus status = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of the offer registration"}
+    ];
     optional string message = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional human-readable status message for debugging"}];
   }
-  repeated OfferStatus statuses = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of each registered offer"}];
+  repeated OfferStatus statuses = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).repeated.min_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of each registered offer"}
+  ];
 }
 
 message CancelPaymentRequest {
@@ -203,6 +220,7 @@ message CancelPaymentRequest {
     (validate.rules).string.min_len = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to cancel"}
   ];
+  optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
 }
 
 message CancelPaymentResponse {
@@ -223,7 +241,12 @@ message ConfirmPaymentRequest {
       description: "Request to confirm and complete a pending purchase that was previously registered."
       required: [
         "player_id",
-        "transaction_id"
+        "transaction_id",
+        "currency",
+        "tax",
+        "total",
+        "time_millis",
+        "items"
       ]
     }
   };
@@ -237,9 +260,92 @@ message ConfirmPaymentRequest {
     (validate.rules).string.min_len = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to confirm"}
   ];
-  optional uint32 extra_in_game_currency = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra in-game currency bonus"}];
-  optional uint32 extra_loyalty_points = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty points bonus"}];
-  optional uint32 extra_loyalty_credits = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty credits bonus"}];
+  optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
+
+  string currency = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {
+      min_len: 3
+      max_len: 3
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+  ];
+  uint32 tax = 5 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).uint32.gte = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax amount in smallest currency unit (e.g. 99 for $0.99, can be 0)"}
+  ];
+  uint32 total = 6 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).uint32.gt = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Total purchase amount in smallest currency unit including tax (e.g. 1098 for $10.98)"}
+  ];
+  int64 time_millis = 7 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).int64.gt = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when the purchase was completed (milliseconds since Unix epoch)"}
+  ];
+
+  message PurchasedItem {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Purchased Item"
+        description: "Represents a single item in the completed purchase"
+        required: [
+          "guid",
+          "product_id",
+          "quantity",
+          "cents"
+        ]
+      }
+    };
+    string guid = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.uuid = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"}
+    ];
+    string product_id = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU being purchased"}
+    ];
+    uint32 quantity = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity purchased (must be positive)"}
+    ];
+    uint32 cents = 4 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price per item in smallest currency unit (e.g. 999 for $9.99)"}
+    ];
+    map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
+  }
+  repeated PurchasedItem items = 8 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).repeated.min_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of items in this purchase"}
+  ];
+
+  PurchasePlatform platform = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Platform making the purchase"}];
+  string browser = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Browser information for web purchases (e.g., 'Chrome/91.0', 'Firefox/89.0', 'Safari/14.1', 'any')"}];
+  string device_id = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Device identifier for tracking and fraud prevention (can be generated client-side)"}];
+  PurchaseSource source = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Source of the purchase for analytics"}];
+  string ip_address = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Customer IP address for fraud prevention and compliance"}];
+  string region = 14 [
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"}
+  ];
+
+  optional bool email_marketing_opt_in = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional flag indicating if customer opted in to email marketing"}];
+
+  optional uint32 extra_in_game_currency = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra in-game currency bonus"}];
+  optional uint32 extra_loyalty_points = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty points bonus"}];
+  optional uint32 extra_loyalty_credits = 18 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty credits bonus"}];
 }
 
 message ConfirmPaymentResponse {
@@ -258,13 +364,19 @@ message ConfirmPaymentResponse {
       }
     };
     oneof offer_identifier {
-      string product_id = 1 [
-        (validate.rules).string.min_len = 1,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was purchased (providing this OR guid is required)"}
+      string guid = 1 [
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
       ];
-      string guid = 2 [
-        (validate.rules).string.uuid = true,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was purchased (providing this OR product_id is required)"}
+      string product_id = 2 [
+        (validate.rules).string = {
+          min_len: 1
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
       ];
     }
   }

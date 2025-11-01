@@ -1255,7 +1255,7 @@
     "/api/v1/purchase/cancel": {
       "post": {
         "summary": "Cancel pending payment",
-        "description": "(Optional) Step 2B: Cancels a pending purchase that was previously registered. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body. This step is optional as purchases can also be cancelled asynchronously via webhook events.",
+        "description": "Step 2B: Cancels a pending purchase that was previously registered. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body.",
         "operationId": "PurchaseService_CancelPayment",
         "responses": {
           "200": {
@@ -1329,6 +1329,10 @@
                 "transactionId": {
                   "type": "string",
                   "description": "Transaction identifier to cancel"
+                },
+                "checkoutLinkId": {
+                  "type": "string",
+                  "description": "Optional checkout link identifier if purchase was made through a checkout link"
                 }
               },
               "description": "Request to cancel a pending purchase that was previously registered.",
@@ -1353,7 +1357,7 @@
     "/api/v1/purchase/confirm": {
       "post": {
         "summary": "Confirm payment completion",
-        "description": "(Optional) Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. This step is optional as purchases can also be confirmed/cancelled asynchronously via webhook events.",
+        "description": "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases.",
         "operationId": "PurchaseService_ConfirmPayment",
         "responses": {
           "200": {
@@ -1366,13 +1370,13 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "productId": {
-                        "type": "string",
-                        "description": "The offer/product SKU that was purchased (providing this OR guid is required)"
-                      },
                       "guid": {
                         "type": "string",
-                        "description": "The offer/product GUID that was purchased (providing this OR product_id is required)"
+                        "description": "The offer/product GUID that was registered (providing this OR product_id is required)"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "The offer/product SKU that was registered (providing this OR guid is required)"
                       }
                     },
                     "description": "Represents the result of a confirmed purchase",
@@ -1433,6 +1437,114 @@
                   "type": "string",
                   "description": "Transaction identifier to confirm"
                 },
+                "checkoutLinkId": {
+                  "type": "string",
+                  "description": "Optional checkout link identifier if purchase was made through a checkout link"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                },
+                "tax": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Tax amount in smallest currency unit (e.g. 99 for $0.99, can be 0)"
+                },
+                "total": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Total purchase amount in smallest currency unit including tax (e.g. 1098 for $10.98)"
+                },
+                "timeMillis": {
+                  "type": "string",
+                  "format": "int64",
+                  "description": "Timestamp when the purchase was completed (milliseconds since Unix epoch)"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "guid": {
+                        "type": "string",
+                        "description": "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "The offer/product SKU being purchased"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Quantity purchased (must be positive)"
+                      },
+                      "cents": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Optional key-value pairs for additional item metadata"
+                      }
+                    },
+                    "description": "Represents a single item in the completed purchase",
+                    "title": "Purchased Item",
+                    "required": [
+                      "guid",
+                      "productId",
+                      "quantity",
+                      "cents"
+                    ]
+                  },
+                  "description": "List of items in this purchase"
+                },
+                "platform": {
+                  "type": "string",
+                  "enum": [
+                    "PURCHASE_PLATFORM_UNSPECIFIED",
+                    "PURCHASE_PLATFORM_IOS",
+                    "PURCHASE_PLATFORM_ANDROID",
+                    "PURCHASE_PLATFORM_WEBSTORE"
+                  ],
+                  "default": "PURCHASE_PLATFORM_UNSPECIFIED",
+                  "description": "Platform making the purchase",
+                  "title": "- PURCHASE_PLATFORM_UNSPECIFIED: Default unknown platform"
+                },
+                "browser": {
+                  "type": "string",
+                  "description": "Browser information for web purchases (e.g., 'Chrome/91.0', 'Firefox/89.0', 'Safari/14.1', 'any')"
+                },
+                "deviceId": {
+                  "type": "string",
+                  "description": "Device identifier for tracking and fraud prevention (can be generated client-side)"
+                },
+                "source": {
+                  "type": "string",
+                  "enum": [
+                    "PURCHASE_SOURCE_UNSPECIFIED",
+                    "PURCHASE_SOURCE_CART",
+                    "PURCHASE_SOURCE_DIRECT"
+                  ],
+                  "default": "PURCHASE_SOURCE_UNSPECIFIED",
+                  "description": "Source of the purchase for analytics",
+                  "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+                },
+                "ipAddress": {
+                  "type": "string",
+                  "description": "Customer IP address for fraud prevention and compliance"
+                },
+                "region": {
+                  "type": "string",
+                  "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
+                },
+                "emailMarketingOptIn": {
+                  "type": "boolean",
+                  "description": "Optional flag indicating if customer opted in to email marketing"
+                },
                 "extraInGameCurrency": {
                   "type": "integer",
                   "format": "int64",
@@ -1453,7 +1565,12 @@
               "title": "Confirm Payment Request",
               "required": [
                 "playerId",
-                "transactionId"
+                "transactionId",
+                "currency",
+                "tax",
+                "total",
+                "timeMillis",
+                "items"
               ]
             }
           }
@@ -1484,13 +1601,13 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "productId": {
-                        "type": "string",
-                        "description": "The offer/product SKU that was registered (providing this OR guid is required)"
-                      },
                       "guid": {
                         "type": "string",
                         "description": "The offer/product GUID that was registered (providing this OR product_id is required)"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "The offer/product SKU that was registered (providing this OR guid is required)"
                       },
                       "status": {
                         "type": "string",
@@ -1512,13 +1629,19 @@
                       }
                     },
                     "description": "Represents the status of a registered offer",
-                    "title": "Offer Status"
+                    "title": "Offer Status",
+                    "required": [
+                      "status"
+                    ]
                   },
                   "description": "Status of each registered offer"
                 }
               },
               "description": "Expected response format for the RegisterPayment endpoint from the game backend (response body includes status indicating success or failure).",
-              "title": "Register Payment Response"
+              "title": "Register Payment Response",
+              "required": [
+                "statuses"
+              ]
             }
           },
           "default": {
@@ -1566,6 +1689,56 @@
                   "type": "string",
                   "description": "Unique transaction identifier for this purchase session"
                 },
+                "checkoutLinkId": {
+                  "type": "string",
+                  "description": "Optional checkout link identifier if purchase was made through a checkout link"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                },
+                "registrations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "guid": {
+                        "type": "string",
+                        "description": "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "The offer/product SKU being purchased"
+                      },
+                      "cents": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Quantity being purchased (must be positive, no bigint support)"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Optional key-value pairs for additional item metadata"
+                      }
+                    },
+                    "description": "Represents a single item registration in a purchase",
+                    "title": "Purchase Registration",
+                    "required": [
+                      "guid",
+                      "productId",
+                      "cents",
+                      "quantity"
+                    ]
+                  },
+                  "description": "List of items to register for purchase"
+                },
                 "platform": {
                   "type": "string",
                   "enum": [
@@ -1597,56 +1770,13 @@
                   "description": "Source of the purchase for analytics",
                   "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
                 },
-                "registrations": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "productId": {
-                        "type": "string",
-                        "description": "The offer/product SKU being purchased (providing this OR guid is required)"
-                      },
-                      "guid": {
-                        "type": "string",
-                        "description": "The offer/product GUID being purchased (providing this OR product_id is required)"
-                      },
-                      "amount": {
-                        "type": "object",
-                        "properties": {
-                          "currency": {
-                            "type": "string",
-                            "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
-                          },
-                          "cents": {
-                            "type": "integer",
-                            "format": "int64",
-                            "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
-                          }
-                        },
-                        "description": "Price amount for the offer",
-                        "title": "Price Amount",
-                        "required": [
-                          "currency",
-                          "cents"
-                        ]
-                      },
-                      "priceId": {
-                        "type": "string",
-                        "description": "Price ID for the offer"
-                      },
-                      "quantity": {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "Quantity being purchased (must be positive, no bigint support)"
-                      }
-                    },
-                    "description": "Represents a single item registration in a purchase",
-                    "title": "Purchase Registration",
-                    "required": [
-                      "quantity"
-                    ]
-                  },
-                  "description": "List of items to register for purchase"
+                "ipAddress": {
+                  "type": "string",
+                  "description": "Customer IP address for fraud prevention and compliance"
+                },
+                "region": {
+                  "type": "string",
+                  "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
                 }
               },
               "description": "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase.",
@@ -1654,6 +1784,7 @@
               "required": [
                 "playerId",
                 "transactionId",
+                "currency",
                 "registrations"
               ]
             }
@@ -8048,98 +8179,107 @@
         }
       }
     },
+    "ConfirmPaymentRequestPurchasedItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "The offer/product SKU being purchased"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Quantity purchased (must be positive)"
+        },
+        "cents": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional key-value pairs for additional item metadata"
+        }
+      },
+      "description": "Represents a single item in the completed purchase",
+      "title": "Purchased Item",
+      "required": [
+        "guid",
+        "productId",
+        "quantity",
+        "cents"
+      ]
+    },
     "ConfirmPaymentResponseConfirmPaymentResult": {
       "type": "object",
       "properties": {
-        "productId": {
-          "type": "string",
-          "description": "The offer/product SKU that was purchased (providing this OR guid is required)"
-        },
         "guid": {
           "type": "string",
-          "description": "The offer/product GUID that was purchased (providing this OR product_id is required)"
+          "description": "The offer/product GUID that was registered (providing this OR product_id is required)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "The offer/product SKU that was registered (providing this OR guid is required)"
         }
       },
       "description": "Represents the result of a confirmed purchase",
       "title": "Confirm Payment Result"
     },
-    "PurchaseRegistrationPriceAmount": {
+    "RegisterPaymentRequestPurchaseRegistration": {
       "type": "object",
       "properties": {
-        "currency": {
+        "guid": {
           "type": "string",
-          "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+          "description": "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "The offer/product SKU being purchased"
         },
         "cents": {
           "type": "integer",
           "format": "int64",
           "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
-        }
-      },
-      "description": "Price amount for the offer",
-      "title": "Price Amount",
-      "required": [
-        "currency",
-        "cents"
-      ]
-    },
-    "RegisterPaymentRequestPurchaseRegistration": {
-      "type": "object",
-      "properties": {
-        "productId": {
-          "type": "string",
-          "description": "The offer/product SKU being purchased (providing this OR guid is required)"
-        },
-        "guid": {
-          "type": "string",
-          "description": "The offer/product GUID being purchased (providing this OR product_id is required)"
-        },
-        "amount": {
-          "type": "object",
-          "properties": {
-            "currency": {
-              "type": "string",
-              "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
-            },
-            "cents": {
-              "type": "integer",
-              "format": "int64",
-              "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
-            }
-          },
-          "description": "Price amount for the offer",
-          "title": "Price Amount",
-          "required": [
-            "currency",
-            "cents"
-          ]
-        },
-        "priceId": {
-          "type": "string",
-          "description": "Price ID for the offer"
         },
         "quantity": {
           "type": "integer",
           "format": "int64",
           "description": "Quantity being purchased (must be positive, no bigint support)"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional key-value pairs for additional item metadata"
         }
       },
       "description": "Represents a single item registration in a purchase",
       "title": "Purchase Registration",
       "required": [
+        "guid",
+        "productId",
+        "cents",
         "quantity"
       ]
     },
     "RegisterPaymentResponseOfferStatus": {
       "type": "object",
       "properties": {
-        "productId": {
-          "type": "string",
-          "description": "The offer/product SKU that was registered (providing this OR guid is required)"
-        },
         "guid": {
           "type": "string",
           "description": "The offer/product GUID that was registered (providing this OR product_id is required)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "The offer/product SKU that was registered (providing this OR guid is required)"
         },
         "status": {
           "type": "string",
@@ -8161,7 +8301,10 @@
         }
       },
       "description": "Represents the status of a registered offer",
-      "title": "Offer Status"
+      "title": "Offer Status",
+      "required": [
+        "status"
+      ]
     },
     "v1CancelPaymentRequest": {
       "type": "object",
@@ -8173,6 +8316,10 @@
         "transactionId": {
           "type": "string",
           "description": "Transaction identifier to cancel"
+        },
+        "checkoutLinkId": {
+          "type": "string",
+          "description": "Optional checkout link identifier if purchase was made through a checkout link"
         }
       },
       "description": "Request to cancel a pending purchase that was previously registered.",
@@ -8217,6 +8364,114 @@
           "type": "string",
           "description": "Transaction identifier to confirm"
         },
+        "checkoutLinkId": {
+          "type": "string",
+          "description": "Optional checkout link identifier if purchase was made through a checkout link"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+        },
+        "tax": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Tax amount in smallest currency unit (e.g. 99 for $0.99, can be 0)"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Total purchase amount in smallest currency unit including tax (e.g. 1098 for $10.98)"
+        },
+        "timeMillis": {
+          "type": "string",
+          "format": "int64",
+          "description": "Timestamp when the purchase was completed (milliseconds since Unix epoch)"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": {
+                "type": "string",
+                "description": "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"
+              },
+              "productId": {
+                "type": "string",
+                "description": "The offer/product SKU being purchased"
+              },
+              "quantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity purchased (must be positive)"
+              },
+              "cents": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional key-value pairs for additional item metadata"
+              }
+            },
+            "description": "Represents a single item in the completed purchase",
+            "title": "Purchased Item",
+            "required": [
+              "guid",
+              "productId",
+              "quantity",
+              "cents"
+            ]
+          },
+          "description": "List of items in this purchase"
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "PURCHASE_PLATFORM_UNSPECIFIED",
+            "PURCHASE_PLATFORM_IOS",
+            "PURCHASE_PLATFORM_ANDROID",
+            "PURCHASE_PLATFORM_WEBSTORE"
+          ],
+          "default": "PURCHASE_PLATFORM_UNSPECIFIED",
+          "description": "Platform making the purchase",
+          "title": "- PURCHASE_PLATFORM_UNSPECIFIED: Default unknown platform"
+        },
+        "browser": {
+          "type": "string",
+          "description": "Browser information for web purchases (e.g., 'Chrome/91.0', 'Firefox/89.0', 'Safari/14.1', 'any')"
+        },
+        "deviceId": {
+          "type": "string",
+          "description": "Device identifier for tracking and fraud prevention (can be generated client-side)"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "PURCHASE_SOURCE_UNSPECIFIED",
+            "PURCHASE_SOURCE_CART",
+            "PURCHASE_SOURCE_DIRECT"
+          ],
+          "default": "PURCHASE_SOURCE_UNSPECIFIED",
+          "description": "Source of the purchase for analytics",
+          "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+        },
+        "ipAddress": {
+          "type": "string",
+          "description": "Customer IP address for fraud prevention and compliance"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
+        },
+        "emailMarketingOptIn": {
+          "type": "boolean",
+          "description": "Optional flag indicating if customer opted in to email marketing"
+        },
         "extraInGameCurrency": {
           "type": "integer",
           "format": "int64",
@@ -8237,7 +8492,12 @@
       "title": "Confirm Payment Request",
       "required": [
         "playerId",
-        "transactionId"
+        "transactionId",
+        "currency",
+        "tax",
+        "total",
+        "timeMillis",
+        "items"
       ]
     },
     "v1ConfirmPaymentResponse": {
@@ -8248,13 +8508,13 @@
           "items": {
             "type": "object",
             "properties": {
-              "productId": {
-                "type": "string",
-                "description": "The offer/product SKU that was purchased (providing this OR guid is required)"
-              },
               "guid": {
                 "type": "string",
-                "description": "The offer/product GUID that was purchased (providing this OR product_id is required)"
+                "description": "The offer/product GUID that was registered (providing this OR product_id is required)"
+              },
+              "productId": {
+                "type": "string",
+                "description": "The offer/product SKU that was registered (providing this OR guid is required)"
               }
             },
             "description": "Represents the result of a confirmed purchase",
@@ -8330,6 +8590,56 @@
           "type": "string",
           "description": "Unique transaction identifier for this purchase session"
         },
+        "checkoutLinkId": {
+          "type": "string",
+          "description": "Optional checkout link identifier if purchase was made through a checkout link"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+        },
+        "registrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": {
+                "type": "string",
+                "description": "The offer/product GUID being purchased (can be auto-generated UUID v5 if not provided in catalog response)"
+              },
+              "productId": {
+                "type": "string",
+                "description": "The offer/product SKU being purchased"
+              },
+              "cents": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+              },
+              "quantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity being purchased (must be positive, no bigint support)"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional key-value pairs for additional item metadata"
+              }
+            },
+            "description": "Represents a single item registration in a purchase",
+            "title": "Purchase Registration",
+            "required": [
+              "guid",
+              "productId",
+              "cents",
+              "quantity"
+            ]
+          },
+          "description": "List of items to register for purchase"
+        },
         "platform": {
           "type": "string",
           "enum": [
@@ -8361,56 +8671,13 @@
           "description": "Source of the purchase for analytics",
           "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
         },
-        "registrations": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "productId": {
-                "type": "string",
-                "description": "The offer/product SKU being purchased (providing this OR guid is required)"
-              },
-              "guid": {
-                "type": "string",
-                "description": "The offer/product GUID being purchased (providing this OR product_id is required)"
-              },
-              "amount": {
-                "type": "object",
-                "properties": {
-                  "currency": {
-                    "type": "string",
-                    "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
-                  },
-                  "cents": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
-                  }
-                },
-                "description": "Price amount for the offer",
-                "title": "Price Amount",
-                "required": [
-                  "currency",
-                  "cents"
-                ]
-              },
-              "priceId": {
-                "type": "string",
-                "description": "Price ID for the offer"
-              },
-              "quantity": {
-                "type": "integer",
-                "format": "int64",
-                "description": "Quantity being purchased (must be positive, no bigint support)"
-              }
-            },
-            "description": "Represents a single item registration in a purchase",
-            "title": "Purchase Registration",
-            "required": [
-              "quantity"
-            ]
-          },
-          "description": "List of items to register for purchase"
+        "ipAddress": {
+          "type": "string",
+          "description": "Customer IP address for fraud prevention and compliance"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
         }
       },
       "description": "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase.",
@@ -8418,6 +8685,7 @@
       "required": [
         "playerId",
         "transactionId",
+        "currency",
         "registrations"
       ]
     },
@@ -8429,13 +8697,13 @@
           "items": {
             "type": "object",
             "properties": {
-              "productId": {
-                "type": "string",
-                "description": "The offer/product SKU that was registered (providing this OR guid is required)"
-              },
               "guid": {
                 "type": "string",
                 "description": "The offer/product GUID that was registered (providing this OR product_id is required)"
+              },
+              "productId": {
+                "type": "string",
+                "description": "The offer/product SKU that was registered (providing this OR guid is required)"
               },
               "status": {
                 "type": "string",
@@ -8457,13 +8725,19 @@
               }
             },
             "description": "Represents the status of a registered offer",
-            "title": "Offer Status"
+            "title": "Offer Status",
+            "required": [
+              "status"
+            ]
           },
           "description": "Status of each registered offer"
         }
       },
       "description": "Expected response format for the RegisterPayment endpoint from the game backend (response body includes status indicating success or failure).",
-      "title": "Register Payment Response"
+      "title": "Register Payment Response",
+      "required": [
+        "statuses"
+      ]
     }
   },
   "securityDefinitions": {

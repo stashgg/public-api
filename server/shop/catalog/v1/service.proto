@@ -39,13 +39,19 @@ message GetCatalogRequest {
   };
   optional CatalogPlatform platform = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional platform filter to get platform-specific catalog items"}];
   optional string region = 2 [
-    (validate.rules).string.min_len = 2,
-    (validate.rules).string.max_len = 3,
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+      ignore_empty: true
+    },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional region filter using ISO-3166-1 alpha-2 country code (e.g., 'US', 'EU', 'JP')"}
   ];
   optional string language = 3 [
-    (validate.rules).string.min_len = 2,
-    (validate.rules).string.max_len = 3,
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+      ignore_empty: true
+    },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional language code filter using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
   ];
 }
@@ -67,11 +73,17 @@ message GetCatalogResponse {
     string default_text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"}];
     oneof localization {
       string localization_key = 2 [
-        (validate.rules).string.min_len = 1,
+        (validate.rules).string = {
+          min_len: 1
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique key used to identify the localized text content for a specific language"}
       ];
       string localized_text = 3 [
-        (validate.rules).string.min_len = 1,
+        (validate.rules).string = {
+          min_len: 1
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Localized text content for the language specified by the code sent in the request filters"}
       ];
     }
@@ -106,7 +118,10 @@ message GetCatalogResponse {
     };
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button text for action (e.g., 'Buy Now', 'View Details')"}];
     optional string icon_image_url = 2 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to button icon image"}
     ];
     optional string background_style = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for button"}];
@@ -122,7 +137,10 @@ message GetCatalogResponse {
     };
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Callout text (e.g., 'Guaranteed Featured Asset')"}];
     optional string icon_image_url = 2 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to callout icon image"}
     ];
   }
@@ -140,7 +158,10 @@ message GetCatalogResponse {
     ];
     RewardBuffType type = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff type (additive or multiplier)"}];
     string icon_image_url = 3 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to buff icon image"}
     ];
     string background_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CSS-style background styling information for buff"}];
@@ -154,7 +175,10 @@ message GetCatalogResponse {
       }
     };
     string icon_image_url = 1 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to special capability tag icon image"}
     ];
     optional Tooltip tooltip = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional popup tooltip for additional information"}];
@@ -168,7 +192,10 @@ message GetCatalogResponse {
       }
     };
     string image_url = 1 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to background image"}
     ];
     string background_style = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CSS-style background styling information"}];
@@ -182,7 +209,10 @@ message GetCatalogResponse {
       }
     };
     string image_url = 1 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to decal image displayed beside the main element"}
     ];
   }
@@ -217,8 +247,10 @@ message GetCatalogResponse {
       };
       string currency = 1 [
         (google.api.field_behavior) = REQUIRED,
-        (validate.rules).string.min_len = 3,
-        (validate.rules).string.max_len = 3,
+        (validate.rules).string = {
+          min_len: 3
+          max_len: 3
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
       ];
       uint32 cents = 2 [
@@ -230,7 +262,10 @@ message GetCatalogResponse {
     oneof price {
       PriceAmount amount = 1;
       string price_id = 2 [
-        (validate.rules).string.min_len = 1,
+        (validate.rules).string = {
+          min_len: 1
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price ID identifier"}
       ];
     }
@@ -255,7 +290,10 @@ message GetCatalogResponse {
         }
       };
       optional string guid = 1 [
-        (validate.rules).string.uuid = true,
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
       ];
       string product_id = 2 [
@@ -266,7 +304,10 @@ message GetCatalogResponse {
       LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
       LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the item"}];
       string image = 5 [
-        (validate.rules).string.uri = true,
+        (validate.rules).string = {
+          uri: true
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
       ];
       optional uint32 max_purchasable = 6 [
@@ -304,23 +345,34 @@ message GetCatalogResponse {
           }
         };
         optional string guid = 1 [
-          (validate.rules).string.uuid = true,
+          (validate.rules).string = {
+            uuid: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."}
         ];
         LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
         LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
         string image = 5 [
-          (validate.rules).string.uri = true,
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
         ];
         string quantity = 6 [
           (google.api.field_behavior) = REQUIRED,
-          (validate.rules).string.min_len = 1,
-          (validate.rules).string.pattern = "^[0-9]+$",
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
         ];
         optional string unit_image = 7 [
-          (validate.rules).string.uri = true,
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
         ];
         optional Button info_button = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for additional item details"}];
@@ -342,7 +394,10 @@ message GetCatalogResponse {
         }
       };
       optional string guid = 1 [
-        (validate.rules).string.uuid = true,
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The chain's unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used for the chain itself (the chain is not purchasable), but rather for the individual links in the chain."}
       ];
       LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Chain name"}];
@@ -359,7 +414,10 @@ message GetCatalogResponse {
           }
         };
         optional string guid = 1 [
-          (validate.rules).string.uuid = true,
+          (validate.rules).string = {
+            uuid: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
         ];
         string product_id = 2 [
@@ -382,30 +440,44 @@ message GetCatalogResponse {
             }
           };
           optional string guid = 1 [
-            (validate.rules).string.uuid = true,
+            (validate.rules).string = {
+              uuid: true
+              ignore_empty: true
+            },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c the obtainable items are only for display purposes, and only the link is purchasable."}
           ];
           LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
           LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
           string image = 5 [
-            (validate.rules).string.uri = true,
+            (validate.rules).string = {
+              uri: true
+              ignore_empty: true
+            },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
           ];
           string quantity = 6 [
             (google.api.field_behavior) = REQUIRED,
-            (validate.rules).string.min_len = 1,
-            (validate.rules).string.pattern = "^[0-9]+$",
+            (validate.rules).string = {
+              min_len: 1
+              pattern: "^[0-9]+$"
+            },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
           ];
           optional string unit_image = 7 [
-            (validate.rules).string.uri = true,
+            (validate.rules).string = {
+              uri: true
+              ignore_empty: true
+            },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
           ];
         }
         repeated ObtainableItem items = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items obtained from this chain link as a bundle"}];
         ChainLinkStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Current status of this chain link"}];
         optional string bundle_image = 7 [
-          (validate.rules).string.uri = true,
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional image representing the bundle of items obtained from this chain link. If not provided, an individual item image will be displayed to represent the bundle in the user's cart."}
         ];
       }
@@ -438,7 +510,10 @@ message GetCatalogResponse {
         }
       };
       optional string guid = 1 [
-        (validate.rules).string.uuid = true,
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
       ];
       string item_id = 2 [
@@ -472,23 +547,34 @@ message GetCatalogResponse {
           }
         };
         optional string guid = 1 [
-          (validate.rules).string.uuid = true,
+          (validate.rules).string = {
+            uuid: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that item_id is not used b/c the in-game items are only for display purposes."}
         ];
         LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
         LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
         string image = 5 [
-          (validate.rules).string.uri = true,
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
         ];
         string quantity = 6 [
           (google.api.field_behavior) = REQUIRED,
-          (validate.rules).string.min_len = 1,
-          (validate.rules).string.pattern = "^[0-9]+$",
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
         ];
         optional string unit_image = 7 [
-          (validate.rules).string.uri = true,
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
         ];
       }

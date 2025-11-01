@@ -59,12 +59,18 @@ message GetPlayerResponse {
     ];
     string name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player name"}];
     string avatar_url = 3 [
-      (validate.rules).string.uri = true,
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to player avatar image"}
     ];
     string language = 4 [
-      (validate.rules).string.min_len = 2,
-      (validate.rules).string.max_len = 3,
+      (validate.rules).string = {
+        min_len: 2
+        max_len: 3
+        ignore_empty: true
+      },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
     ];
     uint32 in_game_level = 5 [
