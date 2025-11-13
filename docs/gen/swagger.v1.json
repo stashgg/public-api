@@ -124,7 +124,7 @@
                                           "description": "Localized text content for the language specified by the code sent in the request filters"
                                         }
                                       },
-                                      "description": "Optional description of the item",
+                                      "description": "Description of the item",
                                       "title": "Localizable Text"
                                     },
                                     "image": {
@@ -135,6 +135,25 @@
                                       "type": "integer",
                                       "format": "int64",
                                       "description": "Maximum number of times this item can be purchased"
+                                    },
+                                    "maxPurchasableDescription": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Optional description of the maximum number of times this item can be purchased",
+                                      "title": "Localizable Text"
                                     },
                                     "price": {
                                       "type": "object",
@@ -1159,6 +1178,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "playerId",
+            "description": "Optional player ID filter to get player-specific catalog items",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1633,11 +1659,12 @@
                           "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER",
                           "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
                           "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
-                          "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE"
+                          "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
+                          "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
                         ],
                         "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
                         "description": "Status of the offer registration",
-                        "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing"
+                        "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
                       },
                       "message": {
                         "type": "string",
@@ -2324,7 +2351,7 @@
               "description": "Localized text content for the language specified by the code sent in the request filters"
             }
           },
-          "description": "Optional description of the item",
+          "description": "Description of the item",
           "title": "Localizable Text"
         },
         "image": {
@@ -2335,6 +2362,25 @@
           "type": "integer",
           "format": "int64",
           "description": "Maximum number of times this item can be purchased"
+        },
+        "maxPurchasableDescription": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional description of the maximum number of times this item can be purchased",
+          "title": "Localizable Text"
         },
         "price": {
           "type": "object",
@@ -2879,7 +2925,7 @@
                         "description": "Localized text content for the language specified by the code sent in the request filters"
                       }
                     },
-                    "description": "Optional description of the item",
+                    "description": "Description of the item",
                     "title": "Localizable Text"
                   },
                   "image": {
@@ -2890,6 +2936,25 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Maximum number of times this item can be purchased"
+                  },
+                  "maxPurchasableDescription": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Optional description of the maximum number of times this item can be purchased",
+                    "title": "Localizable Text"
                   },
                   "price": {
                     "type": "object",
@@ -4079,7 +4144,7 @@
                               "description": "Localized text content for the language specified by the code sent in the request filters"
                             }
                           },
-                          "description": "Optional description of the item",
+                          "description": "Description of the item",
                           "title": "Localizable Text"
                         },
                         "image": {
@@ -4090,6 +4155,25 @@
                           "type": "integer",
                           "format": "int64",
                           "description": "Maximum number of times this item can be purchased"
+                        },
+                        "maxPurchasableDescription": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Optional description of the maximum number of times this item can be purchased",
+                          "title": "Localizable Text"
                         },
                         "price": {
                           "type": "object",
@@ -5099,7 +5183,7 @@
                   "description": "Localized text content for the language specified by the code sent in the request filters"
                 }
               },
-              "description": "Optional description of the item",
+              "description": "Description of the item",
               "title": "Localizable Text"
             },
             "image": {
@@ -5110,6 +5194,25 @@
               "type": "integer",
               "format": "int64",
               "description": "Maximum number of times this item can be purchased"
+            },
+            "maxPurchasableDescription": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Optional description of the maximum number of times this item can be purchased",
+              "title": "Localizable Text"
             },
             "price": {
               "type": "object",
@@ -7172,7 +7275,7 @@
                                   "description": "Localized text content for the language specified by the code sent in the request filters"
                                 }
                               },
-                              "description": "Optional description of the item",
+                              "description": "Description of the item",
                               "title": "Localizable Text"
                             },
                             "image": {
@@ -7183,6 +7286,25 @@
                               "type": "integer",
                               "format": "int64",
                               "description": "Maximum number of times this item can be purchased"
+                            },
+                            "maxPurchasableDescription": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Optional description of the maximum number of times this item can be purchased",
+                              "title": "Localizable Text"
                             },
                             "price": {
                               "type": "object",
@@ -8357,11 +8479,12 @@
             "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER",
             "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
             "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
-            "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE"
+            "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
+            "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
           ],
           "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
           "description": "Status of the offer registration",
-          "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing"
+          "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
         },
         "message": {
           "type": "string",
@@ -8630,11 +8753,12 @@
         "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER",
         "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
         "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
-        "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE"
+        "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
+        "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
       ],
       "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
       "description": "Represents the status of a purchase registration",
-      "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing"
+      "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
     },
     "v1PurchaseSource": {
       "type": "string",
@@ -8781,11 +8905,12 @@
                   "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER",
                   "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
                   "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
-                  "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE"
+                  "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
+                  "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
                 ],
                 "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
                 "description": "Status of the offer registration",
-                "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing"
+                "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
               },
               "message": {
                 "type": "string",

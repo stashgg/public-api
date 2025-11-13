@@ -23,10 +23,9 @@ Used to store protos and auto-generated clients for public- and external-facing 
 ## Key Design Decisions
 
 1. **Field Names**: All protobuf field names closely match the JSON tags from the original alpha API schema.
-2. **Polymorphism**: The original `CatalogItem` interface is implemented using protobuf's `oneof` feature in the `CatalogItem` message.
+2. **Polymorphism**: `CatalogItem` uses protobuf's `oneof` feature to represent multiple types of items.
 3. **Big Integers**: Go's `big.Int` fields are represented as `string` fields in protobuf for maximum precision and compatibility.
-4. **Optional Fields**: Protobuf 3's optional fields are used for fields that were pointers in the original Go structs.
-5. **Timestamps**: Go's `time.Time` is mapped to `google.protobuf.Timestamp`.
+4. **Timestamps**: Go's `time.Time` is mapped to `google.protobuf.Timestamp`.
 
 ## Code Generation
 
@@ -49,23 +48,6 @@ Format protobuf files:
 ```bash
 make format
 ```
-
-## Field Mapping Reference
-
-See [full mapping details](#go-struct-to-protobuf-mapping).
-
-### Original Go JSON Tag → Proto Field
-
-- `json:"guid"` → `guid`
-- `json:"image"` → `image` (not `image_url`)
-- `json:"imageUrl"` → `image_url`
-- `json:"unitImage"` → `unit_image`
-- `json:"max_purchasable"` → `max_purchasable`
-- `json:"maxPurchasable"` → `max_purchasable` (camelCase → snake_case for consistency)
-- `json:"bundleImage"` → `bundle_image`
-- `json:"revealButton"` → `reveal_button`
-- `json:"leftDecal"` → `left_decal`
-- `json:"rightDecal"` → `right_decal`
 
 ## Generated Output
 
@@ -220,123 +202,11 @@ The purchase system follows a 3-step transaction model:
    - Supports optional bonus rewards (in-game currency, loyalty points/credits)
    - Returns final purchase results
 
-## Go Struct to Protobuf Mapping
-
-This document shows the exact mapping from the original Go structs to the protobuf definitions.
-
-### Enums
-
-| Go Type                      | Go Constants                                              | Proto Enum                   | Proto Values                                                                                                                |
-| ---------------------------- | --------------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `NonPurchasableItemType`     | `""`, `"banner"`                                          | `NonPurchasableItemType`     | `NON_PURCHASABLE_ITEM_TYPE_UNSPECIFIED`, `NON_PURCHASABLE_ITEM_TYPE_BANNER`                                                |
-| `ChainLinkStatus`            | `"claimed"`, `"unlocked"`, `"locked"`                     | `ChainLinkStatus`            | `CLAIMED`, `UNLOCKED`, `LOCKED`                                                                                             |
-| `Platform`                   | N/A (new)                                                 | `Platform`                   | `PLATFORM_UNSPECIFIED`, `PLATFORM_IOS`, `PLATFORM_ANDROID`, `PLATFORM_WEBSTORE`                                           |
-| `PurchaseSource`             | N/A (new)                                                 | `PurchaseSource`             | `PURCHASE_SOURCE_UNSPECIFIED`, `PURCHASE_SOURCE_CART`, `PURCHASE_SOURCE_DIRECT`                                            |
-| `PurchaseRegistrationStatus` | N/A (new)                                                 | `PurchaseRegistrationStatus` | `PURCHASE_REGISTRATION_STATUS_UNSPECIFIED`, `SUCCESS_REGISTERED`, `FAILED_INVALID_OFFER`, etc.                             |
-| `CancellationStatus`         | N/A (new)                                                 | `CancellationStatus`         | `CANCELLATION_STATUS_UNSPECIFIED`, `SUCCESS_CANCELLED`, `FAILED_TRANSACTION_NOT_FOUND`, `FAILED_ALREADY_COMPLETED`, etc. |
-
-### Common Types
-
-| Go Struct    | Go Field                 | JSON Tag                      | Proto Message | Proto Field                   |
-| ------------ | ------------------------ | ----------------------------- | ------------- | ----------------------------- |
-| `Banner`     | `Text string`            | `"text"`                      | `Banner`      | `string text = 1`             |
-| `Badge`      | `Text string`            | `"text"`                      | `Badge`       | `string text = 1`             |
-| `Button`     | `Text string`            | `"text"`                      | `Button`      | `string text = 1`             |
-| `Background` | `ImageUrl string`        | `"imageUrl,omitempty"`        | `Background`  | `string image_url = 1`        |
-| `Background` | `BackgroundStyle string` | `"backgroundStyle,omitempty"` | `Background`  | `string background_style = 2` |
-| `Decal`      | `ImageUrl string`        | `"imageUrl"`                  | `Decal`       | `string image_url = 1`        |
-| `Tooltip`    | `Text string`            | `"text,omitempty"`            | `Tooltip`     | `string text = 1`             |
-| `Price`      | `Currency string`        | `"currency"`                  | `Price`       | `string currency = 1`         |
-| `Price`      | `Amount string`          | `"amount"`                    | `Price`       | `string amount = 2`           |
-
-### Content Types
-
-| Go Struct        | Go Field               | JSON Tag                | Proto Message    | Proto Field                      |
-| ---------------- | ---------------------- | ----------------------- | ---------------- | -------------------------------- |
-| `ContentItem`    | `Name string`          | `"name"`                | `ContentItem`    | `string name = 1`                |
-| `ContentItem`    | `Description string`   | `"description"`         | `ContentItem`    | `string description = 2`         |
-| `ContentItem`    | `ImageUrl string`      | `"image"`               | `ContentItem`    | `string image = 3`               |
-| `ContentItem`    | `Quantity *big.Int`    | `"quantity"`            | `ContentItem`    | `string quantity = 4`            |
-| `ObtainableItem` | `Name string`          | `"name"`                | `ObtainableItem` | `string name = 1`                |
-| `ObtainableItem` | `ImageUrl string`      | `"image"`               | `ObtainableItem` | `string image = 2`               |
-| `ObtainableItem` | `Quantity *big.Int`    | `"quantity"`            | `ObtainableItem` | `string quantity = 3`            |
-| `ObtainableItem` | `UnitImageUrl *string` | `"unitImage,omitempty"` | `ObtainableItem` | `optional string unit_image = 4` |
-
-### Main Item Types
-
-| Go Struct         | Go Field                            | JSON Tag                 | Proto Message     | Proto Field                                     |
-| ----------------- | ----------------------------------- | ------------------------ | ----------------- | ----------------------------------------------- |
-| `PurchasableItem` | `Id string`                         | `"guid"`                 | `PurchasableItem` | `string guid = 1`                               |
-| `PurchasableItem` | `Type CatalogItemType`              | `"type"`                 | `PurchasableItem` | `CatalogItemType type = 2`                      |
-| `PurchasableItem` | `Name string`                       | `"name"`                 | `PurchasableItem` | `string name = 3`                               |
-| `PurchasableItem` | `Description string`                | `"description"`          | `PurchasableItem` | `string description = 4`                        |
-| `PurchasableItem` | `ImageUrl string`                   | `"image"`                | `PurchasableItem` | `string image = 5`                              |
-| `PurchasableItem` | `MaxPurchasable *uint32`            | `"max_purchasable"`      | `PurchasableItem` | `optional uint32 max_purchasable = 6`           |
-| `PurchasableItem` | `Price Price`                       | `"price"`                | `PurchasableItem` | `Price price = 7`                               |
-| `PurchasableItem` | `Attributes *PurchasableAttributes` | `"attributes,omitempty"` | `PurchasableItem` | `optional PurchasableAttributes attributes = 8` |
-| `PurchasableItem` | `Contents []ContentItem`            | `"contents"`             | `PurchasableItem` | `repeated ContentItem contents = 9`             |
-
-### Offer Chain Types
-
-| Go Struct        | Go Field                 | JSON Tag                  | Proto Message    | Proto Field                                         |
-| ---------------- | ------------------------ | ------------------------- | ---------------- | --------------------------------------------------- |
-| `OfferChainLink` | `Id string`              | `"guid"`                  | `OfferChainLink` | `string guid = 1`                                   |
-| `OfferChainLink` | `Price *Price`           | `"price"`                 | `OfferChainLink` | `optional Price price = 2`                          |
-| `OfferChainLink` | `MaxPurchasable *uint32` | `"maxPurchasable"`        | `OfferChainLink` | `optional uint32 max_purchasable = 3`               |
-| `OfferChainLink` | `Items []ObtainableItem` | `"items"`                 | `OfferChainLink` | `repeated ObtainableItem items = 4`                 |
-| `OfferChainLink` | `Status ChainLinkStatus` | `"status"`                | `OfferChainLink` | `ChainLinkStatus status = 5`                        |
-| `OfferChainLink` | `BundleImageUrl *string` | `"bundleImage,omitempty"` | `OfferChainLink` | `optional string bundle_image = 6`                  |
-| `OfferChainItem` | `Id string`              | `"guid"`                  | `OfferChainItem` | `string guid = 1`                                   |
-| `OfferChainItem` | `Type CatalogItemType`   | `"type"`                  | `OfferChainItem` | `CatalogItemType type = 2`                          |
-| `OfferChainItem` | `Name string`            | `"name"`                  | `OfferChainItem` | `string name = 3`                                   |
-| `OfferChainItem` | `Description string`     | `"description"`           | `OfferChainItem` | `string description = 4`                            |
-| `OfferChainItem` | `Expiration *time.Time`  | `"expiration"`            | `OfferChainItem` | `optional google.protobuf.Timestamp expiration = 5` |
-| `OfferChainItem` | `Repeatable bool`        | `"repeatable"`            | `OfferChainItem` | `bool repeatable = 6`                               |
-| `OfferChainItem` | `Links []OfferChainLink` | `"links"`                 | `OfferChainItem` | `repeated OfferChainLink links = 7`                 |
-| `OfferChainItem` | `Banner *ChainBanner`    | `"banner,omitempty"`      | `OfferChainItem` | `optional ChainBanner banner = 8`                   |
-
-### Non-Purchasable Types
-
-| Go Struct            | Go Field                               | JSON Tag                 | Proto Message        | Proto Field                                        |
-| -------------------- | -------------------------------------- | ------------------------ | -------------------- | -------------------------------------------------- |
-| `NonPurchasableItem` | `Id string`                            | `"guid"`                 | `NonPurchasableItem` | `string guid = 1`                                  |
-| `NonPurchasableItem` | `Type CatalogItemType`                 | `"type"`                 | `NonPurchasableItem` | `CatalogItemType type = 2`                         |
-| `NonPurchasableItem` | `Title string`                         | `"title"`                | `NonPurchasableItem` | `string title = 3`                                 |
-| `NonPurchasableItem` | `Body string`                          | `"body"`                 | `NonPurchasableItem` | `string body = 4`                                  |
-| `NonPurchasableItem` | `Attributes *NonPurchasableAttributes` | `"attributes,omitempty"` | `NonPurchasableItem` | `optional NonPurchasableAttributes attributes = 5` |
-| `NonPurchasableItem` | `Contents []NonPurchasableContentItem` | `"contents"`             | `NonPurchasableItem` | `repeated NonPurchasableContentItem contents = 6`  |
-
-### Top-Level Catalog
-
-| Go Struct | Go Field             | JSON Tag   | Proto Message | Proto Field                      |
-| --------- | -------------------- | ---------- | ------------- | -------------------------------- |
-| `Row`     | `Header string`      | `"header"` | `Row`         | `string header = 1`              |
-| `Row`     | `Items CatalogItems` | `"items"`  | `Row`         | `repeated CatalogItem items = 2` |
-| `Catalog` | `Rows []Row`         | `"rows"`   | `Catalog`     | `repeated Row rows = 1`          |
-
-### Polymorphic Handling
-
-The original Go implementation used an interface `CatalogItem` with custom JSON marshaling/unmarshaling to handle different item types. In protobuf, this is replaced with:
-
-```protobuf
-message CatalogItem {
-    oneof item {
-        PurchasableItem purchasable_item = 1;
-        OfferChainItem offer_chain_item = 2;
-        NonPurchasableItem non_purchasable_item = 3;
-    }
-}
-```
-
 ### Special Considerations
 
-1. **big.Int → string**: Go's `big.Int` type is represented as `string` in protobuf for precision.
-2. **Pointers → optional**: Go pointer fields become `optional` fields in proto3.
-3. **time.Time → Timestamp**: Go's `time.Time` becomes `google.protobuf.Timestamp`.
-4. **Interfaces → oneof**: Go interfaces become protobuf `oneof` unions.
-5. **JSON field names preserved**: All protobuf field names match the original JSON tags exactly.
-6. **gRPC-Gateway compatibility**: Services include HTTP annotations for REST API generation.
-7. **Validation rules**: Messages include validation constraints for data integrity.
-8. **Unsigned integers**: Fields that can't be negative use `uint32` instead of `int32`.
-9. **Dual identifiers**: Catalog items support both `guid` (optional UUID) and `product_id` (required SKU).
-10. **Consolidated messages**: All response sub-messages are inlined to avoid namespace conflicts.
+1. **gRPC-Gateway compatibility**: Services include HTTP annotations for REST API generation.
+2. **Validation rules**: Messages include validation constraints for data integrity.
+3. **Unsigned integers**: Fields that can't be negative use `uint32` instead of `int32`.
+4. **Dual identifiers**: Catalog items support both `guid` (optional UUID) and `product_id` (required SKU).
+5. **Consolidated messages**: All response sub-messages are inlined to avoid namespace conflicts.
+6. **Optional price**: When price amount or ID is not specified, the item is treated as free.

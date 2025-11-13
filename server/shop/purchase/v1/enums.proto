@@ -20,6 +20,8 @@ enum PurchaseRegistrationStatus {
   PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED = 4;
   // Registration failed due to invalid pricing
   PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE = 5;
+  // Registration failed due to purchase being locked, e.g. in-app
+  PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED = 6;
 }
 
 enum PurchaseCancellationStatus {

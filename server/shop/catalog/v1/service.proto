@@ -54,6 +54,13 @@ message GetCatalogRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional language code filter using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
   ];
+  optional string player_id = 4 [
+    (validate.rules).string = {
+      min_len: 1
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional player ID filter to get player-specific catalog items"}
+  ];
 }
 
 message GetCatalogResponse {
@@ -303,7 +310,7 @@ message GetCatalogResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier"}
       ];
       LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
-      LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the item"}];
+      LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description of the item"}];
       string image = 5 [
         (validate.rules).string = {
           uri: true
@@ -315,6 +322,7 @@ message GetCatalogResponse {
         (validate.rules).uint32.gt = 0,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this item can be purchased"}
       ];
+      optional LocalizableText max_purchasable_description = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the maximum number of times this item can be purchased"}];
       PriceAmountOrId price = 7 [
         (google.api.field_behavior) = REQUIRED,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price of the item"}
