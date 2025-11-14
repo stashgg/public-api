@@ -63,3 +63,15 @@ enum BadgeAction {
   // Show the details of the offer contents, e.g. loot boxes with drop rates
   BADGE_ACTION_SHOW_OFFER_DETAILS = 1;
 }
+
+enum CellAlignment {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the horizontal alignment of cell content"};
+  // Default alignment (typically START)
+  CELL_ALIGNMENT_UNSPECIFIED = 0;
+  // Align content to the start (left in LTR layouts)
+  CELL_ALIGNMENT_START = 1;
+  // Center align content
+  CELL_ALIGNMENT_CENTER = 2;
+  // Align content to the end (right in LTR layouts)
+  CELL_ALIGNMENT_END = 3;
+}
