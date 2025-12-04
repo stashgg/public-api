@@ -221,6 +221,47 @@ message CancelPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to cancel"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
+
+  message CanceledItem {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Canceled Item"
+        description: "Represents a single item in the canceled purchase"
+        required: [
+          "guid",
+          "product_id",
+          "quantity",
+          "cents"
+        ]
+      }
+    };
+    string guid = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.uuid = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID being canceled (can be auto-generated UUID v5 if not provided in catalog response)"}
+    ];
+    string product_id = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU being canceled"}
+    ];
+    uint32 quantity = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity canceled (must be positive)"}
+    ];
+    uint32 cents = 4 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price per item in smallest currency unit (e.g. 999 for $9.99)"}
+    ];
+    map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
+  }
+  repeated CanceledItem items = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).repeated.min_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of items in this canceled purchase"}
+  ];
 }
 
 message CancelPaymentResponse {

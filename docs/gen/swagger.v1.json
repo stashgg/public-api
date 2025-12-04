@@ -1375,13 +1375,56 @@
                 "checkoutLinkId": {
                   "type": "string",
                   "description": "Optional checkout link identifier if purchase was made through a checkout link"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "guid": {
+                        "type": "string",
+                        "description": "The offer/product GUID being canceled (can be auto-generated UUID v5 if not provided in catalog response)"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "The offer/product SKU being canceled"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Quantity canceled (must be positive)"
+                      },
+                      "cents": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Optional key-value pairs for additional item metadata"
+                      }
+                    },
+                    "description": "Represents a single item in the canceled purchase",
+                    "title": "Canceled Item",
+                    "required": [
+                      "guid",
+                      "productId",
+                      "quantity",
+                      "cents"
+                    ]
+                  },
+                  "description": "List of items in this canceled purchase"
                 }
               },
               "description": "Request to cancel a pending purchase that was previously registered.",
               "title": "Cancel Payment Request",
               "required": [
                 "playerId",
-                "transactionId"
+                "transactionId",
+                "items"
               ]
             }
           }
@@ -8369,6 +8412,44 @@
         }
       }
     },
+    "CancelPaymentRequestCanceledItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "The offer/product GUID being canceled (can be auto-generated UUID v5 if not provided in catalog response)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "The offer/product SKU being canceled"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Quantity canceled (must be positive)"
+        },
+        "cents": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional key-value pairs for additional item metadata"
+        }
+      },
+      "description": "Represents a single item in the canceled purchase",
+      "title": "Canceled Item",
+      "required": [
+        "guid",
+        "productId",
+        "quantity",
+        "cents"
+      ]
+    },
     "ConfirmPaymentRequestPurchasedItem": {
       "type": "object",
       "properties": {
@@ -8511,13 +8592,56 @@
         "checkoutLinkId": {
           "type": "string",
           "description": "Optional checkout link identifier if purchase was made through a checkout link"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": {
+                "type": "string",
+                "description": "The offer/product GUID being canceled (can be auto-generated UUID v5 if not provided in catalog response)"
+              },
+              "productId": {
+                "type": "string",
+                "description": "The offer/product SKU being canceled"
+              },
+              "quantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity canceled (must be positive)"
+              },
+              "cents": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional key-value pairs for additional item metadata"
+              }
+            },
+            "description": "Represents a single item in the canceled purchase",
+            "title": "Canceled Item",
+            "required": [
+              "guid",
+              "productId",
+              "quantity",
+              "cents"
+            ]
+          },
+          "description": "List of items in this canceled purchase"
         }
       },
       "description": "Request to cancel a pending purchase that was previously registered.",
       "title": "Cancel Payment Request",
       "required": [
         "playerId",
-        "transactionId"
+        "transactionId",
+        "items"
       ]
     },
     "v1CancelPaymentResponse": {
