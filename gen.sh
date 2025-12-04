@@ -9,6 +9,14 @@ set -ex # halt on error + print commands
 # Install necessary tools
 ./install-tool.sh
 
+# Add Go bin directory to PATH so protoc plugins can be found
+# Go installs binaries to $GOPATH/bin or $HOME/go/bin
+if [ -n "$GOPATH" ]; then
+    export PATH="$GOPATH/bin:$PATH"
+else
+    export PATH="$HOME/go/bin:$PATH"
+fi
+
 # Clean up previous generated files
 rm -rf gen/
 rm -rf docs/gen/
