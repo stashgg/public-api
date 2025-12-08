@@ -42,6 +42,24 @@ enum ChainLinkStatus {
 enum RewardBuffType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of reward buff applied to an item"};
   REWARD_BUFF_TYPE_UNSPECIFIED = 0;
+  // Renders the percentage as an additive reward, e.g. +20%
   REWARD_BUFF_TYPE_ADDITIVE = 1;
+  // Renders the percentage as a multiplier, e.g. 3x
   REWARD_BUFF_TYPE_MULTIPLIER = 2;
+}
+
+enum ContentItemType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of content item"};
+  // Default content item type
+  CONTENT_ITEM_TYPE_UNSPECIFIED = 0;
+  // Web store bonus content item type
+  CONTENT_ITEM_TYPE_WEB_STORE_BONUS = 1;
+}
+
+enum BadgeAction {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the action associated with a badge"};
+  // Default badge action (no action)
+  BADGE_ACTION_UNSPECIFIED = 0;
+  // Show the details of the offer contents, e.g. loot boxes with drop rates
+  BADGE_ACTION_SHOW_OFFER_DETAILS = 1;
 }

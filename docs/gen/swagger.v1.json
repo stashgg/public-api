@@ -248,6 +248,16 @@
                                               },
                                               "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
                                               "title": "Localizable Text"
+                                            },
+                                            "action": {
+                                              "type": "string",
+                                              "enum": [
+                                                "BADGE_ACTION_UNSPECIFIED",
+                                                "BADGE_ACTION_SHOW_OFFER_DETAILS"
+                                              ],
+                                              "default": "BADGE_ACTION_UNSPECIFIED",
+                                              "description": "Optional action associated with the badge",
+                                              "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
                                             }
                                           },
                                           "description": "Optional badge for the item",
@@ -366,6 +376,16 @@
                                           "guid": {
                                             "type": "string",
                                             "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+                                          },
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                                              "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+                                            ],
+                                            "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                                            "description": "Optional type of content item",
+                                            "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
                                           },
                                           "name": {
                                             "type": "object",
@@ -590,7 +610,8 @@
                                                   "REWARD_BUFF_TYPE_MULTIPLIER"
                                                 ],
                                                 "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-                                                "description": "Buff type (additive or multiplier)"
+                                                "description": "Buff type (additive or multiplier)",
+                                                "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
                                               },
                                               "iconImageUrl": {
                                                 "type": "string",
@@ -598,7 +619,7 @@
                                               },
                                               "backgroundStyle": {
                                                 "type": "string",
-                                                "description": "CSS-style background styling information for buff"
+                                                "description": "Optional CSS-style background styling information for buff"
                                               }
                                             },
                                             "description": "Optional reward buff applied to this item",
@@ -2518,6 +2539,16 @@
                   },
                   "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
                   "title": "Localizable Text"
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "BADGE_ACTION_UNSPECIFIED",
+                    "BADGE_ACTION_SHOW_OFFER_DETAILS"
+                  ],
+                  "default": "BADGE_ACTION_UNSPECIFIED",
+                  "description": "Optional action associated with the badge",
+                  "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
                 }
               },
               "description": "Optional badge for the item",
@@ -2636,6 +2667,16 @@
               "guid": {
                 "type": "string",
                 "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                  "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+                ],
+                "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                "description": "Optional type of content item",
+                "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
               },
               "name": {
                 "type": "object",
@@ -2860,7 +2901,8 @@
                       "REWARD_BUFF_TYPE_MULTIPLIER"
                     ],
                     "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-                    "description": "Buff type (additive or multiplier)"
+                    "description": "Buff type (additive or multiplier)",
+                    "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
                   },
                   "iconImageUrl": {
                     "type": "string",
@@ -2868,7 +2910,7 @@
                   },
                   "backgroundStyle": {
                     "type": "string",
-                    "description": "CSS-style background styling information for buff"
+                    "description": "Optional CSS-style background styling information for buff"
                   }
                 },
                 "description": "Optional reward buff applied to this item",
@@ -3092,6 +3134,16 @@
                             },
                             "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
                             "title": "Localizable Text"
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "BADGE_ACTION_UNSPECIFIED",
+                              "BADGE_ACTION_SHOW_OFFER_DETAILS"
+                            ],
+                            "default": "BADGE_ACTION_UNSPECIFIED",
+                            "description": "Optional action associated with the badge",
+                            "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
                           }
                         },
                         "description": "Optional badge for the item",
@@ -3210,6 +3262,16 @@
                         "guid": {
                           "type": "string",
                           "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                            "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+                          ],
+                          "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                          "description": "Optional type of content item",
+                          "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
                         },
                         "name": {
                           "type": "object",
@@ -3434,7 +3496,8 @@
                                 "REWARD_BUFF_TYPE_MULTIPLIER"
                               ],
                               "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-                              "description": "Buff type (additive or multiplier)"
+                              "description": "Buff type (additive or multiplier)",
+                              "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
                             },
                             "iconImageUrl": {
                               "type": "string",
@@ -3442,7 +3505,7 @@
                             },
                             "backgroundStyle": {
                               "type": "string",
-                              "description": "CSS-style background styling information for buff"
+                              "description": "Optional CSS-style background styling information for buff"
                             }
                           },
                           "description": "Optional reward buff applied to this item",
@@ -3988,6 +4051,16 @@
           },
           "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
           "title": "Localizable Text"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "BADGE_ACTION_UNSPECIFIED",
+            "BADGE_ACTION_SHOW_OFFER_DETAILS"
+          ],
+          "default": "BADGE_ACTION_UNSPECIFIED",
+          "description": "Optional action associated with the badge",
+          "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
         }
       },
       "description": "Generic badge for a status or label, e.g. 'New', 'Bonus', 'Free', etc.",
@@ -4311,6 +4384,16 @@
                                   },
                                   "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
                                   "title": "Localizable Text"
+                                },
+                                "action": {
+                                  "type": "string",
+                                  "enum": [
+                                    "BADGE_ACTION_UNSPECIFIED",
+                                    "BADGE_ACTION_SHOW_OFFER_DETAILS"
+                                  ],
+                                  "default": "BADGE_ACTION_UNSPECIFIED",
+                                  "description": "Optional action associated with the badge",
+                                  "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
                                 }
                               },
                               "description": "Optional badge for the item",
@@ -4429,6 +4512,16 @@
                               "guid": {
                                 "type": "string",
                                 "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                                  "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+                                ],
+                                "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                                "description": "Optional type of content item",
+                                "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
                               },
                               "name": {
                                 "type": "object",
@@ -4653,7 +4746,8 @@
                                       "REWARD_BUFF_TYPE_MULTIPLIER"
                                     ],
                                     "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-                                    "description": "Buff type (additive or multiplier)"
+                                    "description": "Buff type (additive or multiplier)",
+                                    "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
                                   },
                                   "iconImageUrl": {
                                     "type": "string",
@@ -4661,7 +4755,7 @@
                                   },
                                   "backgroundStyle": {
                                     "type": "string",
-                                    "description": "CSS-style background styling information for buff"
+                                    "description": "Optional CSS-style background styling information for buff"
                                   }
                                 },
                                 "description": "Optional reward buff applied to this item",
@@ -5350,6 +5444,16 @@
                       },
                       "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
                       "title": "Localizable Text"
+                    },
+                    "action": {
+                      "type": "string",
+                      "enum": [
+                        "BADGE_ACTION_UNSPECIFIED",
+                        "BADGE_ACTION_SHOW_OFFER_DETAILS"
+                      ],
+                      "default": "BADGE_ACTION_UNSPECIFIED",
+                      "description": "Optional action associated with the badge",
+                      "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
                     }
                   },
                   "description": "Optional badge for the item",
@@ -5468,6 +5572,16 @@
                   "guid": {
                     "type": "string",
                     "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                      "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+                    ],
+                    "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                    "description": "Optional type of content item",
+                    "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
                   },
                   "name": {
                     "type": "object",
@@ -5692,7 +5806,8 @@
                           "REWARD_BUFF_TYPE_MULTIPLIER"
                         ],
                         "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-                        "description": "Buff type (additive or multiplier)"
+                        "description": "Buff type (additive or multiplier)",
+                        "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
                       },
                       "iconImageUrl": {
                         "type": "string",
@@ -5700,7 +5815,7 @@
                       },
                       "backgroundStyle": {
                         "type": "string",
-                        "description": "CSS-style background styling information for buff"
+                        "description": "Optional CSS-style background styling information for buff"
                       }
                     },
                     "description": "Optional reward buff applied to this item",
@@ -6268,7 +6383,8 @@
             "REWARD_BUFF_TYPE_MULTIPLIER"
           ],
           "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-          "description": "Buff type (additive or multiplier)"
+          "description": "Buff type (additive or multiplier)",
+          "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
         },
         "iconImageUrl": {
           "type": "string",
@@ -6276,7 +6392,7 @@
         },
         "backgroundStyle": {
           "type": "string",
-          "description": "CSS-style background styling information for buff"
+          "description": "Optional CSS-style background styling information for buff"
         }
       },
       "description": "Represents a reward buff or bonus applied to an item",
@@ -6763,6 +6879,16 @@
           "type": "string",
           "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
         },
+        "type": {
+          "type": "string",
+          "enum": [
+            "CONTENT_ITEM_TYPE_UNSPECIFIED",
+            "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+          ],
+          "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+          "description": "Optional type of content item",
+          "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
+        },
         "name": {
           "type": "object",
           "properties": {
@@ -6986,7 +7112,8 @@
                 "REWARD_BUFF_TYPE_MULTIPLIER"
               ],
               "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-              "description": "Buff type (additive or multiplier)"
+              "description": "Buff type (additive or multiplier)",
+              "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
             },
             "iconImageUrl": {
               "type": "string",
@@ -6994,7 +7121,7 @@
             },
             "backgroundStyle": {
               "type": "string",
-              "description": "CSS-style background styling information for buff"
+              "description": "Optional CSS-style background styling information for buff"
             }
           },
           "description": "Optional reward buff applied to this item",
@@ -7061,6 +7188,16 @@
               },
               "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
               "title": "Localizable Text"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "BADGE_ACTION_UNSPECIFIED",
+                "BADGE_ACTION_SHOW_OFFER_DETAILS"
+              ],
+              "default": "BADGE_ACTION_UNSPECIFIED",
+              "description": "Optional action associated with the badge",
+              "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
             }
           },
           "description": "Optional badge for the item",
@@ -7204,6 +7341,16 @@
         }
       }
     },
+    "v1BadgeAction": {
+      "type": "string",
+      "enum": [
+        "BADGE_ACTION_UNSPECIFIED",
+        "BADGE_ACTION_SHOW_OFFER_DETAILS"
+      ],
+      "default": "BADGE_ACTION_UNSPECIFIED",
+      "description": "Represents the action associated with a badge",
+      "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+    },
     "v1CatalogPlatform": {
       "type": "string",
       "enum": [
@@ -7236,6 +7383,16 @@
       ],
       "default": "CHAIN_LINK_STATUS_UNSPECIFIED",
       "description": "Represents the status of a chain link"
+    },
+    "v1ContentItemType": {
+      "type": "string",
+      "enum": [
+        "CONTENT_ITEM_TYPE_UNSPECIFIED",
+        "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+      ],
+      "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+      "description": "Represents the type of content item",
+      "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
     },
     "v1GetCatalogResponse": {
       "type": "object",
@@ -7442,6 +7599,16 @@
                                       },
                                       "description": "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
                                       "title": "Localizable Text"
+                                    },
+                                    "action": {
+                                      "type": "string",
+                                      "enum": [
+                                        "BADGE_ACTION_UNSPECIFIED",
+                                        "BADGE_ACTION_SHOW_OFFER_DETAILS"
+                                      ],
+                                      "default": "BADGE_ACTION_UNSPECIFIED",
+                                      "description": "Optional action associated with the badge",
+                                      "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
                                     }
                                   },
                                   "description": "Optional badge for the item",
@@ -7560,6 +7727,16 @@
                                   "guid": {
                                     "type": "string",
                                     "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+                                  },
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                                      "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+                                    ],
+                                    "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+                                    "description": "Optional type of content item",
+                                    "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
                                   },
                                   "name": {
                                     "type": "object",
@@ -7784,7 +7961,8 @@
                                           "REWARD_BUFF_TYPE_MULTIPLIER"
                                         ],
                                         "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-                                        "description": "Buff type (additive or multiplier)"
+                                        "description": "Buff type (additive or multiplier)",
+                                        "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
                                       },
                                       "iconImageUrl": {
                                         "type": "string",
@@ -7792,7 +7970,7 @@
                                       },
                                       "backgroundStyle": {
                                         "type": "string",
-                                        "description": "CSS-style background styling information for buff"
+                                        "description": "Optional CSS-style background styling information for buff"
                                       }
                                     },
                                     "description": "Optional reward buff applied to this item",
@@ -8333,7 +8511,8 @@
         "REWARD_BUFF_TYPE_MULTIPLIER"
       ],
       "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-      "description": "Represents the type of reward buff applied to an item"
+      "description": "Represents the type of reward buff applied to an item",
+      "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
     },
     "GetPlayerResponsePlayer": {
       "type": "object",
