@@ -21,7 +21,7 @@ service UserService {
       description: "Retrieves an existing player by ID. Returns player information including profile data and in-game currency balance."
       security: [
         {
-          security_requirement: {key: "apiKey"}
+          security_requirement: {key: "hmac"}
         }
       ]
     };
