@@ -115,6 +115,7 @@ message GetCatalogResponse {
       }
     };
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')"}];
+    optional BadgeAction action = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with the badge"}];
   }
 
   message Button {
@@ -172,7 +173,7 @@ message GetCatalogResponse {
       },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to buff icon image"}
     ];
-    string background_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CSS-style background styling information for buff"}];
+    optional string background_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for buff"}];
   }
 
   message SpecialIndicatorTag {
@@ -360,8 +361,9 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."}
         ];
+        optional ContentItemType type = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional type of content item"}];
         LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
-        LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
+        optional LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
         string image = 5 [
           (validate.rules).string = {
             uri: true
