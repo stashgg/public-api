@@ -25,7 +25,7 @@ service PurchaseService {
       description: "Step 1: Registers a purchase intent with the game backend. The game backend is expected to reserve inventory for the purchase. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body."
       security: [
         {
-          security_requirement: {key: "apiKey"}
+          security_requirement: {key: "hmac"}
         }
       ]
     };
@@ -41,7 +41,7 @@ service PurchaseService {
       description: "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases."
       security: [
         {
-          security_requirement: {key: "apiKey"}
+          security_requirement: {key: "hmac"}
         }
       ]
     };
@@ -57,7 +57,7 @@ service PurchaseService {
       description: "Step 2B: Cancels a pending purchase that was previously registered. IMPORTANT: Always expects HTTP 200 OK response with inline error codes in the body."
       security: [
         {
-          security_requirement: {key: "apiKey"}
+          security_requirement: {key: "hmac"}
         }
       ]
     };

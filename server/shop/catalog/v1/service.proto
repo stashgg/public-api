@@ -23,7 +23,7 @@ service CatalogService {
       description: "Retrieves the complete product catalog including all purchasable items, offer chains, and non-purchasable display items organized in rows."
       security: [
         {
-          security_requirement: {key: "apiKey"}
+          security_requirement: {key: "hmac"}
         }
       ]
     };
