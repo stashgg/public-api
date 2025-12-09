@@ -28,6 +28,44 @@ service CatalogService {
       ]
     };
   }
+  rpc GetOfferDetails(GetOfferDetailsRequest) returns (GetOfferDetailsResponse) {
+    option (google.api.http) = {get: "/api/v1/catalog/offer"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get offer details"
+      description: "Retrieves detailed information about a specific offer, including reward details and tabbed content with structured data tables for each item."
+      security: [
+        {
+          security_requirement: {key: "hmac"}
+        }
+      ]
+    };
+  }
+}
+
+message LocalizableText {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Localizable Text"
+      description: "Text content that can be localized for a specific language"
+    }
+  };
+  string default_text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"}];
+  oneof localization {
+    string localization_key = 2 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique key used to identify the localized text content for a specific language"}
+    ];
+    string localized_text = 3 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Localized text content for the language specified by the code sent in the request filters"}
+    ];
+  }
 }
 
 message GetCatalogRequest {
@@ -71,32 +109,6 @@ message GetCatalogResponse {
       required: ["catalog"]
     }
   };
-  message LocalizableText {
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-      json_schema: {
-        title: "Localizable Text"
-        description: "Text content that can be localized for a specific language"
-      }
-    };
-    string default_text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"}];
-    oneof localization {
-      string localization_key = 2 [
-        (validate.rules).string = {
-          min_len: 1
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique key used to identify the localized text content for a specific language"}
-      ];
-      string localized_text = 3 [
-        (validate.rules).string = {
-          min_len: 1
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Localized text content for the language specified by the code sent in the request filters"}
-      ];
-    }
-  }
-
   message Banner {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
@@ -628,4 +640,303 @@ message GetCatalogResponse {
     (google.api.field_behavior) = REQUIRED,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The product catalog organized in sections"}
   ];
+}
+
+message GetOfferDetailsRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Offer Details Request"
+      description: "Request to retrieve detailed information about a specific offer"
+      required: [
+        "guid",
+        "product_id"
+      ]
+    }
+  };
+  string guid = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.uuid = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product UUID (auto-generated UUID v5 if not provided in catalog response)"}
+  ];
+  string product_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique product identifier/SKU"}
+  ];
+  optional CatalogPlatform platform = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional platform filter to get platform-specific catalog offer details"}];
+  optional string region = 4 [
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional region filter using ISO-3166-1 alpha-2 country code (e.g., 'US', 'EU', 'JP')"}
+  ];
+  optional string language = 5 [
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional language code filter using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
+  ];
+  optional string player_id = 6 [
+    (validate.rules).string = {
+      min_len: 1
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional player ID filter to get player-specific catalog items"}
+  ];
+}
+
+message GetOfferDetailsResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Offer Details Response"
+      description: "Contains detailed information about a specific offer's obtainable item(s) and rewards"
+      required: ["items"]
+    }
+  };
+  message ContentItem {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Content Item"
+        description: "Represents an item contained in this offer"
+        required: ["title"]
+      }
+    };
+    optional string guid = 1 [
+      (validate.rules).string = {
+        uuid: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 format)"}
+    ];
+    LocalizableText title = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item title"}
+    ];
+    optional LocalizableText subtitle = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item subtitle"}];
+    optional LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
+    string image = 5 [
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item image URL"}
+    ];
+    optional string icon_image_url = 6 [
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to icon image representing the item, used to support additional rendering options"}
+    ];
+
+    message ItemDetailSection {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Item Detail Section"
+          description: "Represents a section within the item details view with header, subheader, and rows"
+        }
+      };
+      LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Section header text"}];
+      optional LocalizableText subheader = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional section subheader text"}];
+
+      message ItemDetailRow {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Item Detail Row"
+            description: "Represents a row within a detail section with cells"
+            required: ["cells"]
+          }
+        };
+        map<string, string> background_style = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the detail row background, e.g. {\"background-color\": \"#ae36a7\"}"}];
+
+        message ItemDetailCell {
+          option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+            json_schema: {
+              title: "Item Detail Cell"
+              description: "Represents a cell within a detail row with text or icon image content and optional CSS styling"
+            }
+          };
+          optional LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Text content for this cell"}];
+          optional string icon_image_url = 2 [
+            (validate.rules).string = {
+              uri: true
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to icon image for the cell"}
+          ];
+          optional uint32 relative_width_fractional_units = 3 [
+            (validate.rules).uint32 = {gte: 1},
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."}
+          ];
+          map<string, string> background_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"}];
+          map<string, string> text_style = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"}];
+          optional CellAlignment align = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional horizontal alignment for the cell content"}];
+        }
+        repeated ItemDetailCell cells = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).repeated.min_items = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Cells for the row"}
+        ];
+      }
+      repeated ItemDetailRow rows = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Rows within this section, displayed in the order provided"}];
+    }
+    repeated ItemDetailSection detail_sections = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item detail sections displayed in the item details view"}];
+
+    message RewardDetails {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Reward Details"
+          description: "Represents details about a reward obtainable within an item"
+          required: ["title"]
+        }
+      };
+      LocalizableText title = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward title"}
+      ];
+      optional LocalizableText subtitle = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward subtitle"}];
+      optional LocalizableText description = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward description"}];
+      string image = 4 [
+        (validate.rules).string = {
+          uri: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL"}
+      ];
+      optional bool featured = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this reward should be displayed prominently above the other rewards"}];
+
+      message RewardStatistics {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Reward Statistics"
+            description: "Represents statistics about a reward obtainable within an item, e.g. the drop rate"
+            required: ["text"]
+          }
+        };
+        LocalizableText text = 1 [
+          (google.api.field_behavior) = REQUIRED,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Text content for this statistic"}
+        ];
+        map<string, string> text_style = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"}];
+        optional string icon_image_url = 3 [
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."}
+        ];
+      }
+      optional RewardStatistics statistics = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Statistics for this reward"}];
+    }
+
+    message Table {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Table"
+          description: "Represents a table with headers and rows"
+          required: [
+            "headers",
+            "rows"
+          ]
+        }
+      };
+      message HeaderCell {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Header Cell"
+            description: "Represents a header cell in a table"
+          }
+        };
+        LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Header text content"}];
+        optional uint32 relative_width_fractional_units = 2 [
+          (validate.rules).uint32 = {gte: 1},
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."}
+        ];
+        map<string, string> background_style = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"}];
+        map<string, string> text_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"}];
+      }
+      repeated HeaderCell headers = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).repeated.min_items = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Header cells for the table columns"}
+      ];
+
+      message TableRow {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "TableRow"
+            description: "Represents a single row in a table"
+            required: ["cells"]
+          }
+        };
+        map<string, string> background_style = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"}];
+
+        message TableCell {
+          option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+            json_schema: {
+              title: "TableCell"
+              description: "Represents a single cell in a table row with content and styling"
+            }
+          };
+          optional LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Primary text content for the cell"}];
+          optional LocalizableText sub_text = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary text content for the cell"}];
+          optional string icon_image_url = 3 [
+            (validate.rules).string = {
+              uri: true
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to icon image for the cell. If not provided, a generic icon will be used."}
+          ];
+          map<string, string> background_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"}];
+          map<string, string> text_style = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"}];
+          optional CellAlignment align = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional horizontal alignment for the cell content"}];
+        }
+        repeated TableCell cells = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).repeated.min_items = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Cells in this row, displayed in the order provided"}
+        ];
+        optional RewardDetails reward = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward details associated with the row, needed to support additional rendering options"}];
+      }
+      repeated TableRow rows = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).repeated.min_items = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Rows in the table, displayed in the order provided"}
+      ];
+    }
+
+    message Tab {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Tab"
+          description: "Represents a tab containing multiple tables"
+          required: [
+            "title",
+            "tables"
+          ]
+        }
+      };
+      LocalizableText title = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tab title text"}
+      ];
+      bool default = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this tab should be selected by default"}];
+      repeated Table tables = 3 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tables contained in this tab, displayed in the order provided"}
+      ];
+    }
+    repeated Tab tabs = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tabs containing tabbed content, displayed in the order provided"}];
+    optional LocalizableText tabs_header = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Header text for the tabs section"}];
+  }
+  repeated ContentItem items = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).repeated.min_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Items contained in this offer"}
+  ];
+  optional LocalizableText featured_items_description = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description text for the featured items section"}];
 }

@@ -1218,6 +1218,687 @@
         ]
       }
     },
+    "/api/v1/catalog/offer": {
+      "get": {
+        "summary": "Get offer details",
+        "description": "Retrieves detailed information about a specific offer, including reward details and tabbed content with structured data tables for each item.",
+        "operationId": "CatalogService_GetOfferDetails",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "guid": {
+                        "type": "string",
+                        "description": "Optional unique identifier (UUID v4 format)"
+                      },
+                      "title": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "The unique key used to identify the localized text content for a specific language"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                          }
+                        },
+                        "description": "Item title",
+                        "title": "Localizable Text"
+                      },
+                      "subtitle": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "The unique key used to identify the localized text content for a specific language"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                          }
+                        },
+                        "description": "Optional item subtitle",
+                        "title": "Localizable Text"
+                      },
+                      "description": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "The unique key used to identify the localized text content for a specific language"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                          }
+                        },
+                        "description": "Optional item description",
+                        "title": "Localizable Text"
+                      },
+                      "image": {
+                        "type": "string",
+                        "description": "Item image URL"
+                      },
+                      "iconImageUrl": {
+                        "type": "string",
+                        "description": "Optional URL to icon image representing the item, used to support additional rendering options"
+                      },
+                      "detailSections": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "header": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Section header text",
+                              "title": "Localizable Text"
+                            },
+                            "subheader": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Optional section subheader text",
+                              "title": "Localizable Text"
+                            },
+                            "rows": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "backgroundStyle": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    },
+                                    "description": "Optional CSS properties map for styling the detail row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                  },
+                                  "cells": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "text": {
+                                          "type": "object",
+                                          "properties": {
+                                            "defaultText": {
+                                              "type": "string",
+                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                            },
+                                            "localizationKey": {
+                                              "type": "string",
+                                              "description": "The unique key used to identify the localized text content for a specific language"
+                                            },
+                                            "localizedText": {
+                                              "type": "string",
+                                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                                            }
+                                          },
+                                          "description": "Text content for this cell",
+                                          "title": "Localizable Text"
+                                        },
+                                        "iconImageUrl": {
+                                          "type": "string",
+                                          "description": "Optional URL to icon image for the cell"
+                                        },
+                                        "relativeWidthFractionalUnits": {
+                                          "type": "integer",
+                                          "format": "int64",
+                                          "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                                        },
+                                        "backgroundStyle": {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "type": "string"
+                                          },
+                                          "description": "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                        },
+                                        "textStyle": {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "type": "string"
+                                          },
+                                          "description": "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                        },
+                                        "align": {
+                                          "type": "string",
+                                          "enum": [
+                                            "CELL_ALIGNMENT_UNSPECIFIED",
+                                            "CELL_ALIGNMENT_START",
+                                            "CELL_ALIGNMENT_CENTER",
+                                            "CELL_ALIGNMENT_END"
+                                          ],
+                                          "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                                          "description": "Optional horizontal alignment for the cell content",
+                                          "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                                        }
+                                      },
+                                      "description": "Represents a cell within a detail row with text or icon image content and optional CSS styling",
+                                      "title": "Item Detail Cell"
+                                    },
+                                    "description": "Cells for the row"
+                                  }
+                                },
+                                "description": "Represents a row within a detail section with cells",
+                                "title": "Item Detail Row",
+                                "required": [
+                                  "cells"
+                                ]
+                              },
+                              "description": "Rows within this section, displayed in the order provided"
+                            }
+                          },
+                          "description": "Represents a section within the item details view with header, subheader, and rows",
+                          "title": "Item Detail Section"
+                        },
+                        "description": "Item detail sections displayed in the item details view"
+                      },
+                      "tabs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Tab title text",
+                              "title": "Localizable Text"
+                            },
+                            "default": {
+                              "type": "boolean",
+                              "description": "Whether this tab should be selected by default"
+                            },
+                            "tables": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "headers": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "text": {
+                                          "type": "object",
+                                          "properties": {
+                                            "defaultText": {
+                                              "type": "string",
+                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                            },
+                                            "localizationKey": {
+                                              "type": "string",
+                                              "description": "The unique key used to identify the localized text content for a specific language"
+                                            },
+                                            "localizedText": {
+                                              "type": "string",
+                                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                                            }
+                                          },
+                                          "description": "Header text content",
+                                          "title": "Localizable Text"
+                                        },
+                                        "relativeWidthFractionalUnits": {
+                                          "type": "integer",
+                                          "format": "int64",
+                                          "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                                        },
+                                        "backgroundStyle": {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "type": "string"
+                                          },
+                                          "description": "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                        },
+                                        "textStyle": {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "type": "string"
+                                          },
+                                          "description": "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                        }
+                                      },
+                                      "description": "Represents a header cell in a table",
+                                      "title": "Header Cell"
+                                    },
+                                    "description": "Header cells for the table columns"
+                                  },
+                                  "rows": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "backgroundStyle": {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "type": "string"
+                                          },
+                                          "description": "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                        },
+                                        "cells": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "text": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "defaultText": {
+                                                    "type": "string",
+                                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                  },
+                                                  "localizationKey": {
+                                                    "type": "string",
+                                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                                  },
+                                                  "localizedText": {
+                                                    "type": "string",
+                                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                  }
+                                                },
+                                                "description": "Primary text content for the cell",
+                                                "title": "Localizable Text"
+                                              },
+                                              "subText": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "defaultText": {
+                                                    "type": "string",
+                                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                  },
+                                                  "localizationKey": {
+                                                    "type": "string",
+                                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                                  },
+                                                  "localizedText": {
+                                                    "type": "string",
+                                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                  }
+                                                },
+                                                "description": "Optional secondary text content for the cell",
+                                                "title": "Localizable Text"
+                                              },
+                                              "iconImageUrl": {
+                                                "type": "string",
+                                                "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+                                              },
+                                              "backgroundStyle": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "type": "string"
+                                                },
+                                                "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                              },
+                                              "textStyle": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "type": "string"
+                                                },
+                                                "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                              },
+                                              "align": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "CELL_ALIGNMENT_UNSPECIFIED",
+                                                  "CELL_ALIGNMENT_START",
+                                                  "CELL_ALIGNMENT_CENTER",
+                                                  "CELL_ALIGNMENT_END"
+                                                ],
+                                                "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                                                "description": "Optional horizontal alignment for the cell content",
+                                                "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                                              }
+                                            },
+                                            "description": "Represents a single cell in a table row with content and styling",
+                                            "title": "TableCell"
+                                          },
+                                          "description": "Cells in this row, displayed in the order provided"
+                                        },
+                                        "reward": {
+                                          "type": "object",
+                                          "properties": {
+                                            "title": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Reward title",
+                                              "title": "Localizable Text"
+                                            },
+                                            "subtitle": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Optional reward subtitle",
+                                              "title": "Localizable Text"
+                                            },
+                                            "description": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Optional reward description",
+                                              "title": "Localizable Text"
+                                            },
+                                            "image": {
+                                              "type": "string",
+                                              "description": "Reward image URL"
+                                            },
+                                            "featured": {
+                                              "type": "boolean",
+                                              "description": "Whether this reward should be displayed prominently above the other rewards"
+                                            },
+                                            "statistics": {
+                                              "type": "object",
+                                              "properties": {
+                                                "text": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "defaultText": {
+                                                      "type": "string",
+                                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                    },
+                                                    "localizationKey": {
+                                                      "type": "string",
+                                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                                    },
+                                                    "localizedText": {
+                                                      "type": "string",
+                                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                    }
+                                                  },
+                                                  "description": "Text content for this statistic",
+                                                  "title": "Localizable Text"
+                                                },
+                                                "textStyle": {
+                                                  "type": "object",
+                                                  "additionalProperties": {
+                                                    "type": "string"
+                                                  },
+                                                  "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                                },
+                                                "iconImageUrl": {
+                                                  "type": "string",
+                                                  "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                                                }
+                                              },
+                                              "description": "Statistics for this reward",
+                                              "title": "Reward Statistics",
+                                              "required": [
+                                                "text"
+                                              ]
+                                            }
+                                          },
+                                          "description": "Optional reward details associated with the row, needed to support additional rendering options",
+                                          "title": "Reward Details",
+                                          "required": [
+                                            "title"
+                                          ]
+                                        }
+                                      },
+                                      "description": "Represents a single row in a table",
+                                      "title": "TableRow",
+                                      "required": [
+                                        "cells"
+                                      ]
+                                    },
+                                    "description": "Rows in the table, displayed in the order provided"
+                                  }
+                                },
+                                "description": "Represents a table with headers and rows",
+                                "title": "Table",
+                                "required": [
+                                  "headers",
+                                  "rows"
+                                ]
+                              },
+                              "description": "Tables contained in this tab, displayed in the order provided"
+                            }
+                          },
+                          "description": "Represents a tab containing multiple tables",
+                          "title": "Tab",
+                          "required": [
+                            "title",
+                            "tables"
+                          ]
+                        },
+                        "description": "Tabs containing tabbed content, displayed in the order provided"
+                      },
+                      "tabsHeader": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "The unique key used to identify the localized text content for a specific language"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                          }
+                        },
+                        "description": "Header text for the tabs section",
+                        "title": "Localizable Text"
+                      }
+                    },
+                    "description": "Represents an item contained in this offer",
+                    "title": "Content Item",
+                    "required": [
+                      "title"
+                    ]
+                  },
+                  "description": "Items contained in this offer"
+                },
+                "featuredItemsDescription": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Description text for the featured items section",
+                  "title": "Localizable Text"
+                }
+              },
+              "description": "Contains detailed information about a specific offer's obtainable item(s) and rewards",
+              "title": "Get Offer Details Response",
+              "required": [
+                "items"
+              ]
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guid",
+            "description": "The offer/product UUID (auto-generated UUID v5 if not provided in catalog response)",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "The unique product identifier/SKU",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "platform",
+            "description": "Optional platform filter to get platform-specific catalog offer details\n\n - CATALOG_PLATFORM_UNSPECIFIED: Default unknown platform",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CATALOG_PLATFORM_UNSPECIFIED",
+              "CATALOG_PLATFORM_IOS",
+              "CATALOG_PLATFORM_ANDROID",
+              "CATALOG_PLATFORM_WEBSTORE"
+            ],
+            "default": "CATALOG_PLATFORM_UNSPECIFIED"
+          },
+          {
+            "name": "region",
+            "description": "Optional region filter using ISO-3166-1 alpha-2 country code (e.g., 'US', 'EU', 'JP')",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "language",
+            "description": "Optional language code filter using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "playerId",
+            "description": "Optional player ID filter to get player-specific catalog items",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Catalog"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      }
+    },
     "/api/v1/player": {
       "get": {
         "summary": "Get player by ID",
@@ -2937,6 +3618,272 @@
         "price"
       ]
     },
+    "CatalogItemPurchasableItemContentItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "CONTENT_ITEM_TYPE_UNSPECIFIED",
+            "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
+          ],
+          "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
+          "description": "Optional type of content item",
+          "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Item name",
+          "title": "Localizable Text"
+        },
+        "description": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional item description",
+          "title": "Localizable Text"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+        },
+        "unitImage": {
+          "type": "string",
+          "description": "Optional URL to unit image (used to display a single item)"
+        },
+        "infoButton": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+              "title": "Localizable Text"
+            },
+            "iconImageUrl": {
+              "type": "string",
+              "description": "Optional URL to button icon image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "Optional CSS-style background styling information for button"
+            },
+            "tooltip": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Tooltip text providing additional information",
+                  "title": "Localizable Text"
+                }
+              },
+              "description": "Optional popup tooltip for additional information",
+              "title": "Tooltip"
+            }
+          },
+          "description": "Optional info button for additional item details",
+          "title": "Button"
+        },
+        "callout": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Callout text (e.g., 'Guaranteed Featured Asset')",
+              "title": "Localizable Text"
+            },
+            "iconImageUrl": {
+              "type": "string",
+              "description": "Optional URL to callout icon image"
+            }
+          },
+          "description": "Optional callout highlighting special features",
+          "title": "Callout"
+        },
+        "primaryBackground": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional primary background styling for item",
+          "title": "Background"
+        },
+        "secondaryBackground": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional secondary background styling for item, layered on top of the primary background",
+          "title": "Background"
+        },
+        "specialIndicator": {
+          "type": "object",
+          "properties": {
+            "iconImageUrl": {
+              "type": "string",
+              "description": "URL to special capability tag icon image"
+            },
+            "tooltip": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Tooltip text providing additional information",
+                  "title": "Localizable Text"
+                }
+              },
+              "description": "Optional popup tooltip for additional information",
+              "title": "Tooltip"
+            }
+          },
+          "description": "Optional special indicator for e.g. an in-game capability unlocked by this item",
+          "title": "Special Indicator Tag"
+        },
+        "rewardBuff": {
+          "type": "object",
+          "properties": {
+            "percentage": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "REWARD_BUFF_TYPE_UNSPECIFIED",
+                "REWARD_BUFF_TYPE_ADDITIVE",
+                "REWARD_BUFF_TYPE_MULTIPLIER"
+              ],
+              "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
+              "description": "Buff type (additive or multiplier)",
+              "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
+            },
+            "iconImageUrl": {
+              "type": "string",
+              "description": "URL to buff icon image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "Optional CSS-style background styling information for buff"
+            }
+          },
+          "description": "Optional reward buff applied to this item",
+          "title": "Reward Buff"
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+        }
+      },
+      "description": "Represents an in-game item obtainable as part of this bundle",
+      "title": "Content Item",
+      "required": [
+        "quantity"
+      ]
+    },
     "CatalogSection": {
       "type": "object",
       "properties": {
@@ -4013,6 +4960,840 @@
       "title": "Catalog Section",
       "required": [
         "items"
+      ]
+    },
+    "ContentItemItemDetailSection": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Section header text",
+          "title": "Localizable Text"
+        },
+        "subheader": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional section subheader text",
+          "title": "Localizable Text"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "backgroundStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties map for styling the detail row background, e.g. {\"background-color\": \"#ae36a7\"}"
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content for this cell",
+                      "title": "Localizable Text"
+                    },
+                    "iconImageUrl": {
+                      "type": "string",
+                      "description": "Optional URL to icon image for the cell"
+                    },
+                    "relativeWidthFractionalUnits": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                    },
+                    "backgroundStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                    },
+                    "textStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                    },
+                    "align": {
+                      "type": "string",
+                      "enum": [
+                        "CELL_ALIGNMENT_UNSPECIFIED",
+                        "CELL_ALIGNMENT_START",
+                        "CELL_ALIGNMENT_CENTER",
+                        "CELL_ALIGNMENT_END"
+                      ],
+                      "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                      "description": "Optional horizontal alignment for the cell content",
+                      "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                    }
+                  },
+                  "description": "Represents a cell within a detail row with text or icon image content and optional CSS styling",
+                  "title": "Item Detail Cell"
+                },
+                "description": "Cells for the row"
+              }
+            },
+            "description": "Represents a row within a detail section with cells",
+            "title": "Item Detail Row",
+            "required": [
+              "cells"
+            ]
+          },
+          "description": "Rows within this section, displayed in the order provided"
+        }
+      },
+      "description": "Represents a section within the item details view with header, subheader, and rows",
+      "title": "Item Detail Section"
+    },
+    "ContentItemRewardDetails": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Reward title",
+          "title": "Localizable Text"
+        },
+        "subtitle": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional reward subtitle",
+          "title": "Localizable Text"
+        },
+        "description": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional reward description",
+          "title": "Localizable Text"
+        },
+        "image": {
+          "type": "string",
+          "description": "Reward image URL"
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether this reward should be displayed prominently above the other rewards"
+        },
+        "statistics": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Text content for this statistic",
+              "title": "Localizable Text"
+            },
+            "textStyle": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+            },
+            "iconImageUrl": {
+              "type": "string",
+              "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+            }
+          },
+          "description": "Statistics for this reward",
+          "title": "Reward Statistics",
+          "required": [
+            "text"
+          ]
+        }
+      },
+      "description": "Represents details about a reward obtainable within an item",
+      "title": "Reward Details",
+      "required": [
+        "title"
+      ]
+    },
+    "ContentItemTab": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Tab title text",
+          "title": "Localizable Text"
+        },
+        "default": {
+          "type": "boolean",
+          "description": "Whether this tab should be selected by default"
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "headers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Header text content",
+                      "title": "Localizable Text"
+                    },
+                    "relativeWidthFractionalUnits": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                    },
+                    "backgroundStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                    },
+                    "textStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                    }
+                  },
+                  "description": "Represents a header cell in a table",
+                  "title": "Header Cell"
+                },
+                "description": "Header cells for the table columns"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "backgroundStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Primary text content for the cell",
+                            "title": "Localizable Text"
+                          },
+                          "subText": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Optional secondary text content for the cell",
+                            "title": "Localizable Text"
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+                          },
+                          "backgroundStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                          },
+                          "textStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                          },
+                          "align": {
+                            "type": "string",
+                            "enum": [
+                              "CELL_ALIGNMENT_UNSPECIFIED",
+                              "CELL_ALIGNMENT_START",
+                              "CELL_ALIGNMENT_CENTER",
+                              "CELL_ALIGNMENT_END"
+                            ],
+                            "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                            "description": "Optional horizontal alignment for the cell content",
+                            "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                          }
+                        },
+                        "description": "Represents a single cell in a table row with content and styling",
+                        "title": "TableCell"
+                      },
+                      "description": "Cells in this row, displayed in the order provided"
+                    },
+                    "reward": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Reward title",
+                          "title": "Localizable Text"
+                        },
+                        "subtitle": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Optional reward subtitle",
+                          "title": "Localizable Text"
+                        },
+                        "description": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Optional reward description",
+                          "title": "Localizable Text"
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "Reward image URL"
+                        },
+                        "featured": {
+                          "type": "boolean",
+                          "description": "Whether this reward should be displayed prominently above the other rewards"
+                        },
+                        "statistics": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Text content for this statistic",
+                              "title": "Localizable Text"
+                            },
+                            "textStyle": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              },
+                              "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                            },
+                            "iconImageUrl": {
+                              "type": "string",
+                              "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                            }
+                          },
+                          "description": "Statistics for this reward",
+                          "title": "Reward Statistics",
+                          "required": [
+                            "text"
+                          ]
+                        }
+                      },
+                      "description": "Optional reward details associated with the row, needed to support additional rendering options",
+                      "title": "Reward Details",
+                      "required": [
+                        "title"
+                      ]
+                    }
+                  },
+                  "description": "Represents a single row in a table",
+                  "title": "TableRow",
+                  "required": [
+                    "cells"
+                  ]
+                },
+                "description": "Rows in the table, displayed in the order provided"
+              }
+            },
+            "description": "Represents a table with headers and rows",
+            "title": "Table",
+            "required": [
+              "headers",
+              "rows"
+            ]
+          },
+          "description": "Tables contained in this tab, displayed in the order provided"
+        }
+      },
+      "description": "Represents a tab containing multiple tables",
+      "title": "Tab",
+      "required": [
+        "title",
+        "tables"
+      ]
+    },
+    "ContentItemTable": {
+      "type": "object",
+      "properties": {
+        "headers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Header text content",
+                "title": "Localizable Text"
+              },
+              "relativeWidthFractionalUnits": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+              },
+              "backgroundStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+              },
+              "textStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+              }
+            },
+            "description": "Represents a header cell in a table",
+            "title": "Header Cell"
+          },
+          "description": "Header cells for the table columns"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "backgroundStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Primary text content for the cell",
+                      "title": "Localizable Text"
+                    },
+                    "subText": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Optional secondary text content for the cell",
+                      "title": "Localizable Text"
+                    },
+                    "iconImageUrl": {
+                      "type": "string",
+                      "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+                    },
+                    "backgroundStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                    },
+                    "textStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                    },
+                    "align": {
+                      "type": "string",
+                      "enum": [
+                        "CELL_ALIGNMENT_UNSPECIFIED",
+                        "CELL_ALIGNMENT_START",
+                        "CELL_ALIGNMENT_CENTER",
+                        "CELL_ALIGNMENT_END"
+                      ],
+                      "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                      "description": "Optional horizontal alignment for the cell content",
+                      "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                    }
+                  },
+                  "description": "Represents a single cell in a table row with content and styling",
+                  "title": "TableCell"
+                },
+                "description": "Cells in this row, displayed in the order provided"
+              },
+              "reward": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Reward title",
+                    "title": "Localizable Text"
+                  },
+                  "subtitle": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Optional reward subtitle",
+                    "title": "Localizable Text"
+                  },
+                  "description": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Optional reward description",
+                    "title": "Localizable Text"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "Reward image URL"
+                  },
+                  "featured": {
+                    "type": "boolean",
+                    "description": "Whether this reward should be displayed prominently above the other rewards"
+                  },
+                  "statistics": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "The unique key used to identify the localized text content for a specific language"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                          }
+                        },
+                        "description": "Text content for this statistic",
+                        "title": "Localizable Text"
+                      },
+                      "textStyle": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                      },
+                      "iconImageUrl": {
+                        "type": "string",
+                        "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                      }
+                    },
+                    "description": "Statistics for this reward",
+                    "title": "Reward Statistics",
+                    "required": [
+                      "text"
+                    ]
+                  }
+                },
+                "description": "Optional reward details associated with the row, needed to support additional rendering options",
+                "title": "Reward Details",
+                "required": [
+                  "title"
+                ]
+              }
+            },
+            "description": "Represents a single row in a table",
+            "title": "TableRow",
+            "required": [
+              "cells"
+            ]
+          },
+          "description": "Rows in the table, displayed in the order provided"
+        }
+      },
+      "description": "Represents a table with headers and rows",
+      "title": "Table",
+      "required": [
+        "headers",
+        "rows"
       ]
     },
     "GetCatalogResponseBackground": {
@@ -6317,25 +8098,6 @@
       "description": "Contains an image to be displayed beside the main element, e.g. an offer.",
       "title": "Decal"
     },
-    "GetCatalogResponseLocalizableText": {
-      "type": "object",
-      "properties": {
-        "defaultText": {
-          "type": "string",
-          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-        },
-        "localizationKey": {
-          "type": "string",
-          "description": "The unique key used to identify the localized text content for a specific language"
-        },
-        "localizedText": {
-          "type": "string",
-          "description": "Localized text content for the language specified by the code sent in the request filters"
-        }
-      },
-      "description": "Text content that can be localized for a specific language",
-      "title": "Localizable Text"
-    },
     "GetCatalogResponsePriceAmountOrId": {
       "type": "object",
       "properties": {
@@ -6460,6 +8222,149 @@
       },
       "description": "Generic tooltip for additional information about any element.",
       "title": "Tooltip"
+    },
+    "ItemDetailRowItemDetailCell": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Text content for this cell",
+          "title": "Localizable Text"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Optional URL to icon image for the cell"
+        },
+        "relativeWidthFractionalUnits": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+        },
+        "backgroundStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+        },
+        "textStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+        },
+        "align": {
+          "type": "string",
+          "enum": [
+            "CELL_ALIGNMENT_UNSPECIFIED",
+            "CELL_ALIGNMENT_START",
+            "CELL_ALIGNMENT_CENTER",
+            "CELL_ALIGNMENT_END"
+          ],
+          "default": "CELL_ALIGNMENT_UNSPECIFIED",
+          "description": "Optional horizontal alignment for the cell content",
+          "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+        }
+      },
+      "description": "Represents a cell within a detail row with text or icon image content and optional CSS styling",
+      "title": "Item Detail Cell"
+    },
+    "ItemDetailSectionItemDetailRow": {
+      "type": "object",
+      "properties": {
+        "backgroundStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties map for styling the detail row background, e.g. {\"background-color\": \"#ae36a7\"}"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Text content for this cell",
+                "title": "Localizable Text"
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Optional URL to icon image for the cell"
+              },
+              "relativeWidthFractionalUnits": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+              },
+              "backgroundStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+              },
+              "textStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "CELL_ALIGNMENT_UNSPECIFIED",
+                  "CELL_ALIGNMENT_START",
+                  "CELL_ALIGNMENT_CENTER",
+                  "CELL_ALIGNMENT_END"
+                ],
+                "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                "description": "Optional horizontal alignment for the cell content",
+                "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+              }
+            },
+            "description": "Represents a cell within a detail row with text or icon image content and optional CSS styling",
+            "title": "Item Detail Cell"
+          },
+          "description": "Cells for the row"
+        }
+      },
+      "description": "Represents a row within a detail section with cells",
+      "title": "Item Detail Row",
+      "required": [
+        "cells"
+      ]
     },
     "NonPurchasableItemNonPurchasableAttributes": {
       "type": "object",
@@ -6872,272 +8777,6 @@
         "cents"
       ]
     },
-    "PurchasableItemContentItem": {
-      "type": "object",
-      "properties": {
-        "guid": {
-          "type": "string",
-          "description": "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used b/c only the bundle is purchasable."
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "CONTENT_ITEM_TYPE_UNSPECIFIED",
-            "CONTENT_ITEM_TYPE_WEB_STORE_BONUS"
-          ],
-          "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
-          "description": "Optional type of content item",
-          "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
-        },
-        "name": {
-          "type": "object",
-          "properties": {
-            "defaultText": {
-              "type": "string",
-              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-            },
-            "localizationKey": {
-              "type": "string",
-              "description": "The unique key used to identify the localized text content for a specific language"
-            },
-            "localizedText": {
-              "type": "string",
-              "description": "Localized text content for the language specified by the code sent in the request filters"
-            }
-          },
-          "description": "Item name",
-          "title": "Localizable Text"
-        },
-        "description": {
-          "type": "object",
-          "properties": {
-            "defaultText": {
-              "type": "string",
-              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-            },
-            "localizationKey": {
-              "type": "string",
-              "description": "The unique key used to identify the localized text content for a specific language"
-            },
-            "localizedText": {
-              "type": "string",
-              "description": "Localized text content for the language specified by the code sent in the request filters"
-            }
-          },
-          "description": "Optional item description",
-          "title": "Localizable Text"
-        },
-        "image": {
-          "type": "string",
-          "description": "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"
-        },
-        "quantity": {
-          "type": "string",
-          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-        },
-        "unitImage": {
-          "type": "string",
-          "description": "Optional URL to unit image (used to display a single item)"
-        },
-        "infoButton": {
-          "type": "object",
-          "properties": {
-            "text": {
-              "type": "object",
-              "properties": {
-                "defaultText": {
-                  "type": "string",
-                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                },
-                "localizationKey": {
-                  "type": "string",
-                  "description": "The unique key used to identify the localized text content for a specific language"
-                },
-                "localizedText": {
-                  "type": "string",
-                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                }
-              },
-              "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-              "title": "Localizable Text"
-            },
-            "iconImageUrl": {
-              "type": "string",
-              "description": "Optional URL to button icon image"
-            },
-            "backgroundStyle": {
-              "type": "string",
-              "description": "Optional CSS-style background styling information for button"
-            },
-            "tooltip": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "object",
-                  "properties": {
-                    "defaultText": {
-                      "type": "string",
-                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                    },
-                    "localizationKey": {
-                      "type": "string",
-                      "description": "The unique key used to identify the localized text content for a specific language"
-                    },
-                    "localizedText": {
-                      "type": "string",
-                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                    }
-                  },
-                  "description": "Tooltip text providing additional information",
-                  "title": "Localizable Text"
-                }
-              },
-              "description": "Optional popup tooltip for additional information",
-              "title": "Tooltip"
-            }
-          },
-          "description": "Optional info button for additional item details",
-          "title": "Button"
-        },
-        "callout": {
-          "type": "object",
-          "properties": {
-            "text": {
-              "type": "object",
-              "properties": {
-                "defaultText": {
-                  "type": "string",
-                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                },
-                "localizationKey": {
-                  "type": "string",
-                  "description": "The unique key used to identify the localized text content for a specific language"
-                },
-                "localizedText": {
-                  "type": "string",
-                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                }
-              },
-              "description": "Callout text (e.g., 'Guaranteed Featured Asset')",
-              "title": "Localizable Text"
-            },
-            "iconImageUrl": {
-              "type": "string",
-              "description": "Optional URL to callout icon image"
-            }
-          },
-          "description": "Optional callout highlighting special features",
-          "title": "Callout"
-        },
-        "primaryBackground": {
-          "type": "object",
-          "properties": {
-            "imageUrl": {
-              "type": "string",
-              "description": "URL to background image"
-            },
-            "backgroundStyle": {
-              "type": "string",
-              "description": "CSS-style background styling information"
-            }
-          },
-          "description": "Optional primary background styling for item",
-          "title": "Background"
-        },
-        "secondaryBackground": {
-          "type": "object",
-          "properties": {
-            "imageUrl": {
-              "type": "string",
-              "description": "URL to background image"
-            },
-            "backgroundStyle": {
-              "type": "string",
-              "description": "CSS-style background styling information"
-            }
-          },
-          "description": "Optional secondary background styling for item, layered on top of the primary background",
-          "title": "Background"
-        },
-        "specialIndicator": {
-          "type": "object",
-          "properties": {
-            "iconImageUrl": {
-              "type": "string",
-              "description": "URL to special capability tag icon image"
-            },
-            "tooltip": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "object",
-                  "properties": {
-                    "defaultText": {
-                      "type": "string",
-                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                    },
-                    "localizationKey": {
-                      "type": "string",
-                      "description": "The unique key used to identify the localized text content for a specific language"
-                    },
-                    "localizedText": {
-                      "type": "string",
-                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                    }
-                  },
-                  "description": "Tooltip text providing additional information",
-                  "title": "Localizable Text"
-                }
-              },
-              "description": "Optional popup tooltip for additional information",
-              "title": "Tooltip"
-            }
-          },
-          "description": "Optional special indicator for e.g. an in-game capability unlocked by this item",
-          "title": "Special Indicator Tag"
-        },
-        "rewardBuff": {
-          "type": "object",
-          "properties": {
-            "percentage": {
-              "type": "integer",
-              "format": "int64",
-              "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "REWARD_BUFF_TYPE_UNSPECIFIED",
-                "REWARD_BUFF_TYPE_ADDITIVE",
-                "REWARD_BUFF_TYPE_MULTIPLIER"
-              ],
-              "default": "REWARD_BUFF_TYPE_UNSPECIFIED",
-              "description": "Buff type (additive or multiplier)",
-              "title": "- REWARD_BUFF_TYPE_ADDITIVE: Renders the percentage as an additive reward, e.g. +20%\n - REWARD_BUFF_TYPE_MULTIPLIER: Renders the percentage as a multiplier, e.g. 3x"
-            },
-            "iconImageUrl": {
-              "type": "string",
-              "description": "URL to buff icon image"
-            },
-            "backgroundStyle": {
-              "type": "string",
-              "description": "Optional CSS-style background styling information for buff"
-            }
-          },
-          "description": "Optional reward buff applied to this item",
-          "title": "Reward Buff"
-        },
-        "featured": {
-          "type": "boolean",
-          "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
-        }
-      },
-      "description": "Represents an in-game item obtainable as part of this bundle",
-      "title": "Content Item",
-      "required": [
-        "quantity"
-      ]
-    },
     "PurchasableItemPurchasableAttributes": {
       "type": "object",
       "properties": {
@@ -7308,6 +8947,377 @@
       "description": "Optional attributes for customizing how a product is displayed",
       "title": "Purchasable Attributes"
     },
+    "RewardDetailsRewardStatistics": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Text content for this statistic",
+          "title": "Localizable Text"
+        },
+        "textStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+        }
+      },
+      "description": "Represents statistics about a reward obtainable within an item, e.g. the drop rate",
+      "title": "Reward Statistics",
+      "required": [
+        "text"
+      ]
+    },
+    "TableHeaderCell": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Header text content",
+          "title": "Localizable Text"
+        },
+        "relativeWidthFractionalUnits": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+        },
+        "backgroundStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+        },
+        "textStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+        }
+      },
+      "description": "Represents a header cell in a table",
+      "title": "Header Cell"
+    },
+    "TableRowTableCell": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Primary text content for the cell",
+          "title": "Localizable Text"
+        },
+        "subText": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional secondary text content for the cell",
+          "title": "Localizable Text"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+        },
+        "backgroundStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+        },
+        "textStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+        },
+        "align": {
+          "type": "string",
+          "enum": [
+            "CELL_ALIGNMENT_UNSPECIFIED",
+            "CELL_ALIGNMENT_START",
+            "CELL_ALIGNMENT_CENTER",
+            "CELL_ALIGNMENT_END"
+          ],
+          "default": "CELL_ALIGNMENT_UNSPECIFIED",
+          "description": "Optional horizontal alignment for the cell content",
+          "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+        }
+      },
+      "description": "Represents a single cell in a table row with content and styling",
+      "title": "TableCell"
+    },
+    "TableTableRow": {
+      "type": "object",
+      "properties": {
+        "backgroundStyle": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Primary text content for the cell",
+                "title": "Localizable Text"
+              },
+              "subText": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional secondary text content for the cell",
+                "title": "Localizable Text"
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+              },
+              "backgroundStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+              },
+              "textStyle": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "CELL_ALIGNMENT_UNSPECIFIED",
+                  "CELL_ALIGNMENT_START",
+                  "CELL_ALIGNMENT_CENTER",
+                  "CELL_ALIGNMENT_END"
+                ],
+                "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                "description": "Optional horizontal alignment for the cell content",
+                "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+              }
+            },
+            "description": "Represents a single cell in a table row with content and styling",
+            "title": "TableCell"
+          },
+          "description": "Cells in this row, displayed in the order provided"
+        },
+        "reward": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Reward title",
+              "title": "Localizable Text"
+            },
+            "subtitle": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Optional reward subtitle",
+              "title": "Localizable Text"
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Optional reward description",
+              "title": "Localizable Text"
+            },
+            "image": {
+              "type": "string",
+              "description": "Reward image URL"
+            },
+            "featured": {
+              "type": "boolean",
+              "description": "Whether this reward should be displayed prominently above the other rewards"
+            },
+            "statistics": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Text content for this statistic",
+                  "title": "Localizable Text"
+                },
+                "textStyle": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                },
+                "iconImageUrl": {
+                  "type": "string",
+                  "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                }
+              },
+              "description": "Statistics for this reward",
+              "title": "Reward Statistics",
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "description": "Optional reward details associated with the row, needed to support additional rendering options",
+          "title": "Reward Details",
+          "required": [
+            "title"
+          ]
+        }
+      },
+      "description": "Represents a single row in a table",
+      "title": "TableRow",
+      "required": [
+        "cells"
+      ]
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -7372,6 +9382,18 @@
       "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
       "description": "Display type of a catalog section",
       "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+    },
+    "v1CellAlignment": {
+      "type": "string",
+      "enum": [
+        "CELL_ALIGNMENT_UNSPECIFIED",
+        "CELL_ALIGNMENT_START",
+        "CELL_ALIGNMENT_CENTER",
+        "CELL_ALIGNMENT_END"
+      ],
+      "default": "CELL_ALIGNMENT_UNSPECIFIED",
+      "description": "Represents the horizontal alignment of cell content",
+      "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
     },
     "v1ChainLinkStatus": {
       "type": "string",
@@ -8492,6 +10514,1158 @@
       "required": [
         "catalog"
       ]
+    },
+    "v1GetOfferDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": {
+                "type": "string",
+                "description": "Optional unique identifier (UUID v4 format)"
+              },
+              "title": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Item title",
+                "title": "Localizable Text"
+              },
+              "subtitle": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional item subtitle",
+                "title": "Localizable Text"
+              },
+              "description": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional item description",
+                "title": "Localizable Text"
+              },
+              "image": {
+                "type": "string",
+                "description": "Item image URL"
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Optional URL to icon image representing the item, used to support additional rendering options"
+              },
+              "detailSections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "header": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Section header text",
+                      "title": "Localizable Text"
+                    },
+                    "subheader": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Optional section subheader text",
+                      "title": "Localizable Text"
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "backgroundStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties map for styling the detail row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                          },
+                          "cells": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Text content for this cell",
+                                  "title": "Localizable Text"
+                                },
+                                "iconImageUrl": {
+                                  "type": "string",
+                                  "description": "Optional URL to icon image for the cell"
+                                },
+                                "relativeWidthFractionalUnits": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                                },
+                                "backgroundStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                },
+                                "textStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                },
+                                "align": {
+                                  "type": "string",
+                                  "enum": [
+                                    "CELL_ALIGNMENT_UNSPECIFIED",
+                                    "CELL_ALIGNMENT_START",
+                                    "CELL_ALIGNMENT_CENTER",
+                                    "CELL_ALIGNMENT_END"
+                                  ],
+                                  "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                                  "description": "Optional horizontal alignment for the cell content",
+                                  "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                                }
+                              },
+                              "description": "Represents a cell within a detail row with text or icon image content and optional CSS styling",
+                              "title": "Item Detail Cell"
+                            },
+                            "description": "Cells for the row"
+                          }
+                        },
+                        "description": "Represents a row within a detail section with cells",
+                        "title": "Item Detail Row",
+                        "required": [
+                          "cells"
+                        ]
+                      },
+                      "description": "Rows within this section, displayed in the order provided"
+                    }
+                  },
+                  "description": "Represents a section within the item details view with header, subheader, and rows",
+                  "title": "Item Detail Section"
+                },
+                "description": "Item detail sections displayed in the item details view"
+              },
+              "tabs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Tab title text",
+                      "title": "Localizable Text"
+                    },
+                    "default": {
+                      "type": "boolean",
+                      "description": "Whether this tab should be selected by default"
+                    },
+                    "tables": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "headers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Header text content",
+                                  "title": "Localizable Text"
+                                },
+                                "relativeWidthFractionalUnits": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                                },
+                                "backgroundStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                },
+                                "textStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                }
+                              },
+                              "description": "Represents a header cell in a table",
+                              "title": "Header Cell"
+                            },
+                            "description": "Header cells for the table columns"
+                          },
+                          "rows": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "backgroundStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                },
+                                "cells": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Primary text content for the cell",
+                                        "title": "Localizable Text"
+                                      },
+                                      "subText": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Optional secondary text content for the cell",
+                                        "title": "Localizable Text"
+                                      },
+                                      "iconImageUrl": {
+                                        "type": "string",
+                                        "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+                                      },
+                                      "backgroundStyle": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "string"
+                                        },
+                                        "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                      },
+                                      "textStyle": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "string"
+                                        },
+                                        "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                      },
+                                      "align": {
+                                        "type": "string",
+                                        "enum": [
+                                          "CELL_ALIGNMENT_UNSPECIFIED",
+                                          "CELL_ALIGNMENT_START",
+                                          "CELL_ALIGNMENT_CENTER",
+                                          "CELL_ALIGNMENT_END"
+                                        ],
+                                        "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                                        "description": "Optional horizontal alignment for the cell content",
+                                        "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                                      }
+                                    },
+                                    "description": "Represents a single cell in a table row with content and styling",
+                                    "title": "TableCell"
+                                  },
+                                  "description": "Cells in this row, displayed in the order provided"
+                                },
+                                "reward": {
+                                  "type": "object",
+                                  "properties": {
+                                    "title": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Reward title",
+                                      "title": "Localizable Text"
+                                    },
+                                    "subtitle": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Optional reward subtitle",
+                                      "title": "Localizable Text"
+                                    },
+                                    "description": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Optional reward description",
+                                      "title": "Localizable Text"
+                                    },
+                                    "image": {
+                                      "type": "string",
+                                      "description": "Reward image URL"
+                                    },
+                                    "featured": {
+                                      "type": "boolean",
+                                      "description": "Whether this reward should be displayed prominently above the other rewards"
+                                    },
+                                    "statistics": {
+                                      "type": "object",
+                                      "properties": {
+                                        "text": {
+                                          "type": "object",
+                                          "properties": {
+                                            "defaultText": {
+                                              "type": "string",
+                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                            },
+                                            "localizationKey": {
+                                              "type": "string",
+                                              "description": "The unique key used to identify the localized text content for a specific language"
+                                            },
+                                            "localizedText": {
+                                              "type": "string",
+                                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                                            }
+                                          },
+                                          "description": "Text content for this statistic",
+                                          "title": "Localizable Text"
+                                        },
+                                        "textStyle": {
+                                          "type": "object",
+                                          "additionalProperties": {
+                                            "type": "string"
+                                          },
+                                          "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                        },
+                                        "iconImageUrl": {
+                                          "type": "string",
+                                          "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                                        }
+                                      },
+                                      "description": "Statistics for this reward",
+                                      "title": "Reward Statistics",
+                                      "required": [
+                                        "text"
+                                      ]
+                                    }
+                                  },
+                                  "description": "Optional reward details associated with the row, needed to support additional rendering options",
+                                  "title": "Reward Details",
+                                  "required": [
+                                    "title"
+                                  ]
+                                }
+                              },
+                              "description": "Represents a single row in a table",
+                              "title": "TableRow",
+                              "required": [
+                                "cells"
+                              ]
+                            },
+                            "description": "Rows in the table, displayed in the order provided"
+                          }
+                        },
+                        "description": "Represents a table with headers and rows",
+                        "title": "Table",
+                        "required": [
+                          "headers",
+                          "rows"
+                        ]
+                      },
+                      "description": "Tables contained in this tab, displayed in the order provided"
+                    }
+                  },
+                  "description": "Represents a tab containing multiple tables",
+                  "title": "Tab",
+                  "required": [
+                    "title",
+                    "tables"
+                  ]
+                },
+                "description": "Tabs containing tabbed content, displayed in the order provided"
+              },
+              "tabsHeader": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Header text for the tabs section",
+                "title": "Localizable Text"
+              }
+            },
+            "description": "Represents an item contained in this offer",
+            "title": "Content Item",
+            "required": [
+              "title"
+            ]
+          },
+          "description": "Items contained in this offer"
+        },
+        "featuredItemsDescription": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Description text for the featured items section",
+          "title": "Localizable Text"
+        }
+      },
+      "description": "Contains detailed information about a specific offer's obtainable item(s) and rewards",
+      "title": "Get Offer Details Response",
+      "required": [
+        "items"
+      ]
+    },
+    "v1GetOfferDetailsResponseContentItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional unique identifier (UUID v4 format)"
+        },
+        "title": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Item title",
+          "title": "Localizable Text"
+        },
+        "subtitle": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional item subtitle",
+          "title": "Localizable Text"
+        },
+        "description": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional item description",
+          "title": "Localizable Text"
+        },
+        "image": {
+          "type": "string",
+          "description": "Item image URL"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Optional URL to icon image representing the item, used to support additional rendering options"
+        },
+        "detailSections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "header": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Section header text",
+                "title": "Localizable Text"
+              },
+              "subheader": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional section subheader text",
+                "title": "Localizable Text"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "backgroundStyle": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Optional CSS properties map for styling the detail row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content for this cell",
+                            "title": "Localizable Text"
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "Optional URL to icon image for the cell"
+                          },
+                          "relativeWidthFractionalUnits": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                          },
+                          "backgroundStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties for styling the detail cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                          },
+                          "textStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties map for styling the detail cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                          },
+                          "align": {
+                            "type": "string",
+                            "enum": [
+                              "CELL_ALIGNMENT_UNSPECIFIED",
+                              "CELL_ALIGNMENT_START",
+                              "CELL_ALIGNMENT_CENTER",
+                              "CELL_ALIGNMENT_END"
+                            ],
+                            "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                            "description": "Optional horizontal alignment for the cell content",
+                            "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                          }
+                        },
+                        "description": "Represents a cell within a detail row with text or icon image content and optional CSS styling",
+                        "title": "Item Detail Cell"
+                      },
+                      "description": "Cells for the row"
+                    }
+                  },
+                  "description": "Represents a row within a detail section with cells",
+                  "title": "Item Detail Row",
+                  "required": [
+                    "cells"
+                  ]
+                },
+                "description": "Rows within this section, displayed in the order provided"
+              }
+            },
+            "description": "Represents a section within the item details view with header, subheader, and rows",
+            "title": "Item Detail Section"
+          },
+          "description": "Item detail sections displayed in the item details view"
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Tab title text",
+                "title": "Localizable Text"
+              },
+              "default": {
+                "type": "boolean",
+                "description": "Whether this tab should be selected by default"
+              },
+              "tables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Header text content",
+                            "title": "Localizable Text"
+                          },
+                          "relativeWidthFractionalUnits": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Optional relative width representing CSS fr units for grid-template-columns. If not provided for any column, the client will default to even distribution (1fr for each column)."
+                          },
+                          "backgroundStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties for styling the header cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                          },
+                          "textStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties map for styling the header text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                          }
+                        },
+                        "description": "Represents a header cell in a table",
+                        "title": "Header Cell"
+                      },
+                      "description": "Header cells for the table columns"
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "backgroundStyle": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Optional CSS properties map for styling the table row background, e.g. {\"background-color\": \"#ae36a7\"}"
+                          },
+                          "cells": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Primary text content for the cell",
+                                  "title": "Localizable Text"
+                                },
+                                "subText": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Optional secondary text content for the cell",
+                                  "title": "Localizable Text"
+                                },
+                                "iconImageUrl": {
+                                  "type": "string",
+                                  "description": "Optional URL to icon image for the cell. If not provided, a generic icon will be used."
+                                },
+                                "backgroundStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties for styling the table cell background, e.g. {\"background-color\": \"#ae36a7\"}"
+                                },
+                                "textStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties map for styling the cell text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                },
+                                "align": {
+                                  "type": "string",
+                                  "enum": [
+                                    "CELL_ALIGNMENT_UNSPECIFIED",
+                                    "CELL_ALIGNMENT_START",
+                                    "CELL_ALIGNMENT_CENTER",
+                                    "CELL_ALIGNMENT_END"
+                                  ],
+                                  "default": "CELL_ALIGNMENT_UNSPECIFIED",
+                                  "description": "Optional horizontal alignment for the cell content",
+                                  "title": "- CELL_ALIGNMENT_UNSPECIFIED: Default alignment (typically START)\n - CELL_ALIGNMENT_START: Align content to the start (left in LTR layouts)\n - CELL_ALIGNMENT_CENTER: Center align content\n - CELL_ALIGNMENT_END: Align content to the end (right in LTR layouts)"
+                                }
+                              },
+                              "description": "Represents a single cell in a table row with content and styling",
+                              "title": "TableCell"
+                            },
+                            "description": "Cells in this row, displayed in the order provided"
+                          },
+                          "reward": {
+                            "type": "object",
+                            "properties": {
+                              "title": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Reward title",
+                                "title": "Localizable Text"
+                              },
+                              "subtitle": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Optional reward subtitle",
+                                "title": "Localizable Text"
+                              },
+                              "description": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Optional reward description",
+                                "title": "Localizable Text"
+                              },
+                              "image": {
+                                "type": "string",
+                                "description": "Reward image URL"
+                              },
+                              "featured": {
+                                "type": "boolean",
+                                "description": "Whether this reward should be displayed prominently above the other rewards"
+                              },
+                              "statistics": {
+                                "type": "object",
+                                "properties": {
+                                  "text": {
+                                    "type": "object",
+                                    "properties": {
+                                      "defaultText": {
+                                        "type": "string",
+                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                      },
+                                      "localizationKey": {
+                                        "type": "string",
+                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                      },
+                                      "localizedText": {
+                                        "type": "string",
+                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                      }
+                                    },
+                                    "description": "Text content for this statistic",
+                                    "title": "Localizable Text"
+                                  },
+                                  "textStyle": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    },
+                                    "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                  },
+                                  "iconImageUrl": {
+                                    "type": "string",
+                                    "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                                  }
+                                },
+                                "description": "Statistics for this reward",
+                                "title": "Reward Statistics",
+                                "required": [
+                                  "text"
+                                ]
+                              }
+                            },
+                            "description": "Optional reward details associated with the row, needed to support additional rendering options",
+                            "title": "Reward Details",
+                            "required": [
+                              "title"
+                            ]
+                          }
+                        },
+                        "description": "Represents a single row in a table",
+                        "title": "TableRow",
+                        "required": [
+                          "cells"
+                        ]
+                      },
+                      "description": "Rows in the table, displayed in the order provided"
+                    }
+                  },
+                  "description": "Represents a table with headers and rows",
+                  "title": "Table",
+                  "required": [
+                    "headers",
+                    "rows"
+                  ]
+                },
+                "description": "Tables contained in this tab, displayed in the order provided"
+              }
+            },
+            "description": "Represents a tab containing multiple tables",
+            "title": "Tab",
+            "required": [
+              "title",
+              "tables"
+            ]
+          },
+          "description": "Tabs containing tabbed content, displayed in the order provided"
+        },
+        "tabsHeader": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Header text for the tabs section",
+          "title": "Localizable Text"
+        }
+      },
+      "description": "Represents an item contained in this offer",
+      "title": "Content Item",
+      "required": [
+        "title"
+      ]
+    },
+    "v1LocalizableText": {
+      "type": "object",
+      "properties": {
+        "defaultText": {
+          "type": "string",
+          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+        },
+        "localizationKey": {
+          "type": "string",
+          "description": "The unique key used to identify the localized text content for a specific language"
+        },
+        "localizedText": {
+          "type": "string",
+          "description": "Localized text content for the language specified by the code sent in the request filters"
+        }
+      },
+      "description": "Text content that can be localized for a specific language",
+      "title": "Localizable Text"
     },
     "v1NonPurchasableItemType": {
       "type": "string",
