@@ -452,6 +452,11 @@
                                             "type": "string",
                                             "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                                           },
+                                          "bonusQuantity": {
+                                            "type": "integer",
+                                            "format": "int64",
+                                            "description": "Optional bonus quantity for the item"
+                                          },
                                           "unitImage": {
                                             "type": "string",
                                             "description": "Optional URL to unit image (used to display a single item)"
@@ -3443,6 +3448,11 @@
                 "type": "string",
                 "description": "In-game item quantity as string for big integer support (no decimals allowed)"
               },
+              "bonusQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Optional bonus quantity for the item"
+              },
               "unitImage": {
                 "type": "string",
                 "description": "Optional URL to unit image (used to display a single item)"
@@ -3718,6 +3728,11 @@
         "quantity": {
           "type": "string",
           "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+        },
+        "bonusQuantity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Optional bonus quantity for the item"
         },
         "unitImage": {
           "type": "string",
@@ -4322,6 +4337,11 @@
                         "quantity": {
                           "type": "string",
                           "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                        },
+                        "bonusQuantity": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Optional bonus quantity for the item"
                         },
                         "unitImage": {
                           "type": "string",
@@ -6445,6 +6465,11 @@
                                 "type": "string",
                                 "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                               },
+                              "bonusQuantity": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Optional bonus quantity for the item"
+                              },
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
@@ -7523,6 +7548,11 @@
                   "quantity": {
                     "type": "string",
                     "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                  },
+                  "bonusQuantity": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Optional bonus quantity for the item"
                   },
                   "unitImage": {
                     "type": "string",
@@ -9957,6 +9987,11 @@
                                   "quantity": {
                                     "type": "string",
                                     "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                  },
+                                  "bonusQuantity": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Optional bonus quantity for the item"
                                   },
                                   "unitImage": {
                                     "type": "string",

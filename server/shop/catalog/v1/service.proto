@@ -392,6 +392,13 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
         ];
+        optional uint32 bonus_quantity = 15 [
+          (validate.rules).uint32 = {
+            gte: 0
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonus quantity for the item"}
+        ];
         optional string unit_image = 7 [
           (validate.rules).string = {
             uri: true
