@@ -23,6 +23,14 @@ enum CatalogSectionDisplayType {
   CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL = 1;
 }
 
+enum PurchasableItemType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of purchasable item"};
+  // Default purchasable item type
+  PURCHASABLE_ITEM_TYPE_UNSPECIFIED = 0;
+  PURCHASABLE_ITEM_TYPE_STANDARD_OFFER = 1;
+  PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER = 2;
+}
+
 enum NonPurchasableItemType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of non-purchasable item"};
   // Default non-purchasable item type

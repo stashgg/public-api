@@ -323,6 +323,7 @@ message GetCatalogResponse {
         (validate.rules).string.min_len = 1,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier"}
       ];
+      PurchasableItemType type = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Type of purchasable item"}];
       LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
       LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description of the item"}];
       string image = 5 [

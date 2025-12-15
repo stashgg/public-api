@@ -89,6 +89,17 @@
                                       "type": "string",
                                       "description": "Required unique SKU/product identifier"
                                     },
+                                    "type": {
+                                      "type": "string",
+                                      "enum": [
+                                        "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                                        "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+                                        "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                                      ],
+                                      "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                                      "description": "Type of purchasable item",
+                                      "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
+                                    },
                                     "name": {
                                       "type": "object",
                                       "properties": {
@@ -3085,6 +3096,17 @@
           "type": "string",
           "description": "Required unique SKU/product identifier"
         },
+        "type": {
+          "type": "string",
+          "enum": [
+            "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+            "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+            "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+          ],
+          "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+          "description": "Type of purchasable item",
+          "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
+        },
         "name": {
           "type": "object",
           "properties": {
@@ -3974,6 +3996,17 @@
                   "productId": {
                     "type": "string",
                     "description": "Required unique SKU/product identifier"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                      "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+                      "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                    ],
+                    "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                    "description": "Type of purchasable item",
+                    "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
                   },
                   "name": {
                     "type": "object",
@@ -6102,6 +6135,17 @@
                           "type": "string",
                           "description": "Required unique SKU/product identifier"
                         },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                            "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+                            "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                          ],
+                          "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                          "description": "Type of purchasable item",
+                          "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
+                        },
                         "name": {
                           "type": "object",
                           "properties": {
@@ -7185,6 +7229,17 @@
             "productId": {
               "type": "string",
               "description": "Required unique SKU/product identifier"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+                "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+              ],
+              "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+              "description": "Type of purchasable item",
+              "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
             },
             "name": {
               "type": "object",
@@ -9625,6 +9680,17 @@
                               "type": "string",
                               "description": "Required unique SKU/product identifier"
                             },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                                "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+                                "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                              ],
+                              "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+                              "description": "Type of purchasable item",
+                              "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
+                            },
                             "name": {
                               "type": "object",
                               "properties": {
@@ -11863,6 +11929,17 @@
       "default": "NON_PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
       "description": "Represents the type of non-purchasable item",
       "title": "- NON_PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default non-purchasable item type\n - NON_PURCHASABLE_ITEM_TYPE_BANNER: Banner type non-purchasable item for emphasized full-width display"
+    },
+    "v1PurchasableItemType": {
+      "type": "string",
+      "enum": [
+        "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+        "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
+        "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+      ],
+      "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
+      "description": "Represents the type of purchasable item",
+      "title": "- PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default purchasable item type"
     },
     "v1RewardBuffType": {
       "type": "string",
