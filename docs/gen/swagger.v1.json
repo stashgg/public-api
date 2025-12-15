@@ -258,6 +258,25 @@
                                               "default": "BADGE_ACTION_UNSPECIFIED",
                                               "description": "Optional action associated with the badge",
                                               "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+                                            },
+                                            "strikethroughText": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+                                              "title": "Localizable Text"
                                             }
                                           },
                                           "description": "Optional badge for the item",
@@ -3230,6 +3249,25 @@
                   "default": "BADGE_ACTION_UNSPECIFIED",
                   "description": "Optional action associated with the badge",
                   "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+                },
+                "strikethroughText": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+                  "title": "Localizable Text"
                 }
               },
               "description": "Optional badge for the item",
@@ -4091,6 +4129,25 @@
                             "default": "BADGE_ACTION_UNSPECIFIED",
                             "description": "Optional action associated with the badge",
                             "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+                          },
+                          "strikethroughText": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+                            "title": "Localizable Text"
                           }
                         },
                         "description": "Optional badge for the item",
@@ -5842,6 +5899,25 @@
           "default": "BADGE_ACTION_UNSPECIFIED",
           "description": "Optional action associated with the badge",
           "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+        },
+        "strikethroughText": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+          "title": "Localizable Text"
         }
       },
       "description": "Generic badge for a status or label, e.g. 'New', 'Bonus', 'Free', etc.",
@@ -6175,6 +6251,25 @@
                                   "default": "BADGE_ACTION_UNSPECIFIED",
                                   "description": "Optional action associated with the badge",
                                   "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+                                },
+                                "strikethroughText": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+                                  "title": "Localizable Text"
                                 }
                               },
                               "description": "Optional badge for the item",
@@ -7235,6 +7330,25 @@
                       "default": "BADGE_ACTION_UNSPECIFIED",
                       "description": "Optional action associated with the badge",
                       "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+                    },
+                    "strikethroughText": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+                      "title": "Localizable Text"
                     }
                   },
                   "description": "Optional badge for the item",
@@ -8837,6 +8951,25 @@
               "default": "BADGE_ACTION_UNSPECIFIED",
               "description": "Optional action associated with the badge",
               "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+            },
+            "strikethroughText": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+              "title": "Localizable Text"
             }
           },
           "description": "Optional badge for the item",
@@ -9631,6 +9764,25 @@
                                       "default": "BADGE_ACTION_UNSPECIFIED",
                                       "description": "Optional action associated with the badge",
                                       "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
+                                    },
+                                    "strikethroughText": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'",
+                                      "title": "Localizable Text"
                                     }
                                   },
                                   "description": "Optional badge for the item",

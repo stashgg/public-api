@@ -128,6 +128,7 @@ message GetCatalogResponse {
     };
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Badge text for status or label (e.g., 'New', 'Bonus', 'Free')"}];
     optional BadgeAction action = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with the badge"}];
+    optional LocalizableText strikethrough_text = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'"}];
   }
 
   message Button {
