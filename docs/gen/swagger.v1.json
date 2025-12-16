@@ -94,7 +94,7 @@
                                       "enum": [
                                         "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                                         "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-                                        "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                                        "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
                                       ],
                                       "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                                       "description": "Type of purchasable item",
@@ -3101,7 +3101,7 @@
           "enum": [
             "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
             "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-            "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+            "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
           ],
           "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
           "description": "Type of purchasable item",
@@ -4002,7 +4002,7 @@
                     "enum": [
                       "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                       "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-                      "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                      "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
                     ],
                     "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                     "description": "Type of purchasable item",
@@ -6140,7 +6140,7 @@
                           "enum": [
                             "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                             "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-                            "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                            "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
                           ],
                           "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                           "description": "Type of purchasable item",
@@ -7235,7 +7235,7 @@
               "enum": [
                 "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                 "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-                "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
               ],
               "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
               "description": "Type of purchasable item",
@@ -9685,7 +9685,7 @@
                               "enum": [
                                 "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                                 "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-                                "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+                                "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
                               ],
                               "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
                               "description": "Type of purchasable item",
@@ -11935,7 +11935,7 @@
       "enum": [
         "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
         "PURCHASABLE_ITEM_TYPE_STANDARD_OFFER",
-        "PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER"
+        "PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER"
       ],
       "default": "PURCHASABLE_ITEM_TYPE_UNSPECIFIED",
       "description": "Represents the type of purchasable item",

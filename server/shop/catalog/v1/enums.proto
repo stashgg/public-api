@@ -28,7 +28,7 @@ enum PurchasableItemType {
   // Default purchasable item type
   PURCHASABLE_ITEM_TYPE_UNSPECIFIED = 0;
   PURCHASABLE_ITEM_TYPE_STANDARD_OFFER = 1;
-  PURCHASABLE_ITEM_TYPE_SPECIAL_OFFER = 2;
+  PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER = 2;
 }
 
 enum NonPurchasableItemType {
