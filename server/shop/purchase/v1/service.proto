@@ -170,22 +170,20 @@ message RegisterPaymentResponse {
         required: ["status"]
       }
     };
-    oneof offer_identifier {
-      string guid = 1 [
-        (validate.rules).string = {
-          uuid: true
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
-      ];
-      string product_id = 2 [
-        (validate.rules).string = {
-          min_len: 1
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
-      ];
-    }
+    string guid = 1 [
+      (validate.rules).string = {
+        uuid: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
+    ];
+    string product_id = 2 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
+    ];
     PurchaseRegistrationStatus status = 3 [
       (google.api.field_behavior) = REQUIRED,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status of the offer registration"}
@@ -404,22 +402,20 @@ message ConfirmPaymentResponse {
         description: "Represents the result of a confirmed purchase"
       }
     };
-    oneof offer_identifier {
-      string guid = 1 [
-        (validate.rules).string = {
-          uuid: true
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
-      ];
-      string product_id = 2 [
-        (validate.rules).string = {
-          min_len: 1
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
-      ];
-    }
+    string guid = 1 [
+      (validate.rules).string = {
+        uuid: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product GUID that was registered (providing this OR product_id is required)"}
+    ];
+    string product_id = 2 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
+    ];
   }
   repeated ConfirmPaymentResult results = 1 [
     (google.api.field_behavior) = REQUIRED,
