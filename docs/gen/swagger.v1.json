@@ -1645,121 +1645,6 @@
                                             "title": "TableCell"
                                           },
                                           "description": "Cells in this row, displayed in the order provided"
-                                        },
-                                        "reward": {
-                                          "type": "object",
-                                          "properties": {
-                                            "title": {
-                                              "type": "object",
-                                              "properties": {
-                                                "defaultText": {
-                                                  "type": "string",
-                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                },
-                                                "localizationKey": {
-                                                  "type": "string",
-                                                  "description": "The unique key used to identify the localized text content for a specific language"
-                                                },
-                                                "localizedText": {
-                                                  "type": "string",
-                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                }
-                                              },
-                                              "description": "Reward title",
-                                              "title": "Localizable Text"
-                                            },
-                                            "subtitle": {
-                                              "type": "object",
-                                              "properties": {
-                                                "defaultText": {
-                                                  "type": "string",
-                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                },
-                                                "localizationKey": {
-                                                  "type": "string",
-                                                  "description": "The unique key used to identify the localized text content for a specific language"
-                                                },
-                                                "localizedText": {
-                                                  "type": "string",
-                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                }
-                                              },
-                                              "description": "Optional reward subtitle",
-                                              "title": "Localizable Text"
-                                            },
-                                            "description": {
-                                              "type": "object",
-                                              "properties": {
-                                                "defaultText": {
-                                                  "type": "string",
-                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                },
-                                                "localizationKey": {
-                                                  "type": "string",
-                                                  "description": "The unique key used to identify the localized text content for a specific language"
-                                                },
-                                                "localizedText": {
-                                                  "type": "string",
-                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                }
-                                              },
-                                              "description": "Optional reward description",
-                                              "title": "Localizable Text"
-                                            },
-                                            "image": {
-                                              "type": "string",
-                                              "description": "Reward image URL"
-                                            },
-                                            "featured": {
-                                              "type": "boolean",
-                                              "description": "Whether this reward should be displayed prominently above the other rewards"
-                                            },
-                                            "statistics": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "object",
-                                                  "properties": {
-                                                    "defaultText": {
-                                                      "type": "string",
-                                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                    },
-                                                    "localizationKey": {
-                                                      "type": "string",
-                                                      "description": "The unique key used to identify the localized text content for a specific language"
-                                                    },
-                                                    "localizedText": {
-                                                      "type": "string",
-                                                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                    }
-                                                  },
-                                                  "description": "Text content for this statistic",
-                                                  "title": "Localizable Text"
-                                                },
-                                                "textStyle": {
-                                                  "type": "object",
-                                                  "additionalProperties": {
-                                                    "type": "string"
-                                                  },
-                                                  "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
-                                                },
-                                                "iconImageUrl": {
-                                                  "type": "string",
-                                                  "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
-                                                }
-                                              },
-                                              "description": "Statistics for this reward",
-                                              "title": "Reward Statistics",
-                                              "required": [
-                                                "text"
-                                              ]
-                                            }
-                                          },
-                                          "description": "Optional reward details associated with the row, needed to support additional rendering options",
-                                          "title": "Reward Details",
-                                          "required": [
-                                            "title"
-                                          ]
                                         }
                                       },
                                       "description": "Represents a single row in a table",
@@ -1808,6 +1693,125 @@
                         },
                         "description": "Header text for the tabs section",
                         "title": "Localizable Text"
+                      },
+                      "rewards": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Reward title",
+                              "title": "Localizable Text"
+                            },
+                            "subtitle": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Optional reward subtitle",
+                              "title": "Localizable Text"
+                            },
+                            "description": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Optional reward description",
+                              "title": "Localizable Text"
+                            },
+                            "image": {
+                              "type": "string",
+                              "description": "Reward image URL"
+                            },
+                            "featured": {
+                              "type": "boolean",
+                              "description": "Whether this reward should be displayed prominently"
+                            },
+                            "statistics": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Text content for this statistic",
+                                  "title": "Localizable Text"
+                                },
+                                "textStyle": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  },
+                                  "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                                },
+                                "iconImageUrl": {
+                                  "type": "string",
+                                  "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                                }
+                              },
+                              "description": "Statistics for this reward",
+                              "title": "Reward Statistics",
+                              "required": [
+                                "text"
+                              ]
+                            }
+                          },
+                          "description": "Represents details about a reward obtainable within an item",
+                          "title": "Reward Details",
+                          "required": [
+                            "title"
+                          ]
+                        },
+                        "description": "Rewards contained in this item"
                       }
                     },
                     "description": "Represents an item contained in this offer",
@@ -1818,24 +1822,54 @@
                   },
                   "description": "Items contained in this offer"
                 },
-                "featuredItemsDescription": {
+                "rewardsHeader": {
                   "type": "object",
                   "properties": {
-                    "defaultText": {
-                      "type": "string",
-                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Title text for the section header",
+                      "title": "Localizable Text"
                     },
-                    "localizationKey": {
-                      "type": "string",
-                      "description": "The unique key used to identify the localized text content for a specific language"
+                    "description": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Description text for the section header",
+                      "title": "Localizable Text"
                     },
-                    "localizedText": {
+                    "iconImageUrl": {
                       "type": "string",
-                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                      "description": "Icon image URL for the section header"
                     }
                   },
-                  "description": "Description text for the featured items section",
-                  "title": "Localizable Text"
+                  "description": "Header for the rewards section",
+                  "title": "Section Header"
                 }
               },
               "description": "Contains detailed information about a specific offer's obtainable item(s) and rewards",
@@ -5269,7 +5303,7 @@
         },
         "featured": {
           "type": "boolean",
-          "description": "Whether this reward should be displayed prominently above the other rewards"
+          "description": "Whether this reward should be displayed prominently"
         },
         "statistics": {
           "type": "object",
@@ -5488,121 +5522,6 @@
                         "title": "TableCell"
                       },
                       "description": "Cells in this row, displayed in the order provided"
-                    },
-                    "reward": {
-                      "type": "object",
-                      "properties": {
-                        "title": {
-                          "type": "object",
-                          "properties": {
-                            "defaultText": {
-                              "type": "string",
-                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                            },
-                            "localizationKey": {
-                              "type": "string",
-                              "description": "The unique key used to identify the localized text content for a specific language"
-                            },
-                            "localizedText": {
-                              "type": "string",
-                              "description": "Localized text content for the language specified by the code sent in the request filters"
-                            }
-                          },
-                          "description": "Reward title",
-                          "title": "Localizable Text"
-                        },
-                        "subtitle": {
-                          "type": "object",
-                          "properties": {
-                            "defaultText": {
-                              "type": "string",
-                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                            },
-                            "localizationKey": {
-                              "type": "string",
-                              "description": "The unique key used to identify the localized text content for a specific language"
-                            },
-                            "localizedText": {
-                              "type": "string",
-                              "description": "Localized text content for the language specified by the code sent in the request filters"
-                            }
-                          },
-                          "description": "Optional reward subtitle",
-                          "title": "Localizable Text"
-                        },
-                        "description": {
-                          "type": "object",
-                          "properties": {
-                            "defaultText": {
-                              "type": "string",
-                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                            },
-                            "localizationKey": {
-                              "type": "string",
-                              "description": "The unique key used to identify the localized text content for a specific language"
-                            },
-                            "localizedText": {
-                              "type": "string",
-                              "description": "Localized text content for the language specified by the code sent in the request filters"
-                            }
-                          },
-                          "description": "Optional reward description",
-                          "title": "Localizable Text"
-                        },
-                        "image": {
-                          "type": "string",
-                          "description": "Reward image URL"
-                        },
-                        "featured": {
-                          "type": "boolean",
-                          "description": "Whether this reward should be displayed prominently above the other rewards"
-                        },
-                        "statistics": {
-                          "type": "object",
-                          "properties": {
-                            "text": {
-                              "type": "object",
-                              "properties": {
-                                "defaultText": {
-                                  "type": "string",
-                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                },
-                                "localizationKey": {
-                                  "type": "string",
-                                  "description": "The unique key used to identify the localized text content for a specific language"
-                                },
-                                "localizedText": {
-                                  "type": "string",
-                                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                                }
-                              },
-                              "description": "Text content for this statistic",
-                              "title": "Localizable Text"
-                            },
-                            "textStyle": {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string"
-                              },
-                              "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
-                            },
-                            "iconImageUrl": {
-                              "type": "string",
-                              "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
-                            }
-                          },
-                          "description": "Statistics for this reward",
-                          "title": "Reward Statistics",
-                          "required": [
-                            "text"
-                          ]
-                        }
-                      },
-                      "description": "Optional reward details associated with the row, needed to support additional rendering options",
-                      "title": "Reward Details",
-                      "required": [
-                        "title"
-                      ]
                     }
                   },
                   "description": "Represents a single row in a table",
@@ -5773,121 +5692,6 @@
                   "title": "TableCell"
                 },
                 "description": "Cells in this row, displayed in the order provided"
-              },
-              "reward": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "object",
-                    "properties": {
-                      "defaultText": {
-                        "type": "string",
-                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                      },
-                      "localizationKey": {
-                        "type": "string",
-                        "description": "The unique key used to identify the localized text content for a specific language"
-                      },
-                      "localizedText": {
-                        "type": "string",
-                        "description": "Localized text content for the language specified by the code sent in the request filters"
-                      }
-                    },
-                    "description": "Reward title",
-                    "title": "Localizable Text"
-                  },
-                  "subtitle": {
-                    "type": "object",
-                    "properties": {
-                      "defaultText": {
-                        "type": "string",
-                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                      },
-                      "localizationKey": {
-                        "type": "string",
-                        "description": "The unique key used to identify the localized text content for a specific language"
-                      },
-                      "localizedText": {
-                        "type": "string",
-                        "description": "Localized text content for the language specified by the code sent in the request filters"
-                      }
-                    },
-                    "description": "Optional reward subtitle",
-                    "title": "Localizable Text"
-                  },
-                  "description": {
-                    "type": "object",
-                    "properties": {
-                      "defaultText": {
-                        "type": "string",
-                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                      },
-                      "localizationKey": {
-                        "type": "string",
-                        "description": "The unique key used to identify the localized text content for a specific language"
-                      },
-                      "localizedText": {
-                        "type": "string",
-                        "description": "Localized text content for the language specified by the code sent in the request filters"
-                      }
-                    },
-                    "description": "Optional reward description",
-                    "title": "Localizable Text"
-                  },
-                  "image": {
-                    "type": "string",
-                    "description": "Reward image URL"
-                  },
-                  "featured": {
-                    "type": "boolean",
-                    "description": "Whether this reward should be displayed prominently above the other rewards"
-                  },
-                  "statistics": {
-                    "type": "object",
-                    "properties": {
-                      "text": {
-                        "type": "object",
-                        "properties": {
-                          "defaultText": {
-                            "type": "string",
-                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                          },
-                          "localizationKey": {
-                            "type": "string",
-                            "description": "The unique key used to identify the localized text content for a specific language"
-                          },
-                          "localizedText": {
-                            "type": "string",
-                            "description": "Localized text content for the language specified by the code sent in the request filters"
-                          }
-                        },
-                        "description": "Text content for this statistic",
-                        "title": "Localizable Text"
-                      },
-                      "textStyle": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string"
-                        },
-                        "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
-                      },
-                      "iconImageUrl": {
-                        "type": "string",
-                        "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
-                      }
-                    },
-                    "description": "Statistics for this reward",
-                    "title": "Reward Statistics",
-                    "required": [
-                      "text"
-                    ]
-                  }
-                },
-                "description": "Optional reward details associated with the row, needed to support additional rendering options",
-                "title": "Reward Details",
-                "required": [
-                  "title"
-                ]
               }
             },
             "description": "Represents a single row in a table",
@@ -8422,6 +8226,55 @@
       "description": "Generic tooltip for additional information about any element.",
       "title": "Tooltip"
     },
+    "GetOfferDetailsResponseSectionHeader": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Title text for the section header",
+          "title": "Localizable Text"
+        },
+        "description": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Description text for the section header",
+          "title": "Localizable Text"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Icon image URL for the section header"
+        }
+      },
+      "description": "Represents a header for a section of a view",
+      "title": "Section Header"
+    },
     "ItemDetailRowItemDetailCell": {
       "type": "object",
       "properties": {
@@ -9413,121 +9266,6 @@
             "title": "TableCell"
           },
           "description": "Cells in this row, displayed in the order provided"
-        },
-        "reward": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "object",
-              "properties": {
-                "defaultText": {
-                  "type": "string",
-                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                },
-                "localizationKey": {
-                  "type": "string",
-                  "description": "The unique key used to identify the localized text content for a specific language"
-                },
-                "localizedText": {
-                  "type": "string",
-                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                }
-              },
-              "description": "Reward title",
-              "title": "Localizable Text"
-            },
-            "subtitle": {
-              "type": "object",
-              "properties": {
-                "defaultText": {
-                  "type": "string",
-                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                },
-                "localizationKey": {
-                  "type": "string",
-                  "description": "The unique key used to identify the localized text content for a specific language"
-                },
-                "localizedText": {
-                  "type": "string",
-                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                }
-              },
-              "description": "Optional reward subtitle",
-              "title": "Localizable Text"
-            },
-            "description": {
-              "type": "object",
-              "properties": {
-                "defaultText": {
-                  "type": "string",
-                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                },
-                "localizationKey": {
-                  "type": "string",
-                  "description": "The unique key used to identify the localized text content for a specific language"
-                },
-                "localizedText": {
-                  "type": "string",
-                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                }
-              },
-              "description": "Optional reward description",
-              "title": "Localizable Text"
-            },
-            "image": {
-              "type": "string",
-              "description": "Reward image URL"
-            },
-            "featured": {
-              "type": "boolean",
-              "description": "Whether this reward should be displayed prominently above the other rewards"
-            },
-            "statistics": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "object",
-                  "properties": {
-                    "defaultText": {
-                      "type": "string",
-                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                    },
-                    "localizationKey": {
-                      "type": "string",
-                      "description": "The unique key used to identify the localized text content for a specific language"
-                    },
-                    "localizedText": {
-                      "type": "string",
-                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                    }
-                  },
-                  "description": "Text content for this statistic",
-                  "title": "Localizable Text"
-                },
-                "textStyle": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
-                },
-                "iconImageUrl": {
-                  "type": "string",
-                  "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
-                }
-              },
-              "description": "Statistics for this reward",
-              "title": "Reward Statistics",
-              "required": [
-                "text"
-              ]
-            }
-          },
-          "description": "Optional reward details associated with the row, needed to support additional rendering options",
-          "title": "Reward Details",
-          "required": [
-            "title"
-          ]
         }
       },
       "description": "Represents a single row in a table",
@@ -11152,121 +10890,6 @@
                                     "title": "TableCell"
                                   },
                                   "description": "Cells in this row, displayed in the order provided"
-                                },
-                                "reward": {
-                                  "type": "object",
-                                  "properties": {
-                                    "title": {
-                                      "type": "object",
-                                      "properties": {
-                                        "defaultText": {
-                                          "type": "string",
-                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                        },
-                                        "localizationKey": {
-                                          "type": "string",
-                                          "description": "The unique key used to identify the localized text content for a specific language"
-                                        },
-                                        "localizedText": {
-                                          "type": "string",
-                                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                                        }
-                                      },
-                                      "description": "Reward title",
-                                      "title": "Localizable Text"
-                                    },
-                                    "subtitle": {
-                                      "type": "object",
-                                      "properties": {
-                                        "defaultText": {
-                                          "type": "string",
-                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                        },
-                                        "localizationKey": {
-                                          "type": "string",
-                                          "description": "The unique key used to identify the localized text content for a specific language"
-                                        },
-                                        "localizedText": {
-                                          "type": "string",
-                                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                                        }
-                                      },
-                                      "description": "Optional reward subtitle",
-                                      "title": "Localizable Text"
-                                    },
-                                    "description": {
-                                      "type": "object",
-                                      "properties": {
-                                        "defaultText": {
-                                          "type": "string",
-                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                        },
-                                        "localizationKey": {
-                                          "type": "string",
-                                          "description": "The unique key used to identify the localized text content for a specific language"
-                                        },
-                                        "localizedText": {
-                                          "type": "string",
-                                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                                        }
-                                      },
-                                      "description": "Optional reward description",
-                                      "title": "Localizable Text"
-                                    },
-                                    "image": {
-                                      "type": "string",
-                                      "description": "Reward image URL"
-                                    },
-                                    "featured": {
-                                      "type": "boolean",
-                                      "description": "Whether this reward should be displayed prominently above the other rewards"
-                                    },
-                                    "statistics": {
-                                      "type": "object",
-                                      "properties": {
-                                        "text": {
-                                          "type": "object",
-                                          "properties": {
-                                            "defaultText": {
-                                              "type": "string",
-                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                            },
-                                            "localizationKey": {
-                                              "type": "string",
-                                              "description": "The unique key used to identify the localized text content for a specific language"
-                                            },
-                                            "localizedText": {
-                                              "type": "string",
-                                              "description": "Localized text content for the language specified by the code sent in the request filters"
-                                            }
-                                          },
-                                          "description": "Text content for this statistic",
-                                          "title": "Localizable Text"
-                                        },
-                                        "textStyle": {
-                                          "type": "object",
-                                          "additionalProperties": {
-                                            "type": "string"
-                                          },
-                                          "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
-                                        },
-                                        "iconImageUrl": {
-                                          "type": "string",
-                                          "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
-                                        }
-                                      },
-                                      "description": "Statistics for this reward",
-                                      "title": "Reward Statistics",
-                                      "required": [
-                                        "text"
-                                      ]
-                                    }
-                                  },
-                                  "description": "Optional reward details associated with the row, needed to support additional rendering options",
-                                  "title": "Reward Details",
-                                  "required": [
-                                    "title"
-                                  ]
                                 }
                               },
                               "description": "Represents a single row in a table",
@@ -11315,6 +10938,125 @@
                 },
                 "description": "Header text for the tabs section",
                 "title": "Localizable Text"
+              },
+              "rewards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Reward title",
+                      "title": "Localizable Text"
+                    },
+                    "subtitle": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Optional reward subtitle",
+                      "title": "Localizable Text"
+                    },
+                    "description": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Optional reward description",
+                      "title": "Localizable Text"
+                    },
+                    "image": {
+                      "type": "string",
+                      "description": "Reward image URL"
+                    },
+                    "featured": {
+                      "type": "boolean",
+                      "description": "Whether this reward should be displayed prominently"
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Text content for this statistic",
+                          "title": "Localizable Text"
+                        },
+                        "textStyle": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                        },
+                        "iconImageUrl": {
+                          "type": "string",
+                          "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                        }
+                      },
+                      "description": "Statistics for this reward",
+                      "title": "Reward Statistics",
+                      "required": [
+                        "text"
+                      ]
+                    }
+                  },
+                  "description": "Represents details about a reward obtainable within an item",
+                  "title": "Reward Details",
+                  "required": [
+                    "title"
+                  ]
+                },
+                "description": "Rewards contained in this item"
               }
             },
             "description": "Represents an item contained in this offer",
@@ -11325,24 +11067,54 @@
           },
           "description": "Items contained in this offer"
         },
-        "featuredItemsDescription": {
+        "rewardsHeader": {
           "type": "object",
           "properties": {
-            "defaultText": {
-              "type": "string",
-              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            "title": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Title text for the section header",
+              "title": "Localizable Text"
             },
-            "localizationKey": {
-              "type": "string",
-              "description": "The unique key used to identify the localized text content for a specific language"
+            "description": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Description text for the section header",
+              "title": "Localizable Text"
             },
-            "localizedText": {
+            "iconImageUrl": {
               "type": "string",
-              "description": "Localized text content for the language specified by the code sent in the request filters"
+              "description": "Icon image URL for the section header"
             }
           },
-          "description": "Description text for the featured items section",
-          "title": "Localizable Text"
+          "description": "Header for the rewards section",
+          "title": "Section Header"
         }
       },
       "description": "Contains detailed information about a specific offer's obtainable item(s) and rewards",
@@ -11730,121 +11502,6 @@
                               "title": "TableCell"
                             },
                             "description": "Cells in this row, displayed in the order provided"
-                          },
-                          "reward": {
-                            "type": "object",
-                            "properties": {
-                              "title": {
-                                "type": "object",
-                                "properties": {
-                                  "defaultText": {
-                                    "type": "string",
-                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                  },
-                                  "localizationKey": {
-                                    "type": "string",
-                                    "description": "The unique key used to identify the localized text content for a specific language"
-                                  },
-                                  "localizedText": {
-                                    "type": "string",
-                                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                                  }
-                                },
-                                "description": "Reward title",
-                                "title": "Localizable Text"
-                              },
-                              "subtitle": {
-                                "type": "object",
-                                "properties": {
-                                  "defaultText": {
-                                    "type": "string",
-                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                  },
-                                  "localizationKey": {
-                                    "type": "string",
-                                    "description": "The unique key used to identify the localized text content for a specific language"
-                                  },
-                                  "localizedText": {
-                                    "type": "string",
-                                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                                  }
-                                },
-                                "description": "Optional reward subtitle",
-                                "title": "Localizable Text"
-                              },
-                              "description": {
-                                "type": "object",
-                                "properties": {
-                                  "defaultText": {
-                                    "type": "string",
-                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                  },
-                                  "localizationKey": {
-                                    "type": "string",
-                                    "description": "The unique key used to identify the localized text content for a specific language"
-                                  },
-                                  "localizedText": {
-                                    "type": "string",
-                                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                                  }
-                                },
-                                "description": "Optional reward description",
-                                "title": "Localizable Text"
-                              },
-                              "image": {
-                                "type": "string",
-                                "description": "Reward image URL"
-                              },
-                              "featured": {
-                                "type": "boolean",
-                                "description": "Whether this reward should be displayed prominently above the other rewards"
-                              },
-                              "statistics": {
-                                "type": "object",
-                                "properties": {
-                                  "text": {
-                                    "type": "object",
-                                    "properties": {
-                                      "defaultText": {
-                                        "type": "string",
-                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                      },
-                                      "localizationKey": {
-                                        "type": "string",
-                                        "description": "The unique key used to identify the localized text content for a specific language"
-                                      },
-                                      "localizedText": {
-                                        "type": "string",
-                                        "description": "Localized text content for the language specified by the code sent in the request filters"
-                                      }
-                                    },
-                                    "description": "Text content for this statistic",
-                                    "title": "Localizable Text"
-                                  },
-                                  "textStyle": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                      "type": "string"
-                                    },
-                                    "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
-                                  },
-                                  "iconImageUrl": {
-                                    "type": "string",
-                                    "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
-                                  }
-                                },
-                                "description": "Statistics for this reward",
-                                "title": "Reward Statistics",
-                                "required": [
-                                  "text"
-                                ]
-                              }
-                            },
-                            "description": "Optional reward details associated with the row, needed to support additional rendering options",
-                            "title": "Reward Details",
-                            "required": [
-                              "title"
-                            ]
                           }
                         },
                         "description": "Represents a single row in a table",
@@ -11893,6 +11550,125 @@
           },
           "description": "Header text for the tabs section",
           "title": "Localizable Text"
+        },
+        "rewards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Reward title",
+                "title": "Localizable Text"
+              },
+              "subtitle": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional reward subtitle",
+                "title": "Localizable Text"
+              },
+              "description": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional reward description",
+                "title": "Localizable Text"
+              },
+              "image": {
+                "type": "string",
+                "description": "Reward image URL"
+              },
+              "featured": {
+                "type": "boolean",
+                "description": "Whether this reward should be displayed prominently"
+              },
+              "statistics": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Text content for this statistic",
+                    "title": "Localizable Text"
+                  },
+                  "textStyle": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"
+                  },
+                  "iconImageUrl": {
+                    "type": "string",
+                    "description": "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."
+                  }
+                },
+                "description": "Statistics for this reward",
+                "title": "Reward Statistics",
+                "required": [
+                  "text"
+                ]
+              }
+            },
+            "description": "Represents details about a reward obtainable within an item",
+            "title": "Reward Details",
+            "required": [
+              "title"
+            ]
+          },
+          "description": "Rewards contained in this item"
         }
       },
       "description": "Represents an item contained in this offer",

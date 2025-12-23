@@ -795,53 +795,6 @@ message GetOfferDetailsResponse {
     }
     repeated ItemDetailSection detail_sections = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item detail sections displayed in the item details view"}];
 
-    message RewardDetails {
-      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-        json_schema: {
-          title: "Reward Details"
-          description: "Represents details about a reward obtainable within an item"
-          required: ["title"]
-        }
-      };
-      LocalizableText title = 1 [
-        (google.api.field_behavior) = REQUIRED,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward title"}
-      ];
-      optional LocalizableText subtitle = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward subtitle"}];
-      optional LocalizableText description = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward description"}];
-      string image = 4 [
-        (validate.rules).string = {
-          uri: true
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL"}
-      ];
-      optional bool featured = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this reward should be displayed prominently above the other rewards"}];
-
-      message RewardStatistics {
-        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-          json_schema: {
-            title: "Reward Statistics"
-            description: "Represents statistics about a reward obtainable within an item, e.g. the drop rate"
-            required: ["text"]
-          }
-        };
-        LocalizableText text = 1 [
-          (google.api.field_behavior) = REQUIRED,
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Text content for this statistic"}
-        ];
-        map<string, string> text_style = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"}];
-        optional string icon_image_url = 3 [
-          (validate.rules).string = {
-            uri: true
-            ignore_empty: true
-          },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."}
-        ];
-      }
-      optional RewardStatistics statistics = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Statistics for this reward"}];
-    }
-
     message Table {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
@@ -909,7 +862,6 @@ message GetOfferDetailsResponse {
           (validate.rules).repeated.min_items = 1,
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Cells in this row, displayed in the order provided"}
         ];
-        optional RewardDetails reward = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward details associated with the row, needed to support additional rendering options"}];
       }
       repeated TableRow rows = 2 [
         (google.api.field_behavior) = REQUIRED,
@@ -941,11 +893,77 @@ message GetOfferDetailsResponse {
     }
     repeated Tab tabs = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tabs containing tabbed content, displayed in the order provided"}];
     optional LocalizableText tabs_header = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Header text for the tabs section"}];
+
+    message RewardDetails {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Reward Details"
+          description: "Represents details about a reward obtainable within an item"
+          required: ["title"]
+        }
+      };
+      LocalizableText title = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward title"}
+      ];
+      optional LocalizableText subtitle = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward subtitle"}];
+      optional LocalizableText description = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward description"}];
+      string image = 4 [
+        (validate.rules).string = {
+          uri: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL"}
+      ];
+      optional bool featured = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this reward should be displayed prominently"}];
+
+      message RewardStatistics {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Reward Statistics"
+            description: "Represents statistics about a reward obtainable within an item, e.g. the drop rate"
+            required: ["text"]
+          }
+        };
+        LocalizableText text = 1 [
+          (google.api.field_behavior) = REQUIRED,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Text content for this statistic"}
+        ];
+        map<string, string> text_style = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS properties map for styling the statistic text (e.g., {\"text-transform\": \"uppercase\", \"color\": \"#ff6600\"})"}];
+        optional string icon_image_url = 3 [
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to icon image for the statistic. If not provided, a generic icon will be used."}
+        ];
+      }
+      optional RewardStatistics statistics = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Statistics for this reward"}];
+    }
+    repeated RewardDetails rewards = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Rewards contained in this item"}];
   }
   repeated ContentItem items = 1 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).repeated.min_items = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Items contained in this offer"}
   ];
-  optional LocalizableText featured_items_description = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description text for the featured items section"}];
+
+  message SectionHeader {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Section Header"
+        description: "Represents a header for a section of a view"
+      }
+    };
+    LocalizableText title = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Title text for the section header"}];
+    optional LocalizableText description = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description text for the section header"}];
+    string icon_image_url = 3 [
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Icon image URL for the section header"}
+    ];
+  }
+  optional SectionHeader rewards_header = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Header for the rewards section"}];
 }
