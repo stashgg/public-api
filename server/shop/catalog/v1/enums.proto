@@ -72,6 +72,14 @@ enum BadgeAction {
   BADGE_ACTION_SHOW_OFFER_DETAILS = 1;
 }
 
+enum ContentItemClickAction {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the action associated with clicking a content item"};
+  // Default click action (no action)
+  CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED = 0;
+  // Show item details for the content item by guid. The guid field must be set in order to view details for the relevant item in the OfferDetails response.
+  CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID = 1;
+}
+
 enum CellAlignment {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the horizontal alignment of cell content"};
   // Default alignment (typically START)

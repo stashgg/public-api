@@ -663,6 +663,15 @@
                                           "featured": {
                                             "type": "boolean",
                                             "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+                                          },
+                                          "clickAction": {
+                                            "type": "string",
+                                            "enum": [
+                                              "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                                              "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+                                            ],
+                                            "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                                            "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
                                           }
                                         },
                                         "description": "Represents an in-game item obtainable as part of this bundle",
@@ -3704,6 +3713,15 @@
               "featured": {
                 "type": "boolean",
                 "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+              },
+              "clickAction": {
+                "type": "string",
+                "enum": [
+                  "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                  "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+                ],
+                "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
               }
             },
             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -3985,6 +4003,15 @@
         "featured": {
           "type": "boolean",
           "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+        },
+        "clickAction": {
+          "type": "string",
+          "enum": [
+            "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+            "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+          ],
+          "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+          "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
         }
       },
       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -4605,6 +4632,15 @@
                         "featured": {
                           "type": "boolean",
                           "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+                        },
+                        "clickAction": {
+                          "type": "string",
+                          "enum": [
+                            "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                            "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+                          ],
+                          "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                          "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -6513,6 +6549,15 @@
                               "featured": {
                                 "type": "boolean",
                                 "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+                              },
+                              "clickAction": {
+                                "type": "string",
+                                "enum": [
+                                  "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                                  "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+                                ],
+                                "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                                "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -7608,6 +7653,15 @@
                   "featured": {
                     "type": "boolean",
                     "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+                  },
+                  "clickAction": {
+                    "type": "string",
+                    "enum": [
+                      "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                      "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+                    ],
+                    "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                    "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
                   }
                 },
                 "description": "Represents an in-game item obtainable as part of this bundle",
@@ -9362,6 +9416,15 @@
       "default": "CHAIN_LINK_STATUS_UNSPECIFIED",
       "description": "Represents the status of a chain link"
     },
+    "v1ContentItemClickAction": {
+      "type": "string",
+      "enum": [
+        "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+        "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+      ],
+      "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+      "description": "Represents the action associated with clicking a content item"
+    },
     "v1ContentItemType": {
       "type": "string",
       "enum": [
@@ -9992,6 +10055,15 @@
                                   "featured": {
                                     "type": "boolean",
                                     "description": "Whether this item should be displayed prominently above the other items within the offer bundle"
+                                  },
+                                  "clickAction": {
+                                    "type": "string",
+                                    "enum": [
+                                      "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                                      "CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID"
+                                    ],
+                                    "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
+                                    "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
                                   }
                                 },
                                 "description": "Represents an in-game item obtainable as part of this bundle",
