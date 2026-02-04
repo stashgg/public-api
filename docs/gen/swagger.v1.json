@@ -672,6 +672,32 @@
                                             ],
                                             "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
                                             "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+                                          },
+                                          "badge": {
+                                            "type": "object",
+                                            "properties": {
+                                              "text": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "defaultText": {
+                                                    "type": "string",
+                                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                  },
+                                                  "localizationKey": {
+                                                    "type": "string",
+                                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                                  },
+                                                  "localizedText": {
+                                                    "type": "string",
+                                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                  }
+                                                },
+                                                "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+                                                "title": "Localizable Text"
+                                              }
+                                            },
+                                            "description": "Optional badge to display text next to the quantity",
+                                            "title": "Simple Badge"
                                           }
                                         },
                                         "description": "Represents an in-game item obtainable as part of this bundle",
@@ -3722,6 +3748,32 @@
                 ],
                 "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
                 "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+              },
+              "badge": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+                    "title": "Localizable Text"
+                  }
+                },
+                "description": "Optional badge to display text next to the quantity",
+                "title": "Simple Badge"
               }
             },
             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -4012,6 +4064,32 @@
           ],
           "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
           "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+        },
+        "badge": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+              "title": "Localizable Text"
+            }
+          },
+          "description": "Optional badge to display text next to the quantity",
+          "title": "Simple Badge"
         }
       },
       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -4641,6 +4719,32 @@
                           ],
                           "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
                           "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+                        },
+                        "badge": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+                              "title": "Localizable Text"
+                            }
+                          },
+                          "description": "Optional badge to display text next to the quantity",
+                          "title": "Simple Badge"
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -6558,6 +6662,32 @@
                                 ],
                                 "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
                                 "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+                              },
+                              "badge": {
+                                "type": "object",
+                                "properties": {
+                                  "text": {
+                                    "type": "object",
+                                    "properties": {
+                                      "defaultText": {
+                                        "type": "string",
+                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                      },
+                                      "localizationKey": {
+                                        "type": "string",
+                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                      },
+                                      "localizedText": {
+                                        "type": "string",
+                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                      }
+                                    },
+                                    "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+                                    "title": "Localizable Text"
+                                  }
+                                },
+                                "description": "Optional badge to display text next to the quantity",
+                                "title": "Simple Badge"
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -7662,6 +7792,32 @@
                     ],
                     "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
                     "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+                  },
+                  "badge": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "The unique key used to identify the localized text content for a specific language"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                          }
+                        },
+                        "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+                        "title": "Localizable Text"
+                      }
+                    },
+                    "description": "Optional badge to display text next to the quantity",
+                    "title": "Simple Badge"
                   }
                 },
                 "description": "Represents an in-game item obtainable as part of this bundle",
@@ -8216,6 +8372,32 @@
       },
       "description": "Represents a reward buff or bonus applied to an item",
       "title": "Reward Buff"
+    },
+    "GetCatalogResponseSimpleBadge": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+          "title": "Localizable Text"
+        }
+      },
+      "description": "Simple text badge for a status or label, e.g. 'New', 'Bonus', 'Free', etc.",
+      "title": "Simple Badge"
     },
     "GetCatalogResponseSpecialIndicatorTag": {
       "type": "object",
@@ -10064,6 +10246,32 @@
                                     ],
                                     "default": "CONTENT_ITEM_CLICK_ACTION_UNSPECIFIED",
                                     "description": "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."
+                                  },
+                                  "badge": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')",
+                                        "title": "Localizable Text"
+                                      }
+                                    },
+                                    "description": "Optional badge to display text next to the quantity",
+                                    "title": "Simple Badge"
                                   }
                                 },
                                 "description": "Represents an in-game item obtainable as part of this bundle",

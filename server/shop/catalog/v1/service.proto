@@ -131,6 +131,16 @@ message GetCatalogResponse {
     optional LocalizableText strikethrough_text = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional strikethrough text for the badge, e.g. '24%' will be displayed as '~24%~'"}];
   }
 
+  message SimpleBadge {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Simple Badge"
+        description: "Simple text badge for a status or label, e.g. 'New', 'Bonus', 'Free', etc."
+      }
+    };
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Secondary badge text for status or label (e.g., 'New', 'Bonus', 'Free')"}];
+  }
+
   message Button {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
@@ -415,6 +425,7 @@ message GetCatalogResponse {
         optional RewardBuff reward_buff = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward buff applied to this item"}];
         optional bool featured = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this item should be displayed prominently above the other items within the offer bundle"}];
         optional ContentItemClickAction click_action = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."}];
+        optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
     }
