@@ -385,6 +385,30 @@ message ConfirmPaymentRequest {
   optional uint32 extra_in_game_currency = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra in-game currency bonus"}];
   optional uint32 extra_loyalty_points = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty points bonus"}];
   optional uint32 extra_loyalty_credits = 18 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty credits bonus"}];
+
+  message BonusItem {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Bonus Item"
+        description: "Represents a bonus item to be granted with the purchase"
+        required: [
+          "id",
+          "quantity"
+        ]
+      }
+    };
+    string id = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique identifier for the bonus item"}
+    ];
+    uint32 quantity = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).uint32.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity of the bonus item to grant (must be positive)"}
+    ];
+  }
+  repeated BonusItem bonus_items = 19 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional list of bonus items to be granted with the purchase"}];
 }
 
 message ConfirmPaymentResponse {

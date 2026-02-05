@@ -2450,6 +2450,30 @@
                   "type": "integer",
                   "format": "int64",
                   "description": "Optional extra loyalty credits bonus"
+                },
+                "bonusItems": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the bonus item"
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Quantity of the bonus item to grant (must be positive)"
+                      }
+                    },
+                    "description": "Represents a bonus item to be granted with the purchase",
+                    "title": "Bonus Item",
+                    "required": [
+                      "id",
+                      "quantity"
+                    ]
+                  },
+                  "description": "Optional list of bonus items to be granted with the purchase"
                 }
               },
               "description": "Request to confirm and complete a pending purchase that was previously registered.",
@@ -12123,6 +12147,26 @@
         "cents"
       ]
     },
+    "ConfirmPaymentRequestBonusItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the bonus item"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Quantity of the bonus item to grant (must be positive)"
+        }
+      },
+      "description": "Represents a bonus item to be granted with the purchase",
+      "title": "Bonus Item",
+      "required": [
+        "id",
+        "quantity"
+      ]
+    },
     "ConfirmPaymentRequestPurchasedItem": {
       "type": "object",
       "properties": {
@@ -12474,6 +12518,30 @@
           "type": "integer",
           "format": "int64",
           "description": "Optional extra loyalty credits bonus"
+        },
+        "bonusItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the bonus item"
+              },
+              "quantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity of the bonus item to grant (must be positive)"
+              }
+            },
+            "description": "Represents a bonus item to be granted with the purchase",
+            "title": "Bonus Item",
+            "required": [
+              "id",
+              "quantity"
+            ]
+          },
+          "description": "Optional list of bonus items to be granted with the purchase"
         }
       },
       "description": "Request to confirm and complete a pending purchase that was previously registered.",
