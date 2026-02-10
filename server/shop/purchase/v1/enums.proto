@@ -56,3 +56,19 @@ enum PurchaseSource {
   // Purchase initiated from direct StashPay checkout link
   PURCHASE_SOURCE_DIRECT = 2;
 }
+
+enum PaymentMethodType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the payment method used for the purchase"};
+  // Default unknown payment method
+  PAYMENT_METHOD_TYPE_UNSPECIFIED = 0;
+  // Standard credit/debit card payment
+  PAYMENT_METHOD_TYPE_CARD = 1;
+  // Apple Pay wallet payment
+  PAYMENT_METHOD_TYPE_APPLE_PAY = 2;
+  // Google Pay wallet payment
+  PAYMENT_METHOD_TYPE_GOOGLE_PAY = 3;
+  // PayPal payment
+  PAYMENT_METHOD_TYPE_PAYPAL = 4;
+  // Klarna buy-now-pay-later payment
+  PAYMENT_METHOD_TYPE_KLARNA = 5;
+}

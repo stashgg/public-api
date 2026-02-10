@@ -2351,6 +2351,20 @@
                   "format": "int64",
                   "description": "Timestamp when the purchase was completed (milliseconds since Unix epoch)"
                 },
+                "paymentMethodType": {
+                  "type": "string",
+                  "enum": [
+                    "PAYMENT_METHOD_TYPE_UNSPECIFIED",
+                    "PAYMENT_METHOD_TYPE_CARD",
+                    "PAYMENT_METHOD_TYPE_APPLE_PAY",
+                    "PAYMENT_METHOD_TYPE_GOOGLE_PAY",
+                    "PAYMENT_METHOD_TYPE_PAYPAL",
+                    "PAYMENT_METHOD_TYPE_KLARNA"
+                  ],
+                  "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
+                  "description": "Payment method used for this purchase (e.g., card, Apple Pay, Google Pay)",
+                  "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
+                },
                 "items": {
                   "type": "array",
                   "items": {
@@ -12419,6 +12433,20 @@
           "format": "int64",
           "description": "Timestamp when the purchase was completed (milliseconds since Unix epoch)"
         },
+        "paymentMethodType": {
+          "type": "string",
+          "enum": [
+            "PAYMENT_METHOD_TYPE_UNSPECIFIED",
+            "PAYMENT_METHOD_TYPE_CARD",
+            "PAYMENT_METHOD_TYPE_APPLE_PAY",
+            "PAYMENT_METHOD_TYPE_GOOGLE_PAY",
+            "PAYMENT_METHOD_TYPE_PAYPAL",
+            "PAYMENT_METHOD_TYPE_KLARNA"
+          ],
+          "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
+          "description": "Payment method used for this purchase (e.g., card, Apple Pay, Google Pay)",
+          "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
+        },
         "items": {
           "type": "array",
           "items": {
@@ -12584,6 +12612,20 @@
       "required": [
         "results"
       ]
+    },
+    "v1PaymentMethodType": {
+      "type": "string",
+      "enum": [
+        "PAYMENT_METHOD_TYPE_UNSPECIFIED",
+        "PAYMENT_METHOD_TYPE_CARD",
+        "PAYMENT_METHOD_TYPE_APPLE_PAY",
+        "PAYMENT_METHOD_TYPE_GOOGLE_PAY",
+        "PAYMENT_METHOD_TYPE_PAYPAL",
+        "PAYMENT_METHOD_TYPE_KLARNA"
+      ],
+      "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
+      "description": "Represents the payment method used for the purchase",
+      "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
     },
     "v1PurchaseCancellationStatus": {
       "type": "string",
