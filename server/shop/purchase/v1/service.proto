@@ -324,6 +324,7 @@ message ConfirmPaymentRequest {
     (validate.rules).int64.gt = 0,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when the purchase was completed (milliseconds since Unix epoch)"}
   ];
+  PaymentMethodType payment_method_type = 20 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment method used for this purchase (e.g., card, Apple Pay, Google Pay)"}];
 
   message PurchasedItem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
