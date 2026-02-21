@@ -7,6 +7,7 @@ import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "server/shop/catalog/v1/enums.proto";
+import "server/shop/v1/enums.proto";
 import "validate/validate.proto";
 
 option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/catalog/v1";
@@ -99,6 +100,7 @@ message GetCatalogRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional player ID filter to get player-specific catalog items"}
   ];
+  server.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 }
 
 message GetCatalogResponse {
@@ -706,6 +708,7 @@ message GetOfferDetailsRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional player ID filter to get player-specific catalog items"}
   ];
+  server.shop.v1.PaymentEnvironment environment = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 }
 
 message GetOfferDetailsResponse {
