@@ -2521,17 +2521,17 @@
                 "extraInGameCurrency": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Optional extra in-game currency bonus"
+                  "description": "[DEPRECATED] Use bonus_items instead"
                 },
                 "extraLoyaltyPoints": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Optional extra loyalty points bonus"
+                  "description": "[DEPRECATED] Use bonus_items instead"
                 },
                 "extraLoyaltyCredits": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Optional extra loyalty credits bonus"
+                  "description": "[DEPRECATED] Use bonus_items instead"
                 },
                 "bonusItems": {
                   "type": "array",
@@ -12681,17 +12681,17 @@
         "extraInGameCurrency": {
           "type": "integer",
           "format": "int64",
-          "description": "Optional extra in-game currency bonus"
+          "description": "[DEPRECATED] Use bonus_items instead"
         },
         "extraLoyaltyPoints": {
           "type": "integer",
           "format": "int64",
-          "description": "Optional extra loyalty points bonus"
+          "description": "[DEPRECATED] Use bonus_items instead"
         },
         "extraLoyaltyCredits": {
           "type": "integer",
           "format": "int64",
-          "description": "Optional extra loyalty credits bonus"
+          "description": "[DEPRECATED] Use bonus_items instead"
         },
         "bonusItems": {
           "type": "array",
