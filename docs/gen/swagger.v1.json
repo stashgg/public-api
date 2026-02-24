@@ -633,9 +633,9 @@
                                             "type": "object",
                                             "properties": {
                                               "percentage": {
-                                                "type": "integer",
-                                                "format": "int64",
-                                                "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+                                                "type": "number",
+                                                "format": "float",
+                                                "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
                                               },
                                               "type": {
                                                 "type": "string",
@@ -655,6 +655,10 @@
                                               "backgroundStyle": {
                                                 "type": "string",
                                                 "description": "Optional CSS-style background styling information for buff"
+                                              },
+                                              "displayPercentage": {
+                                                "type": "string",
+                                                "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
                                               }
                                             },
                                             "description": "Optional reward buff applied to this item",
@@ -3747,9 +3751,9 @@
                 "type": "object",
                 "properties": {
                   "percentage": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+                    "type": "number",
+                    "format": "float",
+                    "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
                   },
                   "type": {
                     "type": "string",
@@ -3769,6 +3773,10 @@
                   "backgroundStyle": {
                     "type": "string",
                     "description": "Optional CSS-style background styling information for buff"
+                  },
+                  "displayPercentage": {
+                    "type": "string",
+                    "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
                   }
                 },
                 "description": "Optional reward buff applied to this item",
@@ -4063,9 +4071,9 @@
           "type": "object",
           "properties": {
             "percentage": {
-              "type": "integer",
-              "format": "int64",
-              "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+              "type": "number",
+              "format": "float",
+              "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
             },
             "type": {
               "type": "string",
@@ -4085,6 +4093,10 @@
             "backgroundStyle": {
               "type": "string",
               "description": "Optional CSS-style background styling information for buff"
+            },
+            "displayPercentage": {
+              "type": "string",
+              "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
             }
           },
           "description": "Optional reward buff applied to this item",
@@ -4718,9 +4730,9 @@
                           "type": "object",
                           "properties": {
                             "percentage": {
-                              "type": "integer",
-                              "format": "int64",
-                              "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+                              "type": "number",
+                              "format": "float",
+                              "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
                             },
                             "type": {
                               "type": "string",
@@ -4740,6 +4752,10 @@
                             "backgroundStyle": {
                               "type": "string",
                               "description": "Optional CSS-style background styling information for buff"
+                            },
+                            "displayPercentage": {
+                              "type": "string",
+                              "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
                             }
                           },
                           "description": "Optional reward buff applied to this item",
@@ -6661,9 +6677,9 @@
                                 "type": "object",
                                 "properties": {
                                   "percentage": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+                                    "type": "number",
+                                    "format": "float",
+                                    "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
                                   },
                                   "type": {
                                     "type": "string",
@@ -6683,6 +6699,10 @@
                                   "backgroundStyle": {
                                     "type": "string",
                                     "description": "Optional CSS-style background styling information for buff"
+                                  },
+                                  "displayPercentage": {
+                                    "type": "string",
+                                    "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
                                   }
                                 },
                                 "description": "Optional reward buff applied to this item",
@@ -7791,9 +7811,9 @@
                     "type": "object",
                     "properties": {
                       "percentage": {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+                        "type": "number",
+                        "format": "float",
+                        "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
                       },
                       "type": {
                         "type": "string",
@@ -7813,6 +7833,10 @@
                       "backgroundStyle": {
                         "type": "string",
                         "description": "Optional CSS-style background styling information for buff"
+                      },
+                      "displayPercentage": {
+                        "type": "string",
+                        "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
                       }
                     },
                     "description": "Optional reward buff applied to this item",
@@ -8384,9 +8408,9 @@
       "type": "object",
       "properties": {
         "percentage": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+          "type": "number",
+          "format": "float",
+          "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
         },
         "type": {
           "type": "string",
@@ -8406,6 +8430,10 @@
         "backgroundStyle": {
           "type": "string",
           "description": "Optional CSS-style background styling information for buff"
+        },
+        "displayPercentage": {
+          "type": "string",
+          "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
         }
       },
       "description": "Represents a reward buff or bonus applied to an item",
@@ -10245,9 +10273,9 @@
                                     "type": "object",
                                     "properties": {
                                       "percentage": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "description": "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"
+                                        "type": "number",
+                                        "format": "float",
+                                        "description": "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"
                                       },
                                       "type": {
                                         "type": "string",
@@ -10267,6 +10295,10 @@
                                       "backgroundStyle": {
                                         "type": "string",
                                         "description": "Optional CSS-style background styling information for buff"
+                                      },
+                                      "displayPercentage": {
+                                        "type": "string",
+                                        "description": "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."
                                       }
                                     },
                                     "description": "Optional reward buff applied to this item",

@@ -184,9 +184,8 @@ message GetCatalogResponse {
         description: "Represents a reward buff or bonus applied to an item"
       }
     };
-    uint32 percentage = 1 [
-      (validate.rules).uint32.gte = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff percentage (0-100+, no decimals), e.g. for 3X multiplier, use 300"}
+    float percentage = 1 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"}
     ];
     RewardBuffType type = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff type (additive or multiplier)"}];
     string icon_image_url = 3 [
@@ -197,6 +196,7 @@ message GetCatalogResponse {
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to buff icon image"}
     ];
     optional string background_style = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for buff"}];
+    optional string display_percentage = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional pre-formatted display string for the buff percentage (e.g. '+3.5%', '3X'). If set, takes priority over the numeric percentage field for display purposes."}];
   }
 
   message SpecialIndicatorTag {
