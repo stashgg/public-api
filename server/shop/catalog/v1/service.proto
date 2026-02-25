@@ -184,9 +184,7 @@ message GetCatalogResponse {
         description: "Represents a reward buff or bonus applied to an item"
       }
     };
-    float percentage = 1 [
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"}
-    ];
+    float percentage = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff percentage (e.g. 3.5 for +3.5% additive, 300 for 3X multiplier)"}];
     RewardBuffType type = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buff type (additive or multiplier)"}];
     string icon_image_url = 3 [
       (validate.rules).string = {
@@ -953,6 +951,7 @@ message GetOfferDetailsResponse {
       optional RewardStatistics statistics = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Statistics for this reward"}];
     }
     repeated RewardDetails rewards = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Rewards contained in this item"}];
+    optional google.protobuf.Timestamp last_updated_at = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp of when this content item was last updated"}];
   }
   repeated ContentItem items = 1 [
     (google.api.field_behavior) = REQUIRED,

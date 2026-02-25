@@ -1851,6 +1851,11 @@
                           ]
                         },
                         "description": "Rewards contained in this item"
+                      },
+                      "lastUpdatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Optional timestamp of when this content item was last updated"
                       }
                     },
                     "description": "Represents an item contained in this offer",
@@ -11407,6 +11412,11 @@
                   ]
                 },
                 "description": "Rewards contained in this item"
+              },
+              "lastUpdatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Optional timestamp of when this content item was last updated"
               }
             },
             "description": "Represents an item contained in this offer",
@@ -12019,6 +12029,11 @@
             ]
           },
           "description": "Rewards contained in this item"
+        },
+        "lastUpdatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp of when this content item was last updated"
         }
       },
       "description": "Represents an item contained in this offer",
