@@ -384,12 +384,8 @@ message ConfirmPaymentRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"}
   ];
-
+  string user_email = 22 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Customer email for the purchase"}];
   optional bool email_marketing_opt_in = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional flag indicating if customer opted in to email marketing"}];
-
-  optional uint32 extra_in_game_currency = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra in-game currency bonus"}];
-  optional uint32 extra_loyalty_points = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty points bonus"}];
-  optional uint32 extra_loyalty_credits = 18 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional extra loyalty credits bonus"}];
 
   message BonusItem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {

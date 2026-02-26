@@ -2514,24 +2514,13 @@
                   "type": "string",
                   "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
                 },
+                "userEmail": {
+                  "type": "string",
+                  "description": "Customer email for the purchase"
+                },
                 "emailMarketingOptIn": {
                   "type": "boolean",
                   "description": "Optional flag indicating if customer opted in to email marketing"
-                },
-                "extraInGameCurrency": {
-                  "type": "integer",
-                  "format": "int64",
-                  "description": "Optional extra in-game currency bonus"
-                },
-                "extraLoyaltyPoints": {
-                  "type": "integer",
-                  "format": "int64",
-                  "description": "Optional extra loyalty points bonus"
-                },
-                "extraLoyaltyCredits": {
-                  "type": "integer",
-                  "format": "int64",
-                  "description": "Optional extra loyalty credits bonus"
                 },
                 "bonusItems": {
                   "type": "array",
@@ -12674,24 +12663,13 @@
           "type": "string",
           "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
         },
+        "userEmail": {
+          "type": "string",
+          "description": "Customer email for the purchase"
+        },
         "emailMarketingOptIn": {
           "type": "boolean",
           "description": "Optional flag indicating if customer opted in to email marketing"
-        },
-        "extraInGameCurrency": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Optional extra in-game currency bonus"
-        },
-        "extraLoyaltyPoints": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Optional extra loyalty points bonus"
-        },
-        "extraLoyaltyCredits": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Optional extra loyalty credits bonus"
         },
         "bonusItems": {
           "type": "array",
