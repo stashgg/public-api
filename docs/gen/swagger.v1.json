@@ -1280,6 +1280,19 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "environment",
+            "description": "Payment environment for the request",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+              "PAYMENT_ENVIRONMENT_TEST",
+              "PAYMENT_ENVIRONMENT_PRODUCTION"
+            ],
+            "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -2000,6 +2013,19 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "environment",
+            "description": "Payment environment for the request",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+              "PAYMENT_ENVIRONMENT_TEST",
+              "PAYMENT_ENVIRONMENT_PRODUCTION"
+            ],
+            "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -2097,6 +2123,19 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "environment",
+            "description": "Payment environment for the request",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+              "PAYMENT_ENVIRONMENT_TEST",
+              "PAYMENT_ENVIRONMENT_PRODUCTION"
+            ],
+            "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -2190,6 +2229,16 @@
                 "checkoutLinkId": {
                   "type": "string",
                   "description": "Optional checkout link identifier if purchase was made through a checkout link"
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+                    "PAYMENT_ENVIRONMENT_TEST",
+                    "PAYMENT_ENVIRONMENT_PRODUCTION"
+                  ],
+                  "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+                  "description": "Payment environment for the request"
                 },
                 "items": {
                   "type": "array",
@@ -2340,6 +2389,16 @@
                 "checkoutLinkId": {
                   "type": "string",
                   "description": "Optional checkout link identifier if purchase was made through a checkout link"
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+                    "PAYMENT_ENVIRONMENT_TEST",
+                    "PAYMENT_ENVIRONMENT_PRODUCTION"
+                  ],
+                  "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+                  "description": "Payment environment for the request"
                 },
                 "currency": {
                   "type": "string",
@@ -2631,6 +2690,16 @@
                 "checkoutLinkId": {
                   "type": "string",
                   "description": "Optional checkout link identifier if purchase was made through a checkout link"
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+                    "PAYMENT_ENVIRONMENT_TEST",
+                    "PAYMENT_ENVIRONMENT_PRODUCTION"
+                  ],
+                  "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+                  "description": "Payment environment for the request"
                 },
                 "currency": {
                   "type": "string",
@@ -12071,6 +12140,16 @@
       "description": "Represents the type of non-purchasable item",
       "title": "- NON_PURCHASABLE_ITEM_TYPE_UNSPECIFIED: Default non-purchasable item type\n - NON_PURCHASABLE_ITEM_TYPE_BANNER: Banner type non-purchasable item for emphasized full-width display"
     },
+    "v1PaymentEnvironment": {
+      "type": "string",
+      "enum": [
+        "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+        "PAYMENT_ENVIRONMENT_TEST",
+        "PAYMENT_ENVIRONMENT_PRODUCTION"
+      ],
+      "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+      "description": "Represents the payment environment for the request"
+    },
     "v1PurchasableItemType": {
       "type": "string",
       "enum": [
@@ -12371,6 +12450,16 @@
           "type": "string",
           "description": "Optional checkout link identifier if purchase was made through a checkout link"
         },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+            "PAYMENT_ENVIRONMENT_TEST",
+            "PAYMENT_ENVIRONMENT_PRODUCTION"
+          ],
+          "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+          "description": "Payment environment for the request"
+        },
         "items": {
           "type": "array",
           "items": {
@@ -12460,6 +12549,16 @@
         "checkoutLinkId": {
           "type": "string",
           "description": "Optional checkout link identifier if purchase was made through a checkout link"
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+            "PAYMENT_ENVIRONMENT_TEST",
+            "PAYMENT_ENVIRONMENT_PRODUCTION"
+          ],
+          "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+          "description": "Payment environment for the request"
         },
         "currency": {
           "type": "string",
@@ -12739,6 +12838,16 @@
         "checkoutLinkId": {
           "type": "string",
           "description": "Optional checkout link identifier if purchase was made through a checkout link"
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+            "PAYMENT_ENVIRONMENT_TEST",
+            "PAYMENT_ENVIRONMENT_PRODUCTION"
+          ],
+          "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
+          "description": "Payment environment for the request"
         },
         "currency": {
           "type": "string",
