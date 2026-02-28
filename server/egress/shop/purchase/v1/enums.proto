@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package server.shop.purchase.v1;
+package server.egress.shop.purchase.v1;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/purchase/v1";
+option go_package = "github.com/stashgg/public-api/gen/proto/server/egress/shop/purchase/v1";
 
 enum PurchaseRegistrationStatus {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the status of a purchase registration"};
