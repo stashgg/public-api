@@ -1,14 +1,14 @@
 syntax = "proto3";
 
-package server.shop.user.v1;
+package server.egress.shop.user.v1;
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "server/shop/v1/enums.proto";
+import "server/egress/shop/v1/enums.proto";
 import "validate/validate.proto";
 
-option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/user/v1";
+option go_package = "github.com/stashgg/public-api/gen/proto/server/egress/shop/user/v1";
 
 service UserService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
@@ -42,7 +42,7 @@ message GetPlayerRequest {
     (validate.rules).string.min_len = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player ID to retrieve"}
   ];
-  server.shop.v1.PaymentEnvironment environment = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
+  server.egress.shop.v1.PaymentEnvironment environment = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 }
 
 message GetPlayerResponse {

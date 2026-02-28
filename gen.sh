@@ -26,10 +26,10 @@ buf generate
 
 # Generate TypeScript clients from OpenAPI specs
 echo "Generating TypeScript clients..."
-mkdir -p gen/typescript/server/shop/catalog gen/typescript/server/shop/user gen/typescript/server/shop/purchase
-npx --yes swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/shop/catalog/v1/service.swagger.json -o ./gen/typescript/server/shop/catalog/ -n catalog-client.ts --route-types --module-name-index=1 --no-client
-npx swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/shop/user/v1/service.swagger.json -o ./gen/typescript/server/shop/user/ -n user-client.ts --route-types --module-name-index=1 --no-client
-npx swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/shop/purchase/v1/service.swagger.json -o ./gen/typescript/server/shop/purchase/ -n purchase-client.ts --route-types --module-name-index=1 --no-client
+mkdir -p gen/typescript/server/egress/shop/catalog gen/typescript/server/egress/shop/user gen/typescript/server/egress/shop/purchase
+npx --yes swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/egress/shop/catalog/v1/service.swagger.json -o ./gen/typescript/server/egress/shop/catalog/ -n catalog-client.ts --route-types --module-name-index=1 --no-client
+npx swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/egress/shop/user/v1/service.swagger.json -o ./gen/typescript/server/egress/shop/user/ -n user-client.ts --route-types --module-name-index=1 --no-client
+npx swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/egress/shop/purchase/v1/service.swagger.json -o ./gen/typescript/server/egress/shop/purchase/ -n purchase-client.ts --route-types --module-name-index=1 --no-client
 
 # Merge all OpenAPI specs into a single swagger file
 echo "Merging Swagger files..."
