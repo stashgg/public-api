@@ -469,6 +469,10 @@ message GetCatalogResponse {
           (validate.rules).string.min_len = 1,
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier"}
         ];
+        string link_id = 9 [
+          (validate.rules).string.min_len = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique identifier for the link"}
+        ];
         optional PriceAmountOrId price = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price for this link (if not provided, the price is free)"}];
         optional uint32 max_purchasable = 4 [
           (validate.rules).uint32.gt = 0,

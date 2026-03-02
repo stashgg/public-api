@@ -787,6 +787,10 @@
                                             "type": "string",
                                             "description": "Required unique SKU/product identifier"
                                           },
+                                          "linkId": {
+                                            "type": "string",
+                                            "description": "Required unique identifier for the link"
+                                          },
                                           "price": {
                                             "type": "object",
                                             "properties": {
@@ -3023,6 +3027,10 @@
                 "type": "string",
                 "description": "Required unique SKU/product identifier"
               },
+              "linkId": {
+                "type": "string",
+                "description": "Required unique identifier for the link"
+              },
               "price": {
                 "type": "object",
                 "properties": {
@@ -4946,6 +4954,10 @@
                         "productId": {
                           "type": "string",
                           "description": "Required unique SKU/product identifier"
+                        },
+                        "linkId": {
+                          "type": "string",
+                          "description": "Required unique identifier for the link"
                         },
                         "price": {
                           "type": "object",
@@ -6894,6 +6906,10 @@
                                 "type": "string",
                                 "description": "Required unique SKU/product identifier"
                               },
+                              "linkId": {
+                                "type": "string",
+                                "description": "Required unique identifier for the link"
+                              },
                               "price": {
                                 "type": "object",
                                 "properties": {
@@ -8028,6 +8044,10 @@
                     "type": "string",
                     "description": "Required unique SKU/product identifier"
                   },
+                  "linkId": {
+                    "type": "string",
+                    "description": "Required unique identifier for the link"
+                  },
                   "price": {
                     "type": "object",
                     "properties": {
@@ -8983,6 +9003,10 @@
         "productId": {
           "type": "string",
           "description": "Required unique SKU/product identifier"
+        },
+        "linkId": {
+          "type": "string",
+          "description": "Required unique identifier for the link"
         },
         "price": {
           "type": "object",
@@ -10489,6 +10513,10 @@
                                   "productId": {
                                     "type": "string",
                                     "description": "Required unique SKU/product identifier"
+                                  },
+                                  "linkId": {
+                                    "type": "string",
+                                    "description": "Required unique identifier for the link"
                                   },
                                   "price": {
                                     "type": "object",
