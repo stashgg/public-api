@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package server.shop.purchase.v1;
+package server.egress.shop.purchase.v1;
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "server/shop/purchase/v1/enums.proto";
-import "server/shop/v1/enums.proto";
+import "server/egress/shop/purchase/v1/enums.proto";
+import "server/egress/shop/v1/enums.proto";
 import "validate/validate.proto";
 
-option go_package = "github.com/stashgg/public-api/gen/proto/server/shop/purchase/v1";
+option go_package = "github.com/stashgg/public-api/gen/proto/server/egress/shop/purchase/v1";
 
 service PurchaseService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
@@ -89,7 +89,7 @@ message RegisterPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique transaction identifier for this purchase session"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
-  server.shop.v1.PaymentEnvironment environment = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
+  server.egress.shop.v1.PaymentEnvironment environment = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 
   string currency = 4 [
     (google.api.field_behavior) = REQUIRED,
@@ -221,7 +221,7 @@ message CancelPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to cancel"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
-  server.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
+  server.egress.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 
   message CanceledItem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -303,7 +303,7 @@ message ConfirmPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to confirm"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
-  server.shop.v1.PaymentEnvironment environment = 21 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
+  server.egress.shop.v1.PaymentEnvironment environment = 21 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 
   string currency = 4 [
     (google.api.field_behavior) = REQUIRED,
