@@ -40,6 +40,7 @@ jobs:
         run: |
           # Exclude redoc HTML from diff check (output varies by platform due to styled-components)
           git checkout -- docs/gen/redoc.v1.html 2>/dev/null || true
+          git checkout -- docs/gen/redoc.ingress.v1.html 2>/dev/null || true
 
           if [ -n "$(git status --porcelain)" ]; then
             echo "::error::Generated files are out of date. Please run 'make check' locally and commit the changes."

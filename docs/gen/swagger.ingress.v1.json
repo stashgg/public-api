@@ -1,0 +1,1105 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Stash Managed Catalog API",
+    "description": "Read-only API for querying the Stash managed product catalog. Designed for server-to-server communication between partner backends and Stash services.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "https://docs.stash.gg/",
+      "email": "help@stash.gg"
+    }
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "ManagedCatalog",
+      "description": "Read-only endpoints for querying the managed product catalog"
+    }
+  ],
+  "paths": {
+    "/api/v1/studio/{shopId}/products": {
+      "get": {
+        "summary": "List published products",
+        "description": "Retrieves a paginated list of published products for a shop. Results are ordered by creation date (most recent first). Only published products are returned; drafts and deleted products are excluded.",
+        "operationId": "ManagedCatalogService_ListProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "productId": {
+                        "type": "string",
+                        "description": "Unique product identifier (UUID)"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Internal product name"
+                      },
+                      "externalId": {
+                        "type": "string",
+                        "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Product description. Always non-empty for published products"
+                      },
+                      "images": {
+                        "type": "object",
+                        "example": {
+                          "mainImage": "https://example.com/main.jpg",
+                          "backgroundImage": "https://example.com/bg.jpg"
+                        },
+                        "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "PRODUCT_STATUS_UNSPECIFIED",
+                          "PRODUCT_STATUS_PUBLISHED"
+                        ],
+                        "default": "PRODUCT_STATUS_UNSPECIFIED",
+                        "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the product was created (RFC 3339)"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the product was last updated (RFC 3339)"
+                      },
+                      "displayName": {
+                        "type": "string",
+                        "description": "Human-readable display name. Always non-empty for published products"
+                      },
+                      "prices": {
+                        "type": "array",
+                        "example": [
+                          {
+                            "currency": "USD",
+                            "platform": "UNIVERSAL",
+                            "region": "US",
+                            "price": 4.99,
+                            "updatedAt": "2026-01-15T10:30:00Z"
+                          }
+                        ],
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "PRODUCT_CURRENCY_UNSPECIFIED",
+                                "USD"
+                              ],
+                              "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+                              "description": "Currency code (e.g., USD)",
+                              "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                            },
+                            "platform": {
+                              "type": "string",
+                              "enum": [
+                                "PRODUCT_PLATFORM_UNSPECIFIED",
+                                "UNIVERSAL"
+                              ],
+                              "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+                              "description": "Platform (e.g., UNIVERSAL)",
+                              "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                            },
+                            "region": {
+                              "type": "string",
+                              "enum": [
+                                "PRODUCT_REGION_UNSPECIFIED",
+                                "US"
+                              ],
+                              "default": "PRODUCT_REGION_UNSPECIFIED",
+                              "description": "Region (e.g., US)",
+                              "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "double",
+                              "example": 4.99,
+                              "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Timestamp when this price was last updated (RFC 3339)"
+                            }
+                          },
+                          "description": "A price entry for a product",
+                          "title": "Price"
+                        },
+                        "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+                      },
+                      "items": {
+                        "type": "array",
+                        "example": [
+                          {
+                            "image": "https://example.com/coin.png",
+                            "quantity": "100",
+                            "displayName": "Gold Coin"
+                          }
+                        ],
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "image": {
+                              "type": "string",
+                              "description": "URL to the item image. Always non-empty for published products"
+                            },
+                            "quantity": {
+                              "type": "string",
+                              "format": "int64",
+                              "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                            },
+                            "displayName": {
+                              "type": "string",
+                              "description": "Optional display name for the item (max 50 characters)"
+                            }
+                          },
+                          "description": "An item contained in a product",
+                          "title": "Item"
+                        },
+                        "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                      }
+                    },
+                    "description": "A published product from the managed catalog",
+                    "title": "Product"
+                  },
+                  "description": "List of published products"
+                },
+                "nextOffset": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Offset for the next page. Omitted if there are no more results."
+                }
+              },
+              "description": "Paginated list of published products",
+              "title": "List Products Response"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shopId",
+            "description": "Shop identifier from Stash Studio",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Maximum results per page. Defaults to 50. Maximum allowed value is 100.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "description": "Pagination offset. Use next_offset from the previous response to fetch the next page. Defaults to 0.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ManagedCatalog"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      }
+    },
+    "/api/v1/studio/{shopId}/products/{productId}": {
+      "get": {
+        "summary": "Get a single published product",
+        "description": "Retrieves a single published product by its product ID. Returns NOT_FOUND if the product does not exist or is not published.",
+        "operationId": "ManagedCatalogService_GetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string",
+                      "description": "Unique product identifier (UUID)"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Internal product name"
+                    },
+                    "externalId": {
+                      "type": "string",
+                      "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Product description. Always non-empty for published products"
+                    },
+                    "images": {
+                      "type": "object",
+                      "example": {
+                        "mainImage": "https://example.com/main.jpg",
+                        "backgroundImage": "https://example.com/bg.jpg"
+                      },
+                      "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "PRODUCT_STATUS_UNSPECIFIED",
+                        "PRODUCT_STATUS_PUBLISHED"
+                      ],
+                      "default": "PRODUCT_STATUS_UNSPECIFIED",
+                      "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the product was created (RFC 3339)"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the product was last updated (RFC 3339)"
+                    },
+                    "displayName": {
+                      "type": "string",
+                      "description": "Human-readable display name. Always non-empty for published products"
+                    },
+                    "prices": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "currency": "USD",
+                          "platform": "UNIVERSAL",
+                          "region": "US",
+                          "price": 4.99,
+                          "updatedAt": "2026-01-15T10:30:00Z"
+                        }
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "currency": {
+                            "type": "string",
+                            "enum": [
+                              "PRODUCT_CURRENCY_UNSPECIFIED",
+                              "USD"
+                            ],
+                            "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+                            "description": "Currency code (e.g., USD)",
+                            "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                          },
+                          "platform": {
+                            "type": "string",
+                            "enum": [
+                              "PRODUCT_PLATFORM_UNSPECIFIED",
+                              "UNIVERSAL"
+                            ],
+                            "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+                            "description": "Platform (e.g., UNIVERSAL)",
+                            "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                          },
+                          "region": {
+                            "type": "string",
+                            "enum": [
+                              "PRODUCT_REGION_UNSPECIFIED",
+                              "US"
+                            ],
+                            "default": "PRODUCT_REGION_UNSPECIFIED",
+                            "description": "Region (e.g., US)",
+                            "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                          },
+                          "price": {
+                            "type": "number",
+                            "format": "double",
+                            "example": 4.99,
+                            "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when this price was last updated (RFC 3339)"
+                          }
+                        },
+                        "description": "A price entry for a product",
+                        "title": "Price"
+                      },
+                      "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+                    },
+                    "items": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "image": "https://example.com/coin.png",
+                          "quantity": "100",
+                          "displayName": "Gold Coin"
+                        }
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "image": {
+                            "type": "string",
+                            "description": "URL to the item image. Always non-empty for published products"
+                          },
+                          "quantity": {
+                            "type": "string",
+                            "format": "int64",
+                            "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                          },
+                          "displayName": {
+                            "type": "string",
+                            "description": "Optional display name for the item (max 50 characters)"
+                          }
+                        },
+                        "description": "An item contained in a product",
+                        "title": "Item"
+                      },
+                      "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                    }
+                  },
+                  "description": "The requested product",
+                  "title": "Product"
+                }
+              },
+              "description": "Response containing a single published product",
+              "title": "Get Product Response",
+              "required": [
+                "product"
+              ]
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shopId",
+            "description": "Shop identifier from Stash Studio",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Product identifier",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ManagedCatalog"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\nThe JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {}
+          }
+        }
+      }
+    },
+    "v1GetProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "object",
+          "properties": {
+            "productId": {
+              "type": "string",
+              "description": "Unique product identifier (UUID)"
+            },
+            "name": {
+              "type": "string",
+              "description": "Internal product name"
+            },
+            "externalId": {
+              "type": "string",
+              "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+            },
+            "description": {
+              "type": "string",
+              "description": "Product description. Always non-empty for published products"
+            },
+            "images": {
+              "type": "object",
+              "example": {
+                "mainImage": "https://example.com/main.jpg",
+                "backgroundImage": "https://example.com/bg.jpg"
+              },
+              "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "PRODUCT_STATUS_UNSPECIFIED",
+                "PRODUCT_STATUS_PUBLISHED"
+              ],
+              "default": "PRODUCT_STATUS_UNSPECIFIED",
+              "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Timestamp when the product was created (RFC 3339)"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Timestamp when the product was last updated (RFC 3339)"
+            },
+            "displayName": {
+              "type": "string",
+              "description": "Human-readable display name. Always non-empty for published products"
+            },
+            "prices": {
+              "type": "array",
+              "example": [
+                {
+                  "currency": "USD",
+                  "platform": "UNIVERSAL",
+                  "region": "US",
+                  "price": 4.99,
+                  "updatedAt": "2026-01-15T10:30:00Z"
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "enum": [
+                      "PRODUCT_CURRENCY_UNSPECIFIED",
+                      "USD"
+                    ],
+                    "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+                    "description": "Currency code (e.g., USD)",
+                    "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                  },
+                  "platform": {
+                    "type": "string",
+                    "enum": [
+                      "PRODUCT_PLATFORM_UNSPECIFIED",
+                      "UNIVERSAL"
+                    ],
+                    "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+                    "description": "Platform (e.g., UNIVERSAL)",
+                    "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                  },
+                  "region": {
+                    "type": "string",
+                    "enum": [
+                      "PRODUCT_REGION_UNSPECIFIED",
+                      "US"
+                    ],
+                    "default": "PRODUCT_REGION_UNSPECIFIED",
+                    "description": "Region (e.g., US)",
+                    "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 4.99,
+                    "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when this price was last updated (RFC 3339)"
+                  }
+                },
+                "description": "A price entry for a product",
+                "title": "Price"
+              },
+              "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+            },
+            "items": {
+              "type": "array",
+              "example": [
+                {
+                  "image": "https://example.com/coin.png",
+                  "quantity": "100",
+                  "displayName": "Gold Coin"
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "description": "URL to the item image. Always non-empty for published products"
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "description": "Optional display name for the item (max 50 characters)"
+                  }
+                },
+                "description": "An item contained in a product",
+                "title": "Item"
+              },
+              "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+            }
+          },
+          "description": "The requested product",
+          "title": "Product"
+        }
+      },
+      "description": "Response containing a single published product",
+      "title": "Get Product Response",
+      "required": [
+        "product"
+      ]
+    },
+    "v1Item": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "URL to the item image. Always non-empty for published products"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64",
+          "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Optional display name for the item (max 50 characters)"
+        }
+      },
+      "description": "An item contained in a product",
+      "title": "Item"
+    },
+    "v1ListProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string",
+                "description": "Unique product identifier (UUID)"
+              },
+              "name": {
+                "type": "string",
+                "description": "Internal product name"
+              },
+              "externalId": {
+                "type": "string",
+                "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+              },
+              "description": {
+                "type": "string",
+                "description": "Product description. Always non-empty for published products"
+              },
+              "images": {
+                "type": "object",
+                "example": {
+                  "mainImage": "https://example.com/main.jpg",
+                  "backgroundImage": "https://example.com/bg.jpg"
+                },
+                "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "PRODUCT_STATUS_UNSPECIFIED",
+                  "PRODUCT_STATUS_PUBLISHED"
+                ],
+                "default": "PRODUCT_STATUS_UNSPECIFIED",
+                "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the product was created (RFC 3339)"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the product was last updated (RFC 3339)"
+              },
+              "displayName": {
+                "type": "string",
+                "description": "Human-readable display name. Always non-empty for published products"
+              },
+              "prices": {
+                "type": "array",
+                "example": [
+                  {
+                    "currency": "USD",
+                    "platform": "UNIVERSAL",
+                    "region": "US",
+                    "price": 4.99,
+                    "updatedAt": "2026-01-15T10:30:00Z"
+                  }
+                ],
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "currency": {
+                      "type": "string",
+                      "enum": [
+                        "PRODUCT_CURRENCY_UNSPECIFIED",
+                        "USD"
+                      ],
+                      "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+                      "description": "Currency code (e.g., USD)",
+                      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                    },
+                    "platform": {
+                      "type": "string",
+                      "enum": [
+                        "PRODUCT_PLATFORM_UNSPECIFIED",
+                        "UNIVERSAL"
+                      ],
+                      "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+                      "description": "Platform (e.g., UNIVERSAL)",
+                      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                    },
+                    "region": {
+                      "type": "string",
+                      "enum": [
+                        "PRODUCT_REGION_UNSPECIFIED",
+                        "US"
+                      ],
+                      "default": "PRODUCT_REGION_UNSPECIFIED",
+                      "description": "Region (e.g., US)",
+                      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 4.99,
+                      "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when this price was last updated (RFC 3339)"
+                    }
+                  },
+                  "description": "A price entry for a product",
+                  "title": "Price"
+                },
+                "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+              },
+              "items": {
+                "type": "array",
+                "example": [
+                  {
+                    "image": "https://example.com/coin.png",
+                    "quantity": "100",
+                    "displayName": "Gold Coin"
+                  }
+                ],
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "image": {
+                      "type": "string",
+                      "description": "URL to the item image. Always non-empty for published products"
+                    },
+                    "quantity": {
+                      "type": "string",
+                      "format": "int64",
+                      "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                    },
+                    "displayName": {
+                      "type": "string",
+                      "description": "Optional display name for the item (max 50 characters)"
+                    }
+                  },
+                  "description": "An item contained in a product",
+                  "title": "Item"
+                },
+                "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+              }
+            },
+            "description": "A published product from the managed catalog",
+            "title": "Product"
+          },
+          "description": "List of published products"
+        },
+        "nextOffset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Offset for the next page. Omitted if there are no more results."
+        }
+      },
+      "description": "Paginated list of published products",
+      "title": "List Products Response"
+    },
+    "v1Price": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_CURRENCY_UNSPECIFIED",
+            "USD"
+          ],
+          "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+          "description": "Currency code (e.g., USD)",
+          "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_PLATFORM_UNSPECIFIED",
+            "UNIVERSAL"
+          ],
+          "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+          "description": "Platform (e.g., UNIVERSAL)",
+          "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+        },
+        "region": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_REGION_UNSPECIFIED",
+            "US"
+          ],
+          "default": "PRODUCT_REGION_UNSPECIFIED",
+          "description": "Region (e.g., US)",
+          "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "example": 4.99,
+          "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this price was last updated (RFC 3339)"
+        }
+      },
+      "description": "A price entry for a product",
+      "title": "Price"
+    },
+    "v1Product": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "description": "Unique product identifier (UUID)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Internal product name"
+        },
+        "externalId": {
+          "type": "string",
+          "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+        },
+        "description": {
+          "type": "string",
+          "description": "Product description. Always non-empty for published products"
+        },
+        "images": {
+          "type": "object",
+          "example": {
+            "mainImage": "https://example.com/main.jpg",
+            "backgroundImage": "https://example.com/bg.jpg"
+          },
+          "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_STATUS_UNSPECIFIED",
+            "PRODUCT_STATUS_PUBLISHED"
+          ],
+          "default": "PRODUCT_STATUS_UNSPECIFIED",
+          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the product was created (RFC 3339)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the product was last updated (RFC 3339)"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable display name. Always non-empty for published products"
+        },
+        "prices": {
+          "type": "array",
+          "example": [
+            {
+              "currency": "USD",
+              "platform": "UNIVERSAL",
+              "region": "US",
+              "price": 4.99,
+              "updatedAt": "2026-01-15T10:30:00Z"
+            }
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "PRODUCT_CURRENCY_UNSPECIFIED",
+                  "USD"
+                ],
+                "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+                "description": "Currency code (e.g., USD)",
+                "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+              },
+              "platform": {
+                "type": "string",
+                "enum": [
+                  "PRODUCT_PLATFORM_UNSPECIFIED",
+                  "UNIVERSAL"
+                ],
+                "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+                "description": "Platform (e.g., UNIVERSAL)",
+                "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+              },
+              "region": {
+                "type": "string",
+                "enum": [
+                  "PRODUCT_REGION_UNSPECIFIED",
+                  "US"
+                ],
+                "default": "PRODUCT_REGION_UNSPECIFIED",
+                "description": "Region (e.g., US)",
+                "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+              },
+              "price": {
+                "type": "number",
+                "format": "double",
+                "example": 4.99,
+                "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when this price was last updated (RFC 3339)"
+              }
+            },
+            "description": "A price entry for a product",
+            "title": "Price"
+          },
+          "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+        },
+        "items": {
+          "type": "array",
+          "example": [
+            {
+              "image": "https://example.com/coin.png",
+              "quantity": "100",
+              "displayName": "Gold Coin"
+            }
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {
+                "type": "string",
+                "description": "URL to the item image. Always non-empty for published products"
+              },
+              "quantity": {
+                "type": "string",
+                "format": "int64",
+                "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+              },
+              "displayName": {
+                "type": "string",
+                "description": "Optional display name for the item (max 50 characters)"
+              }
+            },
+            "description": "An item contained in a product",
+            "title": "Item"
+          },
+          "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+        }
+      },
+      "description": "A published product from the managed catalog",
+      "title": "Product"
+    },
+    "v1ProductPriceCurrency": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_CURRENCY_UNSPECIFIED",
+        "USD"
+      ],
+      "default": "PRODUCT_CURRENCY_UNSPECIFIED",
+      "description": "Currency for a price entry",
+      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+    },
+    "v1ProductPricePlatform": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_PLATFORM_UNSPECIFIED",
+        "UNIVERSAL"
+      ],
+      "default": "PRODUCT_PLATFORM_UNSPECIFIED",
+      "description": "Platform for a price entry",
+      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+    },
+    "v1ProductPriceRegion": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_REGION_UNSPECIFIED",
+        "US"
+      ],
+      "default": "PRODUCT_REGION_UNSPECIFIED",
+      "description": "Region for a price entry",
+      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+    },
+    "v1ProductStatus": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_STATUS_UNSPECIFIED",
+        "PRODUCT_STATUS_PUBLISHED"
+      ],
+      "default": "PRODUCT_STATUS_UNSPECIFIED",
+      "description": "Product publication status. This API only returns published products."
+    }
+  },
+  "securityDefinitions": {
+    "hmac": {
+      "type": "apiKey",
+      "description": "HMAC-SHA256 signature generated by signing the request body (empty string for GET requests) with the Ingress API key from Stash Studio. Base64-encoded.",
+      "name": "stash-hmac-signature",
+      "in": "header"
+    }
+  }
+}

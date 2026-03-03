@@ -39,4 +39,10 @@ npx --yes swagger-merger@1.5.4 -i ./docs/config/swagger-merger-config.json -o ./
 echo "Building Redoc static HTML file..."
 npx --yes @redocly/cli@2.6.0 build-docs ./docs/gen/swagger.v1.json -o ./docs/gen/redoc.v1.html
 
+echo "Merging Ingress Swagger files..."
+npx swagger-merger@1.5.4 -i ./docs/config/swagger-merger-ingress-config.json -o ./docs/gen/swagger.ingress.v1.json
+
+echo "Building Ingress Redoc static HTML file..."
+npx @redocly/cli@2.6.0 build-docs ./docs/gen/swagger.ingress.v1.json -o ./docs/gen/redoc.ingress.v1.html
+
 echo "Code generation completed successfully!"

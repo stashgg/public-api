@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package server.ingress.studio.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/studio/v1";
+
+enum ProductStatus {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Product publication status. This API only returns published products."};
+  PRODUCT_STATUS_UNSPECIFIED = 0;
+  PRODUCT_STATUS_PUBLISHED = 2;
+}
+
+// buf:lint:ignore ENUM_VALUE_PREFIX
+enum ProductPriceRegion {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Region for a price entry"};
+  PRODUCT_REGION_UNSPECIFIED = 0;
+  US = 1;
+}
+
+// buf:lint:ignore ENUM_VALUE_PREFIX
+enum ProductPricePlatform {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Platform for a price entry"};
+  PRODUCT_PLATFORM_UNSPECIFIED = 0;
+  UNIVERSAL = 1;
+}
+
+// buf:lint:ignore ENUM_VALUE_PREFIX
+enum ProductPriceCurrency {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Currency for a price entry"};
+  PRODUCT_CURRENCY_UNSPECIFIED = 0;
+  USD = 1;
+}
