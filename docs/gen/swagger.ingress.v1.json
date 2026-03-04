@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Stash Managed Catalog API",
-    "description": "Read-only API for querying the Stash managed product catalog. Designed for server-to-server communication between partner backends and Stash services.",
+    "description": "Read-only API for querying the Stash managed product catalog. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/api/v1/studio/{shop_id}/products\n```",
     "version": "1.0.0",
     "contact": {
       "name": "API Support",
