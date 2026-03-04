@@ -64,7 +64,7 @@ message Product {
   optional string display_name = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Human-readable display name. Always non-empty for published products"}];
   repeated Price prices = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
-    example: "[{\"currency\": \"USD\", \"platform\": \"UNIVERSAL\", \"region\": \"US\", \"price\": 4.99, \"updatedAt\": \"2026-01-15T10:30:00Z\"}]"
+    example: "[{\"currency\": \"PRODUCT_PRICE_CURRENCY_USD\", \"platform\": \"PRODUCT_PRICE_PLATFORM_UNIVERSAL\", \"region\": \"PRODUCT_PRICE_REGION_US\", \"price\": 4.99, \"updatedAt\": \"2026-01-15T10:30:00Z\"}]"
   }];
   repeated Item items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."

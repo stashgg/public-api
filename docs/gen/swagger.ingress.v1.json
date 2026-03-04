@@ -93,9 +93,9 @@
                         "type": "array",
                         "example": [
                           {
-                            "currency": "USD",
-                            "platform": "UNIVERSAL",
-                            "region": "US",
+                            "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                            "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                            "region": "PRODUCT_PRICE_REGION_US",
                             "price": 4.99,
                             "updatedAt": "2026-01-15T10:30:00Z"
                           }
@@ -322,9 +322,9 @@
                       "type": "array",
                       "example": [
                         {
-                          "currency": "USD",
-                          "platform": "UNIVERSAL",
-                          "region": "US",
+                          "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                          "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                          "region": "PRODUCT_PRICE_REGION_US",
                           "price": 4.99,
                           "updatedAt": "2026-01-15T10:30:00Z"
                         }
@@ -573,9 +573,9 @@
               "type": "array",
               "example": [
                 {
-                  "currency": "USD",
-                  "platform": "UNIVERSAL",
-                  "region": "US",
+                  "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                  "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                  "region": "PRODUCT_PRICE_REGION_US",
                   "price": 4.99,
                   "updatedAt": "2026-01-15T10:30:00Z"
                 }
@@ -748,9 +748,9 @@
                 "type": "array",
                 "example": [
                   {
-                    "currency": "USD",
-                    "platform": "UNIVERSAL",
-                    "region": "US",
+                    "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                    "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                    "region": "PRODUCT_PRICE_REGION_US",
                     "price": 4.99,
                     "updatedAt": "2026-01-15T10:30:00Z"
                   }
@@ -947,9 +947,9 @@
           "type": "array",
           "example": [
             {
-              "currency": "USD",
-              "platform": "UNIVERSAL",
-              "region": "US",
+              "currency": "PRODUCT_PRICE_CURRENCY_USD",
+              "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+              "region": "PRODUCT_PRICE_REGION_US",
               "price": 4.99,
               "updatedAt": "2026-01-15T10:30:00Z"
             }
