@@ -12,23 +12,20 @@ enum ProductStatus {
   PRODUCT_STATUS_PUBLISHED = 2;
 }
 
-// buf:lint:ignore ENUM_VALUE_PREFIX
 enum ProductPriceRegion {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Region for a price entry"};
-  PRODUCT_REGION_UNSPECIFIED = 0;
-  US = 1;
+  PRODUCT_PRICE_REGION_UNSPECIFIED = 0;
+  PRODUCT_PRICE_REGION_US = 1;
 }
 
-// buf:lint:ignore ENUM_VALUE_PREFIX
 enum ProductPricePlatform {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Platform for a price entry"};
-  PRODUCT_PLATFORM_UNSPECIFIED = 0;
-  UNIVERSAL = 1;
+  PRODUCT_PRICE_PLATFORM_UNSPECIFIED = 0;
+  PRODUCT_PRICE_PLATFORM_UNIVERSAL = 1;
 }
 
-// buf:lint:ignore ENUM_VALUE_PREFIX
 enum ProductPriceCurrency {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Currency for a price entry"};
-  PRODUCT_CURRENCY_UNSPECIFIED = 0;
-  USD = 1;
+  PRODUCT_PRICE_CURRENCY_UNSPECIFIED = 0;
+  PRODUCT_PRICE_CURRENCY_USD = 1;
 }

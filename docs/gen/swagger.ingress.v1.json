@@ -106,32 +106,29 @@
                             "currency": {
                               "type": "string",
                               "enum": [
-                                "PRODUCT_CURRENCY_UNSPECIFIED",
-                                "USD"
+                                "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                                "PRODUCT_PRICE_CURRENCY_USD"
                               ],
-                              "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-                              "description": "Currency code (e.g., USD)",
-                              "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                              "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                              "description": "Currency code (e.g., USD)"
                             },
                             "platform": {
                               "type": "string",
                               "enum": [
-                                "PRODUCT_PLATFORM_UNSPECIFIED",
-                                "UNIVERSAL"
+                                "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                                "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                               ],
-                              "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-                              "description": "Platform (e.g., UNIVERSAL)",
-                              "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                              "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                              "description": "Platform (e.g., UNIVERSAL)"
                             },
                             "region": {
                               "type": "string",
                               "enum": [
-                                "PRODUCT_REGION_UNSPECIFIED",
-                                "US"
+                                "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                                "PRODUCT_PRICE_REGION_US"
                               ],
-                              "default": "PRODUCT_REGION_UNSPECIFIED",
-                              "description": "Region (e.g., US)",
-                              "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                              "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                              "description": "Region (e.g., US)"
                             },
                             "price": {
                               "type": "number",
@@ -338,32 +335,29 @@
                           "currency": {
                             "type": "string",
                             "enum": [
-                              "PRODUCT_CURRENCY_UNSPECIFIED",
-                              "USD"
+                              "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                              "PRODUCT_PRICE_CURRENCY_USD"
                             ],
-                            "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-                            "description": "Currency code (e.g., USD)",
-                            "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                            "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                            "description": "Currency code (e.g., USD)"
                           },
                           "platform": {
                             "type": "string",
                             "enum": [
-                              "PRODUCT_PLATFORM_UNSPECIFIED",
-                              "UNIVERSAL"
+                              "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                              "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                             ],
-                            "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-                            "description": "Platform (e.g., UNIVERSAL)",
-                            "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                            "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                            "description": "Platform (e.g., UNIVERSAL)"
                           },
                           "region": {
                             "type": "string",
                             "enum": [
-                              "PRODUCT_REGION_UNSPECIFIED",
-                              "US"
+                              "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                              "PRODUCT_PRICE_REGION_US"
                             ],
-                            "default": "PRODUCT_REGION_UNSPECIFIED",
-                            "description": "Region (e.g., US)",
-                            "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                            "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                            "description": "Region (e.g., US)"
                           },
                           "price": {
                             "type": "number",
@@ -592,32 +586,29 @@
                   "currency": {
                     "type": "string",
                     "enum": [
-                      "PRODUCT_CURRENCY_UNSPECIFIED",
-                      "USD"
+                      "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                      "PRODUCT_PRICE_CURRENCY_USD"
                     ],
-                    "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-                    "description": "Currency code (e.g., USD)",
-                    "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                    "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                    "description": "Currency code (e.g., USD)"
                   },
                   "platform": {
                     "type": "string",
                     "enum": [
-                      "PRODUCT_PLATFORM_UNSPECIFIED",
-                      "UNIVERSAL"
+                      "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                      "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                     ],
-                    "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-                    "description": "Platform (e.g., UNIVERSAL)",
-                    "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                    "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                    "description": "Platform (e.g., UNIVERSAL)"
                   },
                   "region": {
                     "type": "string",
                     "enum": [
-                      "PRODUCT_REGION_UNSPECIFIED",
-                      "US"
+                      "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                      "PRODUCT_PRICE_REGION_US"
                     ],
-                    "default": "PRODUCT_REGION_UNSPECIFIED",
-                    "description": "Region (e.g., US)",
-                    "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                    "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                    "description": "Region (e.g., US)"
                   },
                   "price": {
                     "type": "number",
@@ -770,32 +761,29 @@
                     "currency": {
                       "type": "string",
                       "enum": [
-                        "PRODUCT_CURRENCY_UNSPECIFIED",
-                        "USD"
+                        "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                        "PRODUCT_PRICE_CURRENCY_USD"
                       ],
-                      "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-                      "description": "Currency code (e.g., USD)",
-                      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                      "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                      "description": "Currency code (e.g., USD)"
                     },
                     "platform": {
                       "type": "string",
                       "enum": [
-                        "PRODUCT_PLATFORM_UNSPECIFIED",
-                        "UNIVERSAL"
+                        "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                        "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                       ],
-                      "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-                      "description": "Platform (e.g., UNIVERSAL)",
-                      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                      "description": "Platform (e.g., UNIVERSAL)"
                     },
                     "region": {
                       "type": "string",
                       "enum": [
-                        "PRODUCT_REGION_UNSPECIFIED",
-                        "US"
+                        "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                        "PRODUCT_PRICE_REGION_US"
                       ],
-                      "default": "PRODUCT_REGION_UNSPECIFIED",
-                      "description": "Region (e.g., US)",
-                      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                      "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                      "description": "Region (e.g., US)"
                     },
                     "price": {
                       "type": "number",
@@ -866,32 +854,29 @@
         "currency": {
           "type": "string",
           "enum": [
-            "PRODUCT_CURRENCY_UNSPECIFIED",
-            "USD"
+            "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+            "PRODUCT_PRICE_CURRENCY_USD"
           ],
-          "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-          "description": "Currency code (e.g., USD)",
-          "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+          "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+          "description": "Currency code (e.g., USD)"
         },
         "platform": {
           "type": "string",
           "enum": [
-            "PRODUCT_PLATFORM_UNSPECIFIED",
-            "UNIVERSAL"
+            "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+            "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
           ],
-          "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-          "description": "Platform (e.g., UNIVERSAL)",
-          "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+          "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+          "description": "Platform (e.g., UNIVERSAL)"
         },
         "region": {
           "type": "string",
           "enum": [
-            "PRODUCT_REGION_UNSPECIFIED",
-            "US"
+            "PRODUCT_PRICE_REGION_UNSPECIFIED",
+            "PRODUCT_PRICE_REGION_US"
           ],
-          "default": "PRODUCT_REGION_UNSPECIFIED",
-          "description": "Region (e.g., US)",
-          "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+          "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+          "description": "Region (e.g., US)"
         },
         "price": {
           "type": "number",
@@ -975,32 +960,29 @@
               "currency": {
                 "type": "string",
                 "enum": [
-                  "PRODUCT_CURRENCY_UNSPECIFIED",
-                  "USD"
+                  "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                  "PRODUCT_PRICE_CURRENCY_USD"
                 ],
-                "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-                "description": "Currency code (e.g., USD)",
-                "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+                "description": "Currency code (e.g., USD)"
               },
               "platform": {
                 "type": "string",
                 "enum": [
-                  "PRODUCT_PLATFORM_UNSPECIFIED",
-                  "UNIVERSAL"
+                  "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                  "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                 ],
-                "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-                "description": "Platform (e.g., UNIVERSAL)",
-                "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                "description": "Platform (e.g., UNIVERSAL)"
               },
               "region": {
                 "type": "string",
                 "enum": [
-                  "PRODUCT_REGION_UNSPECIFIED",
-                  "US"
+                  "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                  "PRODUCT_PRICE_REGION_US"
                 ],
-                "default": "PRODUCT_REGION_UNSPECIFIED",
-                "description": "Region (e.g., US)",
-                "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+                "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+                "description": "Region (e.g., US)"
               },
               "price": {
                 "type": "number",
@@ -1057,32 +1039,29 @@
     "v1ProductPriceCurrency": {
       "type": "string",
       "enum": [
-        "PRODUCT_CURRENCY_UNSPECIFIED",
-        "USD"
+        "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+        "PRODUCT_PRICE_CURRENCY_USD"
       ],
-      "default": "PRODUCT_CURRENCY_UNSPECIFIED",
-      "description": "Currency for a price entry",
-      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+      "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
+      "description": "Currency for a price entry"
     },
     "v1ProductPricePlatform": {
       "type": "string",
       "enum": [
-        "PRODUCT_PLATFORM_UNSPECIFIED",
-        "UNIVERSAL"
+        "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+        "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
       ],
-      "default": "PRODUCT_PLATFORM_UNSPECIFIED",
-      "description": "Platform for a price entry",
-      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+      "description": "Platform for a price entry"
     },
     "v1ProductPriceRegion": {
       "type": "string",
       "enum": [
-        "PRODUCT_REGION_UNSPECIFIED",
-        "US"
+        "PRODUCT_PRICE_REGION_UNSPECIFIED",
+        "PRODUCT_PRICE_REGION_US"
       ],
-      "default": "PRODUCT_REGION_UNSPECIFIED",
-      "description": "Region for a price entry",
-      "title": "buf:lint:ignore ENUM_VALUE_PREFIX"
+      "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
+      "description": "Region for a price entry"
     },
     "v1ProductStatus": {
       "type": "string",
