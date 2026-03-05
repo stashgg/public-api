@@ -4,10 +4,10 @@ package server.ingress.studio.v1;
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
-import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "server/ingress/studio/v1/enums.proto";
+import "server/ingress/studio/v1/types.proto";
 import "validate/validate.proto";
 
 option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/studio/v1";
@@ -30,10 +30,10 @@ service ManagedCatalogService {
     };
   }
   rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
-    option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products/{product_id}"};
+    option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products/{guid}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get a single published product"
-      description: "Retrieves a single published product by its product ID. Returns NOT_FOUND if the product does not exist or is not published."
+      description: "Retrieves a single published product by its GUID. Returns NOT_FOUND if the product does not exist or is not published."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -50,26 +50,46 @@ message Product {
       description: "A published product from the managed catalog"
     }
   };
-  string product_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique product identifier (UUID)"}];
-  string name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Internal product name"}];
-  optional string external_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"}];
-  optional string description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product description. Always non-empty for published products"}];
-  optional google.protobuf.Struct images = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    description: "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
-    example: "{\"mainImage\": \"https://example.com/main.jpg\", \"backgroundImage\": \"https://example.com/bg.jpg\"}"
-  }];
+  string guid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Stash-internal unique product identifier (UUID)"}];
+  LocalizableText name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product name"}];
+  optional string product_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"}];
+  optional LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product description. Always non-empty for published products"}];
+  optional Images images = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product images"}];
   ProductStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"}];
   google.protobuf.Timestamp created_at = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when the product was created (RFC 3339)"}];
   google.protobuf.Timestamp updated_at = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when the product was last updated (RFC 3339)"}];
-  optional string display_name = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Human-readable display name. Always non-empty for published products"}];
+  optional LocalizableText display_name = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Human-readable display name. Always non-empty for published products"}];
   repeated Price prices = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
-    example: "[{\"currency\": \"PRODUCT_PRICE_CURRENCY_USD\", \"platform\": \"PRODUCT_PRICE_PLATFORM_UNIVERSAL\", \"region\": \"PRODUCT_PRICE_REGION_US\", \"price\": 4.99, \"updatedAt\": \"2026-01-15T10:30:00Z\"}]"
+    example: "[{\"currency\": \"USD\", \"platform\": \"PRODUCT_PRICE_PLATFORM_UNIVERSAL\", \"region\": \"US\", \"cents\": 499, \"updatedAt\": \"2026-01-15T10:30:00Z\"}]"
   }];
   repeated Item items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
-    example: "[{\"image\": \"https://example.com/coin.png\", \"quantity\": \"100\", \"displayName\": \"Gold Coin\"}]"
+    example: "[{\"image\": \"https://example.com/coin.png\", \"quantity\": \"100\", \"displayName\": {\"defaultText\": \"Gold Coin\"}}]"
   }];
+}
+
+message Images {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Images"
+      description: "Product images"
+    }
+  };
+  string main_image = 1 [
+    (validate.rules).string = {
+      uri: true
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Primary product image URL. Always non-empty for published products"}
+  ];
+  optional string background_image = 2 [
+    (validate.rules).string = {
+      uri: true
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Background image URL"}
+  ];
 }
 
 message Price {
@@ -79,13 +99,22 @@ message Price {
       description: "A price entry for a product"
     }
   };
-  ProductPriceCurrency currency = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (e.g., USD)"}];
+  string currency = 1 [
+    (validate.rules).string = {
+      min_len: 3
+      max_len: 3
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"}
+  ];
   ProductPricePlatform platform = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Platform (e.g., UNIVERSAL)"}];
-  ProductPriceRegion region = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region (e.g., US)"}];
-  double price = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    description: "Price in decimal format (e.g., 4.99 for $4.99)"
-    example: "4.99"
-  }];
+  string region = 3 [
+    (validate.rules).string = {
+      min_len: 2
+      max_len: 3
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"}
+  ];
+  uint32 cents = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g., 499 for $4.99)"}];
   google.protobuf.Timestamp updated_at = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when this price was last updated (RFC 3339)"}];
 }
 
@@ -97,8 +126,14 @@ message Item {
     }
   };
   string image = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to the item image. Always non-empty for published products"}];
-  int64 quantity = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"}];
-  optional string display_name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display name for the item (max 50 characters)"}];
+  string quantity = 2 [
+    (validate.rules).string = {
+      min_len: 1
+      pattern: "^[0-9]+$"
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"}
+  ];
+  optional LocalizableText display_name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display name for the item (max 50 characters)"}];
 }
 
 message ListProductsRequest {
@@ -146,7 +181,7 @@ message GetProductRequest {
       description: "Request to get a single published product"
       required: [
         "shop_id",
-        "product_id"
+        "guid"
       ]
     }
   };
@@ -155,10 +190,10 @@ message GetProductRequest {
     (validate.rules).string.uuid = true,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio"}
   ];
-  string product_id = 2 [
+  string guid = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string.min_len = 1,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product identifier"}
+    (validate.rules).string.uuid = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Stash-internal unique product identifier (UUID)"}
   ];
 }
 

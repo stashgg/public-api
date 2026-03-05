@@ -8,24 +8,14 @@ option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/stud
 
 enum ProductStatus {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Product publication status. This API only returns published products."};
+  reserved 1;
+  reserved "PRODUCT_STATUS_DRAFT";
   PRODUCT_STATUS_UNSPECIFIED = 0;
   PRODUCT_STATUS_PUBLISHED = 2;
-}
-
-enum ProductPriceRegion {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Region for a price entry"};
-  PRODUCT_PRICE_REGION_UNSPECIFIED = 0;
-  PRODUCT_PRICE_REGION_US = 1;
 }
 
 enum ProductPricePlatform {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Platform for a price entry"};
   PRODUCT_PRICE_PLATFORM_UNSPECIFIED = 0;
   PRODUCT_PRICE_PLATFORM_UNIVERSAL = 1;
-}
-
-enum ProductPriceCurrency {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Currency for a price entry"};
-  PRODUCT_PRICE_CURRENCY_UNSPECIFIED = 0;
-  PRODUCT_PRICE_CURRENCY_USD = 1;
 }

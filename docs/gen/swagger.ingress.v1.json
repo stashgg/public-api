@@ -42,29 +42,66 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "productId": {
+                      "guid": {
                         "type": "string",
-                        "description": "Unique product identifier (UUID)"
+                        "description": "Stash-internal unique product identifier (UUID)"
                       },
                       "name": {
-                        "type": "string",
-                        "description": "Internal product name"
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "Key for client-side localization lookup"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Server-resolved localized text"
+                          }
+                        },
+                        "description": "Product name",
+                        "title": "Localizable Text"
                       },
-                      "externalId": {
+                      "productId": {
                         "type": "string",
-                        "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+                        "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
                       },
                       "description": {
-                        "type": "string",
-                        "description": "Product description. Always non-empty for published products"
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "Key for client-side localization lookup"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Server-resolved localized text"
+                          }
+                        },
+                        "description": "Product description. Always non-empty for published products",
+                        "title": "Localizable Text"
                       },
                       "images": {
                         "type": "object",
-                        "example": {
-                          "mainImage": "https://example.com/main.jpg",
-                          "backgroundImage": "https://example.com/bg.jpg"
+                        "properties": {
+                          "mainImage": {
+                            "type": "string",
+                            "description": "Primary product image URL. Always non-empty for published products"
+                          },
+                          "backgroundImage": {
+                            "type": "string",
+                            "description": "Background image URL"
+                          }
                         },
-                        "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+                        "description": "Product images",
+                        "title": "Images"
                       },
                       "status": {
                         "type": "string",
@@ -86,17 +123,32 @@
                         "description": "Timestamp when the product was last updated (RFC 3339)"
                       },
                       "displayName": {
-                        "type": "string",
-                        "description": "Human-readable display name. Always non-empty for published products"
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "Key for client-side localization lookup"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Server-resolved localized text"
+                          }
+                        },
+                        "description": "Human-readable display name. Always non-empty for published products",
+                        "title": "Localizable Text"
                       },
                       "prices": {
                         "type": "array",
                         "example": [
                           {
-                            "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                            "currency": "USD",
                             "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                            "region": "PRODUCT_PRICE_REGION_US",
-                            "price": 4.99,
+                            "region": "US",
+                            "cents": 499,
                             "updatedAt": "2026-01-15T10:30:00Z"
                           }
                         ],
@@ -105,12 +157,7 @@
                           "properties": {
                             "currency": {
                               "type": "string",
-                              "enum": [
-                                "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                                "PRODUCT_PRICE_CURRENCY_USD"
-                              ],
-                              "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                              "description": "Currency code (e.g., USD)"
+                              "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
                             },
                             "platform": {
                               "type": "string",
@@ -123,18 +170,12 @@
                             },
                             "region": {
                               "type": "string",
-                              "enum": [
-                                "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                                "PRODUCT_PRICE_REGION_US"
-                              ],
-                              "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                              "description": "Region (e.g., US)"
+                              "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
                             },
-                            "price": {
-                              "type": "number",
-                              "format": "double",
-                              "example": 4.99,
-                              "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                            "cents": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
                             },
                             "updatedAt": {
                               "type": "string",
@@ -153,7 +194,9 @@
                           {
                             "image": "https://example.com/coin.png",
                             "quantity": "100",
-                            "displayName": "Gold Coin"
+                            "displayName": {
+                              "defaultText": "Gold Coin"
+                            }
                           }
                         ],
                         "items": {
@@ -165,12 +208,26 @@
                             },
                             "quantity": {
                               "type": "string",
-                              "format": "int64",
-                              "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                              "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
                             },
                             "displayName": {
-                              "type": "string",
-                              "description": "Optional display name for the item (max 50 characters)"
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "Key for client-side localization lookup"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Server-resolved localized text"
+                                }
+                              },
+                              "description": "Optional display name for the item (max 50 characters)",
+                              "title": "Localizable Text"
                             }
                           },
                           "description": "An item contained in a product",
@@ -257,10 +314,10 @@
         ]
       }
     },
-    "/api/v1/studio/{shopId}/products/{productId}": {
+    "/api/v1/studio/{shopId}/products/{guid}": {
       "get": {
         "summary": "Get a single published product",
-        "description": "Retrieves a single published product by its product ID. Returns NOT_FOUND if the product does not exist or is not published.",
+        "description": "Retrieves a single published product by its GUID. Returns NOT_FOUND if the product does not exist or is not published.",
         "operationId": "ManagedCatalogService_GetProduct",
         "responses": {
           "200": {
@@ -271,29 +328,66 @@
                 "product": {
                   "type": "object",
                   "properties": {
-                    "productId": {
+                    "guid": {
                       "type": "string",
-                      "description": "Unique product identifier (UUID)"
+                      "description": "Stash-internal unique product identifier (UUID)"
                     },
                     "name": {
-                      "type": "string",
-                      "description": "Internal product name"
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Product name",
+                      "title": "Localizable Text"
                     },
-                    "externalId": {
+                    "productId": {
                       "type": "string",
-                      "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+                      "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
                     },
                     "description": {
-                      "type": "string",
-                      "description": "Product description. Always non-empty for published products"
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Product description. Always non-empty for published products",
+                      "title": "Localizable Text"
                     },
                     "images": {
                       "type": "object",
-                      "example": {
-                        "mainImage": "https://example.com/main.jpg",
-                        "backgroundImage": "https://example.com/bg.jpg"
+                      "properties": {
+                        "mainImage": {
+                          "type": "string",
+                          "description": "Primary product image URL. Always non-empty for published products"
+                        },
+                        "backgroundImage": {
+                          "type": "string",
+                          "description": "Background image URL"
+                        }
                       },
-                      "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+                      "description": "Product images",
+                      "title": "Images"
                     },
                     "status": {
                       "type": "string",
@@ -315,17 +409,32 @@
                       "description": "Timestamp when the product was last updated (RFC 3339)"
                     },
                     "displayName": {
-                      "type": "string",
-                      "description": "Human-readable display name. Always non-empty for published products"
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Human-readable display name. Always non-empty for published products",
+                      "title": "Localizable Text"
                     },
                     "prices": {
                       "type": "array",
                       "example": [
                         {
-                          "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                          "currency": "USD",
                           "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                          "region": "PRODUCT_PRICE_REGION_US",
-                          "price": 4.99,
+                          "region": "US",
+                          "cents": 499,
                           "updatedAt": "2026-01-15T10:30:00Z"
                         }
                       ],
@@ -334,12 +443,7 @@
                         "properties": {
                           "currency": {
                             "type": "string",
-                            "enum": [
-                              "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                              "PRODUCT_PRICE_CURRENCY_USD"
-                            ],
-                            "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                            "description": "Currency code (e.g., USD)"
+                            "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
                           },
                           "platform": {
                             "type": "string",
@@ -352,18 +456,12 @@
                           },
                           "region": {
                             "type": "string",
-                            "enum": [
-                              "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                              "PRODUCT_PRICE_REGION_US"
-                            ],
-                            "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                            "description": "Region (e.g., US)"
+                            "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
                           },
-                          "price": {
-                            "type": "number",
-                            "format": "double",
-                            "example": 4.99,
-                            "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                          "cents": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
                           },
                           "updatedAt": {
                             "type": "string",
@@ -382,7 +480,9 @@
                         {
                           "image": "https://example.com/coin.png",
                           "quantity": "100",
-                          "displayName": "Gold Coin"
+                          "displayName": {
+                            "defaultText": "Gold Coin"
+                          }
                         }
                       ],
                       "items": {
@@ -394,12 +494,26 @@
                           },
                           "quantity": {
                             "type": "string",
-                            "format": "int64",
-                            "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                            "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
                           },
                           "displayName": {
-                            "type": "string",
-                            "description": "Optional display name for the item (max 50 characters)"
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "Key for client-side localization lookup"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Server-resolved localized text"
+                              }
+                            },
+                            "description": "Optional display name for the item (max 50 characters)",
+                            "title": "Localizable Text"
                           }
                         },
                         "description": "An item contained in a product",
@@ -456,8 +570,8 @@
             "type": "string"
           },
           {
-            "name": "productId",
-            "description": "Product identifier",
+            "name": "guid",
+            "description": "Stash-internal unique product identifier (UUID)",
             "in": "path",
             "required": true,
             "type": "string"
@@ -483,14 +597,6 @@
         }
       },
       "additionalProperties": {}
-    },
-    "protobufNullValue": {
-      "type": "string",
-      "enum": [
-        "NULL_VALUE"
-      ],
-      "default": "NULL_VALUE",
-      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\nThe JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
     },
     "rpcStatus": {
       "type": "object",
@@ -522,29 +628,66 @@
         "product": {
           "type": "object",
           "properties": {
-            "productId": {
+            "guid": {
               "type": "string",
-              "description": "Unique product identifier (UUID)"
+              "description": "Stash-internal unique product identifier (UUID)"
             },
             "name": {
-              "type": "string",
-              "description": "Internal product name"
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "Key for client-side localization lookup"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Server-resolved localized text"
+                }
+              },
+              "description": "Product name",
+              "title": "Localizable Text"
             },
-            "externalId": {
+            "productId": {
               "type": "string",
-              "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+              "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
             },
             "description": {
-              "type": "string",
-              "description": "Product description. Always non-empty for published products"
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "Key for client-side localization lookup"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Server-resolved localized text"
+                }
+              },
+              "description": "Product description. Always non-empty for published products",
+              "title": "Localizable Text"
             },
             "images": {
               "type": "object",
-              "example": {
-                "mainImage": "https://example.com/main.jpg",
-                "backgroundImage": "https://example.com/bg.jpg"
+              "properties": {
+                "mainImage": {
+                  "type": "string",
+                  "description": "Primary product image URL. Always non-empty for published products"
+                },
+                "backgroundImage": {
+                  "type": "string",
+                  "description": "Background image URL"
+                }
               },
-              "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+              "description": "Product images",
+              "title": "Images"
             },
             "status": {
               "type": "string",
@@ -566,17 +709,32 @@
               "description": "Timestamp when the product was last updated (RFC 3339)"
             },
             "displayName": {
-              "type": "string",
-              "description": "Human-readable display name. Always non-empty for published products"
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "Key for client-side localization lookup"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Server-resolved localized text"
+                }
+              },
+              "description": "Human-readable display name. Always non-empty for published products",
+              "title": "Localizable Text"
             },
             "prices": {
               "type": "array",
               "example": [
                 {
-                  "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                  "currency": "USD",
                   "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                  "region": "PRODUCT_PRICE_REGION_US",
-                  "price": 4.99,
+                  "region": "US",
+                  "cents": 499,
                   "updatedAt": "2026-01-15T10:30:00Z"
                 }
               ],
@@ -585,12 +743,7 @@
                 "properties": {
                   "currency": {
                     "type": "string",
-                    "enum": [
-                      "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                      "PRODUCT_PRICE_CURRENCY_USD"
-                    ],
-                    "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                    "description": "Currency code (e.g., USD)"
+                    "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
                   },
                   "platform": {
                     "type": "string",
@@ -603,18 +756,12 @@
                   },
                   "region": {
                     "type": "string",
-                    "enum": [
-                      "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                      "PRODUCT_PRICE_REGION_US"
-                    ],
-                    "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                    "description": "Region (e.g., US)"
+                    "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
                   },
-                  "price": {
-                    "type": "number",
-                    "format": "double",
-                    "example": 4.99,
-                    "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                  "cents": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
                   },
                   "updatedAt": {
                     "type": "string",
@@ -633,7 +780,9 @@
                 {
                   "image": "https://example.com/coin.png",
                   "quantity": "100",
-                  "displayName": "Gold Coin"
+                  "displayName": {
+                    "defaultText": "Gold Coin"
+                  }
                 }
               ],
               "items": {
@@ -645,12 +794,26 @@
                   },
                   "quantity": {
                     "type": "string",
-                    "format": "int64",
-                    "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                    "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
                   },
                   "displayName": {
-                    "type": "string",
-                    "description": "Optional display name for the item (max 50 characters)"
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "Key for client-side localization lookup"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Server-resolved localized text"
+                      }
+                    },
+                    "description": "Optional display name for the item (max 50 characters)",
+                    "title": "Localizable Text"
                   }
                 },
                 "description": "An item contained in a product",
@@ -669,6 +832,21 @@
         "product"
       ]
     },
+    "v1Images": {
+      "type": "object",
+      "properties": {
+        "mainImage": {
+          "type": "string",
+          "description": "Primary product image URL. Always non-empty for published products"
+        },
+        "backgroundImage": {
+          "type": "string",
+          "description": "Background image URL"
+        }
+      },
+      "description": "Product images",
+      "title": "Images"
+    },
     "v1Item": {
       "type": "object",
       "properties": {
@@ -678,12 +856,26 @@
         },
         "quantity": {
           "type": "string",
-          "format": "int64",
-          "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+          "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
         },
         "displayName": {
-          "type": "string",
-          "description": "Optional display name for the item (max 50 characters)"
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Optional display name for the item (max 50 characters)",
+          "title": "Localizable Text"
         }
       },
       "description": "An item contained in a product",
@@ -697,29 +889,66 @@
           "items": {
             "type": "object",
             "properties": {
-              "productId": {
+              "guid": {
                 "type": "string",
-                "description": "Unique product identifier (UUID)"
+                "description": "Stash-internal unique product identifier (UUID)"
               },
               "name": {
-                "type": "string",
-                "description": "Internal product name"
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Product name",
+                "title": "Localizable Text"
               },
-              "externalId": {
+              "productId": {
                 "type": "string",
-                "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+                "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
               },
               "description": {
-                "type": "string",
-                "description": "Product description. Always non-empty for published products"
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Product description. Always non-empty for published products",
+                "title": "Localizable Text"
               },
               "images": {
                 "type": "object",
-                "example": {
-                  "mainImage": "https://example.com/main.jpg",
-                  "backgroundImage": "https://example.com/bg.jpg"
+                "properties": {
+                  "mainImage": {
+                    "type": "string",
+                    "description": "Primary product image URL. Always non-empty for published products"
+                  },
+                  "backgroundImage": {
+                    "type": "string",
+                    "description": "Background image URL"
+                  }
                 },
-                "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+                "description": "Product images",
+                "title": "Images"
               },
               "status": {
                 "type": "string",
@@ -741,17 +970,32 @@
                 "description": "Timestamp when the product was last updated (RFC 3339)"
               },
               "displayName": {
-                "type": "string",
-                "description": "Human-readable display name. Always non-empty for published products"
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Human-readable display name. Always non-empty for published products",
+                "title": "Localizable Text"
               },
               "prices": {
                 "type": "array",
                 "example": [
                   {
-                    "currency": "PRODUCT_PRICE_CURRENCY_USD",
+                    "currency": "USD",
                     "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                    "region": "PRODUCT_PRICE_REGION_US",
-                    "price": 4.99,
+                    "region": "US",
+                    "cents": 499,
                     "updatedAt": "2026-01-15T10:30:00Z"
                   }
                 ],
@@ -760,12 +1004,7 @@
                   "properties": {
                     "currency": {
                       "type": "string",
-                      "enum": [
-                        "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                        "PRODUCT_PRICE_CURRENCY_USD"
-                      ],
-                      "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                      "description": "Currency code (e.g., USD)"
+                      "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
                     },
                     "platform": {
                       "type": "string",
@@ -778,18 +1017,12 @@
                     },
                     "region": {
                       "type": "string",
-                      "enum": [
-                        "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                        "PRODUCT_PRICE_REGION_US"
-                      ],
-                      "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                      "description": "Region (e.g., US)"
+                      "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
                     },
-                    "price": {
-                      "type": "number",
-                      "format": "double",
-                      "example": 4.99,
-                      "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+                    "cents": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
                     },
                     "updatedAt": {
                       "type": "string",
@@ -808,7 +1041,9 @@
                   {
                     "image": "https://example.com/coin.png",
                     "quantity": "100",
-                    "displayName": "Gold Coin"
+                    "displayName": {
+                      "defaultText": "Gold Coin"
+                    }
                   }
                 ],
                 "items": {
@@ -820,12 +1055,26 @@
                     },
                     "quantity": {
                       "type": "string",
-                      "format": "int64",
-                      "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                      "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
                     },
                     "displayName": {
-                      "type": "string",
-                      "description": "Optional display name for the item (max 50 characters)"
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Optional display name for the item (max 50 characters)",
+                      "title": "Localizable Text"
                     }
                   },
                   "description": "An item contained in a product",
@@ -848,17 +1097,31 @@
       "description": "Paginated list of published products",
       "title": "List Products Response"
     },
+    "v1LocalizableText": {
+      "type": "object",
+      "properties": {
+        "defaultText": {
+          "type": "string",
+          "description": "Default text content, usually in English"
+        },
+        "localizationKey": {
+          "type": "string",
+          "description": "Key for client-side localization lookup"
+        },
+        "localizedText": {
+          "type": "string",
+          "description": "Server-resolved localized text"
+        }
+      },
+      "description": "Text content that can be localized for a specific language",
+      "title": "Localizable Text"
+    },
     "v1Price": {
       "type": "object",
       "properties": {
         "currency": {
           "type": "string",
-          "enum": [
-            "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-            "PRODUCT_PRICE_CURRENCY_USD"
-          ],
-          "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-          "description": "Currency code (e.g., USD)"
+          "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
         },
         "platform": {
           "type": "string",
@@ -871,18 +1134,12 @@
         },
         "region": {
           "type": "string",
-          "enum": [
-            "PRODUCT_PRICE_REGION_UNSPECIFIED",
-            "PRODUCT_PRICE_REGION_US"
-          ],
-          "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-          "description": "Region (e.g., US)"
+          "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
         },
-        "price": {
-          "type": "number",
-          "format": "double",
-          "example": 4.99,
-          "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+        "cents": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
         },
         "updatedAt": {
           "type": "string",
@@ -896,29 +1153,66 @@
     "v1Product": {
       "type": "object",
       "properties": {
-        "productId": {
+        "guid": {
           "type": "string",
-          "description": "Unique product identifier (UUID)"
+          "description": "Stash-internal unique product identifier (UUID)"
         },
         "name": {
-          "type": "string",
-          "description": "Internal product name"
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Product name",
+          "title": "Localizable Text"
         },
-        "externalId": {
+        "productId": {
           "type": "string",
-          "description": "Partner-defined external identifier (e.g., SKU). Always non-empty for published products"
+          "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
         },
         "description": {
-          "type": "string",
-          "description": "Product description. Always non-empty for published products"
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Product description. Always non-empty for published products",
+          "title": "Localizable Text"
         },
         "images": {
           "type": "object",
-          "example": {
-            "mainImage": "https://example.com/main.jpg",
-            "backgroundImage": "https://example.com/bg.jpg"
+          "properties": {
+            "mainImage": {
+              "type": "string",
+              "description": "Primary product image URL. Always non-empty for published products"
+            },
+            "backgroundImage": {
+              "type": "string",
+              "description": "Background image URL"
+            }
           },
-          "description": "Product images. Expected keys: 'mainImage' (string, URL), 'backgroundImage' (string, URL). mainImage is always non-empty for published products."
+          "description": "Product images",
+          "title": "Images"
         },
         "status": {
           "type": "string",
@@ -940,17 +1234,32 @@
           "description": "Timestamp when the product was last updated (RFC 3339)"
         },
         "displayName": {
-          "type": "string",
-          "description": "Human-readable display name. Always non-empty for published products"
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Human-readable display name. Always non-empty for published products",
+          "title": "Localizable Text"
         },
         "prices": {
           "type": "array",
           "example": [
             {
-              "currency": "PRODUCT_PRICE_CURRENCY_USD",
+              "currency": "USD",
               "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-              "region": "PRODUCT_PRICE_REGION_US",
-              "price": 4.99,
+              "region": "US",
+              "cents": 499,
               "updatedAt": "2026-01-15T10:30:00Z"
             }
           ],
@@ -959,12 +1268,7 @@
             "properties": {
               "currency": {
                 "type": "string",
-                "enum": [
-                  "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                  "PRODUCT_PRICE_CURRENCY_USD"
-                ],
-                "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-                "description": "Currency code (e.g., USD)"
+                "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
               },
               "platform": {
                 "type": "string",
@@ -977,18 +1281,12 @@
               },
               "region": {
                 "type": "string",
-                "enum": [
-                  "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                  "PRODUCT_PRICE_REGION_US"
-                ],
-                "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-                "description": "Region (e.g., US)"
+                "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
               },
-              "price": {
-                "type": "number",
-                "format": "double",
-                "example": 4.99,
-                "description": "Price in decimal format (e.g., 4.99 for $4.99)"
+              "cents": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
               },
               "updatedAt": {
                 "type": "string",
@@ -1007,7 +1305,9 @@
             {
               "image": "https://example.com/coin.png",
               "quantity": "100",
-              "displayName": "Gold Coin"
+              "displayName": {
+                "defaultText": "Gold Coin"
+              }
             }
           ],
           "items": {
@@ -1019,12 +1319,26 @@
               },
               "quantity": {
                 "type": "string",
-                "format": "int64",
-                "description": "Quantity of this item. Encoded as a string in JSON (protobuf int64 convention). Always > 0 for published products"
+                "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
               },
               "displayName": {
-                "type": "string",
-                "description": "Optional display name for the item (max 50 characters)"
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Optional display name for the item (max 50 characters)",
+                "title": "Localizable Text"
               }
             },
             "description": "An item contained in a product",
@@ -1036,15 +1350,6 @@
       "description": "A published product from the managed catalog",
       "title": "Product"
     },
-    "v1ProductPriceCurrency": {
-      "type": "string",
-      "enum": [
-        "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-        "PRODUCT_PRICE_CURRENCY_USD"
-      ],
-      "default": "PRODUCT_PRICE_CURRENCY_UNSPECIFIED",
-      "description": "Currency for a price entry"
-    },
     "v1ProductPricePlatform": {
       "type": "string",
       "enum": [
@@ -1053,15 +1358,6 @@
       ],
       "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
       "description": "Platform for a price entry"
-    },
-    "v1ProductPriceRegion": {
-      "type": "string",
-      "enum": [
-        "PRODUCT_PRICE_REGION_UNSPECIFIED",
-        "PRODUCT_PRICE_REGION_US"
-      ],
-      "default": "PRODUCT_PRICE_REGION_UNSPECIFIED",
-      "description": "Region for a price entry"
     },
     "v1ProductStatus": {
       "type": "string",
