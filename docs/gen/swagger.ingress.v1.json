@@ -1,0 +1,1391 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Stash Managed Catalog API",
+    "description": "Read-only API for querying the Stash managed product catalog. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/api/v1/studio/{shop_id}/products\n```\n\n## Authentication\n\nAll requests must include an HMAC-SHA256 signature in the `stash-hmac-signature` header.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Keys created through this portal are Ingress keys by default and work with this API (this is the same key used for `/sdk/` API authentication)\n4. Store the secret securely — you will need it to sign every request\n\n### Signing a Request\n\n1. For GET requests (no body), sign an **empty string** using HMAC-SHA256 with your API secret\n2. Base64-encode the resulting signature\n3. Send it in the `stash-hmac-signature` HTTP header\n\n### Example (curl)\n\n```bash\nSIGNATURE=$(echo -n \"\" | openssl dgst -sha256 -hmac \"YOUR_API_SECRET\" -binary | base64)\ncurl -H \"stash-hmac-signature: $SIGNATURE\" \\\n  \"https://test-api.stash.gg/api/v1/studio/{shop_id}/products\"\n```",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "https://docs.stash.gg/",
+      "email": "help@stash.gg"
+    }
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "ManagedCatalog",
+      "description": "Read-only endpoints for querying the managed product catalog"
+    }
+  ],
+  "paths": {
+    "/api/v1/studio/{shopId}/products": {
+      "get": {
+        "summary": "List published products",
+        "description": "Retrieves a paginated list of published products for a shop. Results are ordered by creation date (most recent first). Only published products are returned; drafts and deleted products are excluded.",
+        "operationId": "ManagedCatalogService_ListProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "guid": {
+                        "type": "string",
+                        "description": "Stash-internal unique product identifier (UUID)"
+                      },
+                      "name": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "Key for client-side localization lookup"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Server-resolved localized text"
+                          }
+                        },
+                        "description": "Product name",
+                        "title": "Localizable Text"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                      },
+                      "description": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "Key for client-side localization lookup"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Server-resolved localized text"
+                          }
+                        },
+                        "description": "Product description. Always non-empty for published products",
+                        "title": "Localizable Text"
+                      },
+                      "images": {
+                        "type": "object",
+                        "properties": {
+                          "mainImage": {
+                            "type": "string",
+                            "description": "Primary product image URL. Always non-empty for published products"
+                          },
+                          "backgroundImage": {
+                            "type": "string",
+                            "description": "Background image URL"
+                          }
+                        },
+                        "description": "Product images",
+                        "title": "Images"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "PRODUCT_STATUS_UNSPECIFIED",
+                          "PRODUCT_STATUS_PUBLISHED"
+                        ],
+                        "default": "PRODUCT_STATUS_PUBLISHED",
+                        "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+                        "example": "PRODUCT_STATUS_PUBLISHED"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the product was created (RFC 3339)"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the product was last updated (RFC 3339)"
+                      },
+                      "displayName": {
+                        "type": "object",
+                        "properties": {
+                          "defaultText": {
+                            "type": "string",
+                            "description": "Default text content, usually in English"
+                          },
+                          "localizationKey": {
+                            "type": "string",
+                            "description": "Key for client-side localization lookup"
+                          },
+                          "localizedText": {
+                            "type": "string",
+                            "description": "Server-resolved localized text"
+                          }
+                        },
+                        "description": "Human-readable display name. Always non-empty for published products",
+                        "title": "Localizable Text"
+                      },
+                      "prices": {
+                        "type": "array",
+                        "example": [
+                          {
+                            "currency": "USD",
+                            "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                            "region": "US",
+                            "cents": 499,
+                            "updatedAt": "2026-01-15T10:30:00Z"
+                          }
+                        ],
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "currency": {
+                              "type": "string",
+                              "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                            },
+                            "platform": {
+                              "type": "string",
+                              "enum": [
+                                "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                                "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                              ],
+                              "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                              "description": "Platform (e.g., UNIVERSAL)",
+                              "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                            },
+                            "region": {
+                              "type": "string",
+                              "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+                            },
+                            "cents": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Timestamp when this price was last updated (RFC 3339)"
+                            }
+                          },
+                          "description": "A price entry for a product",
+                          "title": "Price"
+                        },
+                        "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+                      },
+                      "items": {
+                        "type": "array",
+                        "example": [
+                          {
+                            "image": "https://example.com/coin.png",
+                            "quantity": "100",
+                            "displayName": {
+                              "defaultText": "Gold Coin"
+                            }
+                          }
+                        ],
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "image": {
+                              "type": "string",
+                              "description": "URL to the item image. Always non-empty for published products"
+                            },
+                            "quantity": {
+                              "type": "string",
+                              "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+                            },
+                            "displayName": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "Key for client-side localization lookup"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Server-resolved localized text"
+                                }
+                              },
+                              "description": "Optional display name for the item (max 50 characters)",
+                              "title": "Localizable Text"
+                            }
+                          },
+                          "description": "An item contained in a product",
+                          "title": "Item"
+                        },
+                        "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                      }
+                    },
+                    "description": "A published product from the managed catalog",
+                    "title": "Product"
+                  },
+                  "description": "List of published products"
+                },
+                "nextOffset": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Offset for the next page. Omitted if there are no more results."
+                }
+              },
+              "description": "Paginated list of published products",
+              "title": "List Products Response"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shopId",
+            "description": "Shop identifier from Stash Studio",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Maximum results per page. Defaults to 50. Maximum allowed value is 100.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "description": "Pagination offset. Use next_offset from the previous response to fetch the next page. Defaults to 0.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ManagedCatalog"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      }
+    },
+    "/api/v1/studio/{shopId}/products/{guid}": {
+      "get": {
+        "summary": "Get a single published product",
+        "description": "Retrieves a single published product by its GUID. Returns NOT_FOUND if the product does not exist or is not published.",
+        "operationId": "ManagedCatalogService_GetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "guid": {
+                      "type": "string",
+                      "description": "Stash-internal unique product identifier (UUID)"
+                    },
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Product name",
+                      "title": "Localizable Text"
+                    },
+                    "productId": {
+                      "type": "string",
+                      "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                    },
+                    "description": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Product description. Always non-empty for published products",
+                      "title": "Localizable Text"
+                    },
+                    "images": {
+                      "type": "object",
+                      "properties": {
+                        "mainImage": {
+                          "type": "string",
+                          "description": "Primary product image URL. Always non-empty for published products"
+                        },
+                        "backgroundImage": {
+                          "type": "string",
+                          "description": "Background image URL"
+                        }
+                      },
+                      "description": "Product images",
+                      "title": "Images"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "PRODUCT_STATUS_UNSPECIFIED",
+                        "PRODUCT_STATUS_PUBLISHED"
+                      ],
+                      "default": "PRODUCT_STATUS_PUBLISHED",
+                      "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+                      "example": "PRODUCT_STATUS_PUBLISHED"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the product was created (RFC 3339)"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the product was last updated (RFC 3339)"
+                    },
+                    "displayName": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Human-readable display name. Always non-empty for published products",
+                      "title": "Localizable Text"
+                    },
+                    "prices": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "currency": "USD",
+                          "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                          "region": "US",
+                          "cents": 499,
+                          "updatedAt": "2026-01-15T10:30:00Z"
+                        }
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "currency": {
+                            "type": "string",
+                            "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                          },
+                          "platform": {
+                            "type": "string",
+                            "enum": [
+                              "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                              "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                            ],
+                            "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                            "description": "Platform (e.g., UNIVERSAL)",
+                            "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                          },
+                          "region": {
+                            "type": "string",
+                            "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+                          },
+                          "cents": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when this price was last updated (RFC 3339)"
+                          }
+                        },
+                        "description": "A price entry for a product",
+                        "title": "Price"
+                      },
+                      "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+                    },
+                    "items": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "image": "https://example.com/coin.png",
+                          "quantity": "100",
+                          "displayName": {
+                            "defaultText": "Gold Coin"
+                          }
+                        }
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "image": {
+                            "type": "string",
+                            "description": "URL to the item image. Always non-empty for published products"
+                          },
+                          "quantity": {
+                            "type": "string",
+                            "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+                          },
+                          "displayName": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "Key for client-side localization lookup"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Server-resolved localized text"
+                              }
+                            },
+                            "description": "Optional display name for the item (max 50 characters)",
+                            "title": "Localizable Text"
+                          }
+                        },
+                        "description": "An item contained in a product",
+                        "title": "Item"
+                      },
+                      "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                    }
+                  },
+                  "description": "The requested product",
+                  "title": "Product"
+                }
+              },
+              "description": "Response containing a single published product",
+              "title": "Get Product Response",
+              "required": [
+                "product"
+              ]
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shopId",
+            "description": "Shop identifier from Stash Studio",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "description": "Stash-internal unique product identifier (UUID)",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ManagedCatalog"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {}
+          }
+        }
+      }
+    },
+    "v1GetProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "object",
+          "properties": {
+            "guid": {
+              "type": "string",
+              "description": "Stash-internal unique product identifier (UUID)"
+            },
+            "name": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "Key for client-side localization lookup"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Server-resolved localized text"
+                }
+              },
+              "description": "Product name",
+              "title": "Localizable Text"
+            },
+            "productId": {
+              "type": "string",
+              "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "Key for client-side localization lookup"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Server-resolved localized text"
+                }
+              },
+              "description": "Product description. Always non-empty for published products",
+              "title": "Localizable Text"
+            },
+            "images": {
+              "type": "object",
+              "properties": {
+                "mainImage": {
+                  "type": "string",
+                  "description": "Primary product image URL. Always non-empty for published products"
+                },
+                "backgroundImage": {
+                  "type": "string",
+                  "description": "Background image URL"
+                }
+              },
+              "description": "Product images",
+              "title": "Images"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "PRODUCT_STATUS_UNSPECIFIED",
+                "PRODUCT_STATUS_PUBLISHED"
+              ],
+              "default": "PRODUCT_STATUS_PUBLISHED",
+              "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+              "example": "PRODUCT_STATUS_PUBLISHED"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Timestamp when the product was created (RFC 3339)"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Timestamp when the product was last updated (RFC 3339)"
+            },
+            "displayName": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "Key for client-side localization lookup"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Server-resolved localized text"
+                }
+              },
+              "description": "Human-readable display name. Always non-empty for published products",
+              "title": "Localizable Text"
+            },
+            "prices": {
+              "type": "array",
+              "example": [
+                {
+                  "currency": "USD",
+                  "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                  "region": "US",
+                  "cents": 499,
+                  "updatedAt": "2026-01-15T10:30:00Z"
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                  },
+                  "platform": {
+                    "type": "string",
+                    "enum": [
+                      "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                      "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                    ],
+                    "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                    "description": "Platform (e.g., UNIVERSAL)",
+                    "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+                  },
+                  "cents": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when this price was last updated (RFC 3339)"
+                  }
+                },
+                "description": "A price entry for a product",
+                "title": "Price"
+              },
+              "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+            },
+            "items": {
+              "type": "array",
+              "example": [
+                {
+                  "image": "https://example.com/coin.png",
+                  "quantity": "100",
+                  "displayName": {
+                    "defaultText": "Gold Coin"
+                  }
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "description": "URL to the item image. Always non-empty for published products"
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+                  },
+                  "displayName": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "Key for client-side localization lookup"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Server-resolved localized text"
+                      }
+                    },
+                    "description": "Optional display name for the item (max 50 characters)",
+                    "title": "Localizable Text"
+                  }
+                },
+                "description": "An item contained in a product",
+                "title": "Item"
+              },
+              "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+            }
+          },
+          "description": "The requested product",
+          "title": "Product"
+        }
+      },
+      "description": "Response containing a single published product",
+      "title": "Get Product Response",
+      "required": [
+        "product"
+      ]
+    },
+    "v1Images": {
+      "type": "object",
+      "properties": {
+        "mainImage": {
+          "type": "string",
+          "description": "Primary product image URL. Always non-empty for published products"
+        },
+        "backgroundImage": {
+          "type": "string",
+          "description": "Background image URL"
+        }
+      },
+      "description": "Product images",
+      "title": "Images"
+    },
+    "v1Item": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "URL to the item image. Always non-empty for published products"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+        },
+        "displayName": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Optional display name for the item (max 50 characters)",
+          "title": "Localizable Text"
+        }
+      },
+      "description": "An item contained in a product",
+      "title": "Item"
+    },
+    "v1ListProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": {
+                "type": "string",
+                "description": "Stash-internal unique product identifier (UUID)"
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Product name",
+                "title": "Localizable Text"
+              },
+              "productId": {
+                "type": "string",
+                "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+              },
+              "description": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Product description. Always non-empty for published products",
+                "title": "Localizable Text"
+              },
+              "images": {
+                "type": "object",
+                "properties": {
+                  "mainImage": {
+                    "type": "string",
+                    "description": "Primary product image URL. Always non-empty for published products"
+                  },
+                  "backgroundImage": {
+                    "type": "string",
+                    "description": "Background image URL"
+                  }
+                },
+                "description": "Product images",
+                "title": "Images"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "PRODUCT_STATUS_UNSPECIFIED",
+                  "PRODUCT_STATUS_PUBLISHED"
+                ],
+                "default": "PRODUCT_STATUS_PUBLISHED",
+                "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+                "example": "PRODUCT_STATUS_PUBLISHED"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the product was created (RFC 3339)"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the product was last updated (RFC 3339)"
+              },
+              "displayName": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Human-readable display name. Always non-empty for published products",
+                "title": "Localizable Text"
+              },
+              "prices": {
+                "type": "array",
+                "example": [
+                  {
+                    "currency": "USD",
+                    "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                    "region": "US",
+                    "cents": 499,
+                    "updatedAt": "2026-01-15T10:30:00Z"
+                  }
+                ],
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                    },
+                    "platform": {
+                      "type": "string",
+                      "enum": [
+                        "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                        "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                      ],
+                      "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                      "description": "Platform (e.g., UNIVERSAL)",
+                      "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                    },
+                    "region": {
+                      "type": "string",
+                      "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+                    },
+                    "cents": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when this price was last updated (RFC 3339)"
+                    }
+                  },
+                  "description": "A price entry for a product",
+                  "title": "Price"
+                },
+                "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+              },
+              "items": {
+                "type": "array",
+                "example": [
+                  {
+                    "image": "https://example.com/coin.png",
+                    "quantity": "100",
+                    "displayName": {
+                      "defaultText": "Gold Coin"
+                    }
+                  }
+                ],
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "image": {
+                      "type": "string",
+                      "description": "URL to the item image. Always non-empty for published products"
+                    },
+                    "quantity": {
+                      "type": "string",
+                      "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+                    },
+                    "displayName": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Optional display name for the item (max 50 characters)",
+                      "title": "Localizable Text"
+                    }
+                  },
+                  "description": "An item contained in a product",
+                  "title": "Item"
+                },
+                "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+              }
+            },
+            "description": "A published product from the managed catalog",
+            "title": "Product"
+          },
+          "description": "List of published products"
+        },
+        "nextOffset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Offset for the next page. Omitted if there are no more results."
+        }
+      },
+      "description": "Paginated list of published products",
+      "title": "List Products Response"
+    },
+    "v1LocalizableText": {
+      "type": "object",
+      "properties": {
+        "defaultText": {
+          "type": "string",
+          "description": "Default text content, usually in English"
+        },
+        "localizationKey": {
+          "type": "string",
+          "description": "Key for client-side localization lookup"
+        },
+        "localizedText": {
+          "type": "string",
+          "description": "Server-resolved localized text"
+        }
+      },
+      "description": "Text content that can be localized for a specific language",
+      "title": "Localizable Text"
+    },
+    "v1Price": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+            "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+          ],
+          "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+          "description": "Platform (e.g., UNIVERSAL)",
+          "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+        },
+        "cents": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this price was last updated (RFC 3339)"
+        }
+      },
+      "description": "A price entry for a product",
+      "title": "Price"
+    },
+    "v1Product": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Stash-internal unique product identifier (UUID)"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Product name",
+          "title": "Localizable Text"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+        },
+        "description": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Product description. Always non-empty for published products",
+          "title": "Localizable Text"
+        },
+        "images": {
+          "type": "object",
+          "properties": {
+            "mainImage": {
+              "type": "string",
+              "description": "Primary product image URL. Always non-empty for published products"
+            },
+            "backgroundImage": {
+              "type": "string",
+              "description": "Background image URL"
+            }
+          },
+          "description": "Product images",
+          "title": "Images"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_STATUS_UNSPECIFIED",
+            "PRODUCT_STATUS_PUBLISHED"
+          ],
+          "default": "PRODUCT_STATUS_PUBLISHED",
+          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+          "example": "PRODUCT_STATUS_PUBLISHED"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the product was created (RFC 3339)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the product was last updated (RFC 3339)"
+        },
+        "displayName": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Human-readable display name. Always non-empty for published products",
+          "title": "Localizable Text"
+        },
+        "prices": {
+          "type": "array",
+          "example": [
+            {
+              "currency": "USD",
+              "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+              "region": "US",
+              "cents": 499,
+              "updatedAt": "2026-01-15T10:30:00Z"
+            }
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "currency": {
+                "type": "string",
+                "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+              },
+              "platform": {
+                "type": "string",
+                "enum": [
+                  "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+                  "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                ],
+                "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                "description": "Platform (e.g., UNIVERSAL)",
+                "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+              },
+              "region": {
+                "type": "string",
+                "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+              },
+              "cents": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when this price was last updated (RFC 3339)"
+              }
+            },
+            "description": "A price entry for a product",
+            "title": "Price"
+          },
+          "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+        },
+        "items": {
+          "type": "array",
+          "example": [
+            {
+              "image": "https://example.com/coin.png",
+              "quantity": "100",
+              "displayName": {
+                "defaultText": "Gold Coin"
+              }
+            }
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {
+                "type": "string",
+                "description": "URL to the item image. Always non-empty for published products"
+              },
+              "quantity": {
+                "type": "string",
+                "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+              },
+              "displayName": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Optional display name for the item (max 50 characters)",
+                "title": "Localizable Text"
+              }
+            },
+            "description": "An item contained in a product",
+            "title": "Item"
+          },
+          "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+        }
+      },
+      "description": "A published product from the managed catalog",
+      "title": "Product"
+    },
+    "v1ProductPricePlatform": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+        "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+      ],
+      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+      "description": "Platform for a price entry"
+    },
+    "v1ProductStatus": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_STATUS_UNSPECIFIED",
+        "PRODUCT_STATUS_PUBLISHED"
+      ],
+      "default": "PRODUCT_STATUS_UNSPECIFIED",
+      "description": "Product publication status. This API only returns published products."
+    }
+  },
+  "securityDefinitions": {
+    "hmac": {
+      "type": "apiKey",
+      "description": "HMAC-SHA256 signature generated by signing the request body (empty string for GET requests) with the Ingress API key from Stash Studio. Base64-encoded.",
+      "name": "stash-hmac-signature",
+      "in": "header"
+    }
+  }
+}
