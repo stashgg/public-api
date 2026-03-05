@@ -55,7 +55,11 @@ message Product {
   optional string product_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"}];
   optional LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product description. Always non-empty for published products"}];
   optional Images images = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product images"}];
-  ProductStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"}];
+  ProductStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+    default: "PRODUCT_STATUS_PUBLISHED"
+    example: "\"PRODUCT_STATUS_PUBLISHED\""
+  }];
   google.protobuf.Timestamp created_at = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when the product was created (RFC 3339)"}];
   google.protobuf.Timestamp updated_at = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when the product was last updated (RFC 3339)"}];
   optional LocalizableText display_name = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Human-readable display name. Always non-empty for published products"}];
@@ -106,7 +110,11 @@ message Price {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"}
   ];
-  ProductPricePlatform platform = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Platform (e.g., UNIVERSAL)"}];
+  ProductPricePlatform platform = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Platform (e.g., UNIVERSAL)"
+    default: "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+    example: "\"PRODUCT_PRICE_PLATFORM_UNIVERSAL\""
+  }];
   string region = 3 [
     (validate.rules).string = {
       min_len: 2

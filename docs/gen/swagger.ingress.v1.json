@@ -109,8 +109,9 @@
                           "PRODUCT_STATUS_UNSPECIFIED",
                           "PRODUCT_STATUS_PUBLISHED"
                         ],
-                        "default": "PRODUCT_STATUS_UNSPECIFIED",
-                        "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+                        "default": "PRODUCT_STATUS_PUBLISHED",
+                        "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+                        "example": "PRODUCT_STATUS_PUBLISHED"
                       },
                       "createdAt": {
                         "type": "string",
@@ -165,8 +166,9 @@
                                 "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
                                 "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                               ],
-                              "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-                              "description": "Platform (e.g., UNIVERSAL)"
+                              "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                              "description": "Platform (e.g., UNIVERSAL)",
+                              "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                             },
                             "region": {
                               "type": "string",
@@ -395,8 +397,9 @@
                         "PRODUCT_STATUS_UNSPECIFIED",
                         "PRODUCT_STATUS_PUBLISHED"
                       ],
-                      "default": "PRODUCT_STATUS_UNSPECIFIED",
-                      "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+                      "default": "PRODUCT_STATUS_PUBLISHED",
+                      "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+                      "example": "PRODUCT_STATUS_PUBLISHED"
                     },
                     "createdAt": {
                       "type": "string",
@@ -451,8 +454,9 @@
                               "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
                               "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                             ],
-                            "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-                            "description": "Platform (e.g., UNIVERSAL)"
+                            "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                            "description": "Platform (e.g., UNIVERSAL)",
+                            "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                           },
                           "region": {
                             "type": "string",
@@ -695,8 +699,9 @@
                 "PRODUCT_STATUS_UNSPECIFIED",
                 "PRODUCT_STATUS_PUBLISHED"
               ],
-              "default": "PRODUCT_STATUS_UNSPECIFIED",
-              "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+              "default": "PRODUCT_STATUS_PUBLISHED",
+              "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+              "example": "PRODUCT_STATUS_PUBLISHED"
             },
             "createdAt": {
               "type": "string",
@@ -751,8 +756,9 @@
                       "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
                       "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                     ],
-                    "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-                    "description": "Platform (e.g., UNIVERSAL)"
+                    "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                    "description": "Platform (e.g., UNIVERSAL)",
+                    "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                   },
                   "region": {
                     "type": "string",
@@ -956,8 +962,9 @@
                   "PRODUCT_STATUS_UNSPECIFIED",
                   "PRODUCT_STATUS_PUBLISHED"
                 ],
-                "default": "PRODUCT_STATUS_UNSPECIFIED",
-                "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+                "default": "PRODUCT_STATUS_PUBLISHED",
+                "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+                "example": "PRODUCT_STATUS_PUBLISHED"
               },
               "createdAt": {
                 "type": "string",
@@ -1012,8 +1019,9 @@
                         "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
                         "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                       ],
-                      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-                      "description": "Platform (e.g., UNIVERSAL)"
+                      "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                      "description": "Platform (e.g., UNIVERSAL)",
+                      "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                     },
                     "region": {
                       "type": "string",
@@ -1129,8 +1137,9 @@
             "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
             "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
           ],
-          "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-          "description": "Platform (e.g., UNIVERSAL)"
+          "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+          "description": "Platform (e.g., UNIVERSAL)",
+          "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
         },
         "region": {
           "type": "string",
@@ -1220,8 +1229,9 @@
             "PRODUCT_STATUS_UNSPECIFIED",
             "PRODUCT_STATUS_PUBLISHED"
           ],
-          "default": "PRODUCT_STATUS_UNSPECIFIED",
-          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+          "default": "PRODUCT_STATUS_PUBLISHED",
+          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
+          "example": "PRODUCT_STATUS_PUBLISHED"
         },
         "createdAt": {
           "type": "string",
@@ -1276,8 +1286,9 @@
                   "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
                   "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                 ],
-                "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-                "description": "Platform (e.g., UNIVERSAL)"
+                "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                "description": "Platform (e.g., UNIVERSAL)",
+                "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
               },
               "region": {
                 "type": "string",
