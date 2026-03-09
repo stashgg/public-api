@@ -27,15 +27,33 @@ Used to store protos and auto-generated clients for public- and external-facing 
 3. **Big Integers**: Go's `big.Int` fields are represented as `string` fields in protobuf for maximum precision and compatibility.
 4. **Timestamps**: Go's `time.Time` is mapped to `google.protobuf.Timestamp`.
 
+## Prerequisites
+
+- **Go** – for protobuf/OpenAPI code generation (see `install-tool.sh`).
+- **Node.js** – for Swagger merge, Redoc, and OpenAPI client generation.
+- **Java 11+** – required only when generating API clients (TypeScript, Java, Python, C#). The client generator is Java-based.
+
 ## Code Generation
 
-Generate clients (for validation purposes):
+Generate all code (Go, OpenAPI specs, docs) and API clients for all supported languages:
 
 ```bash
 make gen
-# or directly:
+# or:
 ./gen.sh
+./gen.sh all
 ```
+
+Generate clients for a single language:
+
+```bash
+./gen.sh typescript   # TypeScript (Fetch API)
+./gen.sh java         # Java (native HttpClient)
+./gen.sh python       # Python (urllib3)
+./gen.sh csharp       # C# (HttpClient, netstandard2.0)
+```
+
+Clients are framework-agnostic. Each language is generated for both **egress** (shop APIs) and **ingress** (studio APIs) from their merged OpenAPI specs.
 
 Lint protobuf files:
 
@@ -51,36 +69,38 @@ make format
 
 ## Generated Output
 
-To validate correctness of the protos, this repo comes with commands to generate:
+Generation produces:
 
 - Go structs and gRPC client/server code
 - gRPC-Gateway HTTP/JSON bindings
 - OpenAPI v2 (swagger) documentation
+- API clients for TypeScript, Java, Python, and C# for both egress and ingress (when requested via `./gen.sh [language]`)
 
-Generated files are placed in the `gen/` directory and are not committed to version control. Instead, each project using these protos should build their own clients as needed.
+Generated files are in the `gen/` directory and are not committed. Each consuming project should generate its own clients as needed.
 
 ### Generated Output Structure
 
-Running `make gen` from the repo root creates:
+Running `make gen` or `./gen.sh all` creates:
 
 ```
 gen/
 ├── proto/                    # Generated Go code
-│   └── server/shop/
-│       ├── catalog/v1/      # Catalog service Go structs & gRPC
-│       ├── purchase/v1/     # Purchase service Go structs & gRPC
-│       └── user/v1/        # User service Go structs & gRPC
-├── openapiv2/              # OpenAPI/Swagger documentation
-│   └── server/shop/
-│       ├── catalog/v1/     # service.swagger.json (rich) + enums.swagger.json (minimal)
-│       ├── purchase/v1/    # service.swagger.json (rich) + enums.swagger.json (minimal)
-│       └── user/v1/       # service.swagger.json (rich)
-└── typescript/             # TypeScript API clients
-    └── server/shop/
-        ├── catalog/        # catalog-client.ts
-        ├── purchase/       # purchase-client.ts
-        └── user/          # user-client.ts
+│   └── server/...
+├── openapiv2/                 # Per-service OpenAPI/Swagger specs
+│   └── server/...
+├── clients-egress/            # Egress API clients (shop: catalog, user, purchase)
+│   ├── typescript/
+│   ├── java/
+│   ├── python/               # package: stash_api
+│   └── csharp/
+└── clients-ingress/          # Ingress API clients (studio)
+    ├── typescript/
+    ├── java/
+    ├── python/               # package: stash_api_ingress
+    └── csharp/
 ```
+
+Merged Swagger and Redoc HTML are written to `docs/gen/`.
 
 ### About Swagger Files
 

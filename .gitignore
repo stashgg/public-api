@@ -10,6 +10,9 @@ node_modules/
 # Buf cache
 .buf/
 
+# OpenAPI Generator CLI version/config (created when running gen.sh)
+openapitools.json
+
 # Build artifacts
 *.log
 *.tmp
