@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Generates code from protobuf files (Go, OpenAPI) and API clients for TypeScript, Java, Python, C#.
+# Clients are generated for both egress (gen/clients-egress/) and ingress (gen/clients-ingress/) specs.
 # Usage: ./gen.sh [language]
 #   language: typescript | java | python | csharp | all (default: all)
 
@@ -51,52 +52,73 @@ check_java() {
 
 run_openapi_gen() {
   check_java
-  local generator="$1"
-  local output_dir="$2"
-  shift 2
+  local spec="$1"
+  local generator="$2"
+  local output_dir="$3"
+  shift 3
   npx --yes @openapitools/openapi-generator-cli generate \
-    -i ./docs/gen/swagger.v1.json \
+    -i "$spec" \
     -g "$generator" \
     -o "$output_dir" \
     --skip-validate-spec \
     "$@"
 }
 
-generate_typescript() {
-  echo "Generating TypeScript client..."
-  mkdir -p gen/clients/typescript
-  run_openapi_gen typescript-fetch gen/clients/typescript
-}
+generate_for_lang() {
+  local lang="$1"
+  local egress_out="$2"
+  local ingress_out="$3"
+  local py_package_egress="$4"
+  local py_package_ingress="$5"
 
-generate_java() {
-  echo "Generating Java client..."
-  mkdir -p gen/clients/java
-  run_openapi_gen java gen/clients/java --additional-properties=library=native
-}
-
-generate_python() {
-  echo "Generating Python client..."
-  mkdir -p gen/clients/python
-  run_openapi_gen python gen/clients/python --additional-properties=packageName=stash_api
-}
-
-generate_csharp() {
-  echo "Generating C# client..."
-  mkdir -p gen/clients/csharp
-  run_openapi_gen csharp gen/clients/csharp \
-    --additional-properties=library=httpclient,targetFramework=netstandard2.0
+  case "$lang" in
+    typescript)
+      echo "Generating TypeScript client (egress)..."
+      mkdir -p "$egress_out"
+      run_openapi_gen ./docs/gen/swagger.v1.json typescript-fetch "$egress_out"
+      echo "Generating TypeScript client (ingress)..."
+      mkdir -p "$ingress_out"
+      run_openapi_gen ./docs/gen/swagger.ingress.v1.json typescript-fetch "$ingress_out"
+      ;;
+    java)
+      echo "Generating Java client (egress)..."
+      mkdir -p "$egress_out"
+      run_openapi_gen ./docs/gen/swagger.v1.json java "$egress_out" --additional-properties=library=native
+      echo "Generating Java client (ingress)..."
+      mkdir -p "$ingress_out"
+      run_openapi_gen ./docs/gen/swagger.ingress.v1.json java "$ingress_out" --additional-properties=library=native
+      ;;
+    python)
+      echo "Generating Python client (egress)..."
+      mkdir -p "$egress_out"
+      run_openapi_gen ./docs/gen/swagger.v1.json python "$egress_out" --additional-properties=packageName="$py_package_egress"
+      echo "Generating Python client (ingress)..."
+      mkdir -p "$ingress_out"
+      run_openapi_gen ./docs/gen/swagger.ingress.v1.json python "$ingress_out" --additional-properties=packageName="$py_package_ingress"
+      ;;
+    csharp)
+      echo "Generating C# client (egress)..."
+      mkdir -p "$egress_out"
+      run_openapi_gen ./docs/gen/swagger.v1.json csharp "$egress_out" \
+        --additional-properties=library=httpclient,targetFramework=netstandard2.0
+      echo "Generating C# client (ingress)..."
+      mkdir -p "$ingress_out"
+      run_openapi_gen ./docs/gen/swagger.ingress.v1.json csharp "$ingress_out" \
+        --additional-properties=library=httpclient,targetFramework=netstandard2.0
+      ;;
+  esac
 }
 
 case "$LANG" in
-  typescript) generate_typescript ;;
-  java)       generate_java ;;
-  python)     generate_python ;;
-  csharp)     generate_csharp ;;
+  typescript) generate_for_lang typescript gen/clients-egress/typescript gen/clients-ingress/typescript stash_api stash_api_ingress ;;
+  java)       generate_for_lang java       gen/clients-egress/java       gen/clients-ingress/java       stash_api stash_api_ingress ;;
+  python)     generate_for_lang python    gen/clients-egress/python     gen/clients-ingress/python     stash_api stash_api_ingress ;;
+  csharp)     generate_for_lang csharp    gen/clients-egress/csharp     gen/clients-ingress/csharp     stash_api stash_api_ingress ;;
   all)
-    generate_typescript
-    generate_java
-    generate_python
-    generate_csharp
+    generate_for_lang typescript gen/clients-egress/typescript gen/clients-ingress/typescript stash_api stash_api_ingress
+    generate_for_lang java       gen/clients-egress/java       gen/clients-ingress/java       stash_api stash_api_ingress
+    generate_for_lang python     gen/clients-egress/python     gen/clients-ingress/python     stash_api stash_api_ingress
+    generate_for_lang csharp     gen/clients-egress/csharp     gen/clients-ingress/csharp     stash_api stash_api_ingress
     ;;
 esac
 

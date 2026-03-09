@@ -53,7 +53,7 @@ Generate clients for a single language:
 ./gen.sh csharp       # C# (HttpClient, netstandard2.0)
 ```
 
-Clients are framework-agnostic and generated from the merged egress OpenAPI spec.
+Clients are framework-agnostic. Each language is generated for both **egress** (shop APIs) and **ingress** (studio APIs) from their merged OpenAPI specs.
 
 Lint protobuf files:
 
@@ -74,7 +74,7 @@ Generation produces:
 - Go structs and gRPC client/server code
 - gRPC-Gateway HTTP/JSON bindings
 - OpenAPI v2 (swagger) documentation
-- API clients for TypeScript, Java, Python, and C# (when requested via `./gen.sh [language]`)
+- API clients for TypeScript, Java, Python, and C# for both egress and ingress (when requested via `./gen.sh [language]`)
 
 Generated files are in the `gen/` directory and are not committed. Each consuming project should generate its own clients as needed.
 
@@ -88,11 +88,16 @@ gen/
 │   └── server/...
 ├── openapiv2/                 # Per-service OpenAPI/Swagger specs
 │   └── server/...
-└── clients/                  # API clients (from merged egress spec)
-    ├── typescript/            # TypeScript (Fetch API)
-    ├── java/                  # Java (java.net.http)
-    ├── python/                # Python (urllib3, package: stash_api)
-    └── csharp/                # C# (HttpClient, netstandard2.0)
+├── clients-egress/            # Egress API clients (shop: catalog, user, purchase)
+│   ├── typescript/
+│   ├── java/
+│   ├── python/               # package: stash_api
+│   └── csharp/
+└── clients-ingress/          # Ingress API clients (studio)
+    ├── typescript/
+    ├── java/
+    ├── python/               # package: stash_api_ingress
+    └── csharp/
 ```
 
 Merged Swagger and Redoc HTML are written to `docs/gen/`.
