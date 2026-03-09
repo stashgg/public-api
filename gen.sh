@@ -1,48 +1,103 @@
 #!/bin/bash
 
-# This script generates code from protobuf files using buf.
-# It generates Go code, gRPC gateway code, and OpenAPI documentation.
-# The generated code is placed in the gen/ directory for use in the project.
+# Generates code from protobuf files (Go, OpenAPI) and API clients for TypeScript, Java, Python, C#.
+# Usage: ./gen.sh [language]
+#   language: typescript | java | python | csharp | all (default: all)
 
-set -ex # halt on error + print commands
+set -e
 
-# Install necessary tools
-./install-tool.sh
+usage() {
+  echo "Usage: ./gen.sh [language]"
+  echo "  language: typescript | java | python | csharp | all (default: all)"
+  exit 1
+}
 
-# Add Go bin directory to PATH so protoc plugins can be found
-# Go installs binaries to $GOPATH/bin or $HOME/go/bin
+LANG="${1:-all}"
+case "$LANG" in
+  typescript|java|python|csharp|all) ;;
+  *) usage ;;
+esac
+
+# Add Go bin to PATH for protoc plugins
 if [ -n "$GOPATH" ]; then
-    export PATH="$GOPATH/bin:$PATH"
+  export PATH="$GOPATH/bin:$PATH"
 else
-    export PATH="$HOME/go/bin:$PATH"
+  export PATH="$HOME/go/bin:$PATH"
 fi
 
-# Clean up previous generated files
+./install-tool.sh
+
 rm -rf gen/
 rm -rf docs/gen/
 
-# Generate Go code, gRPC services, gateway code, and OpenAPI docs
+echo "Generating Go code and OpenAPI specs..."
 buf generate
 
-# Generate TypeScript clients from OpenAPI specs
-echo "Generating TypeScript clients..."
-mkdir -p gen/typescript/server/egress/shop/catalog gen/typescript/server/egress/shop/user gen/typescript/server/egress/shop/purchase
-npx --yes swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/egress/shop/catalog/v1/service.swagger.json -o ./gen/typescript/server/egress/shop/catalog/ -n catalog-client.ts --route-types --module-name-index=1 --no-client
-npx swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/egress/shop/user/v1/service.swagger.json -o ./gen/typescript/server/egress/shop/user/ -n user-client.ts --route-types --module-name-index=1 --no-client
-npx swagger-typescript-api@9.3.1 -p ./gen/openapiv2/server/egress/shop/purchase/v1/service.swagger.json -o ./gen/typescript/server/egress/shop/purchase/ -n purchase-client.ts --route-types --module-name-index=1 --no-client
-
-# Merge all OpenAPI specs into a single swagger file
 echo "Merging Swagger files..."
-mkdir -p ./docs/gen/
+mkdir -p docs/gen
 npx --yes swagger-merger@1.5.4 -i ./docs/config/swagger-merger-config.json -o ./docs/gen/swagger.v1.json
+npx --yes swagger-merger@1.5.4 -i ./docs/config/swagger-merger-ingress-config.json -o ./docs/gen/swagger.ingress.v1.json
 
-echo "Building Redoc static HTML file..."
+echo "Building Redoc docs..."
 npx --yes @redocly/cli@2.6.0 build-docs ./docs/gen/swagger.v1.json -o ./docs/gen/redoc.v1.html
+npx --yes @redocly/cli@2.6.0 build-docs ./docs/gen/swagger.ingress.v1.json -o ./docs/gen/redoc.ingress.v1.html
 
-echo "Merging Ingress Swagger files..."
-npx swagger-merger@1.5.4 -i ./docs/config/swagger-merger-ingress-config.json -o ./docs/gen/swagger.ingress.v1.json
+check_java() {
+  if ! command -v java &>/dev/null; then
+    echo "Java 11+ is required for client generation. Install Java and try again."
+    exit 1
+  fi
+}
 
-echo "Building Ingress Redoc static HTML file..."
-npx @redocly/cli@2.6.0 build-docs ./docs/gen/swagger.ingress.v1.json -o ./docs/gen/redoc.ingress.v1.html
+run_openapi_gen() {
+  check_java
+  local generator="$1"
+  local output_dir="$2"
+  shift 2
+  npx --yes @openapitools/openapi-generator-cli generate \
+    -i ./docs/gen/swagger.v1.json \
+    -g "$generator" \
+    -o "$output_dir" \
+    --skip-validate-spec \
+    "$@"
+}
+
+generate_typescript() {
+  echo "Generating TypeScript client..."
+  mkdir -p gen/clients/typescript
+  run_openapi_gen typescript-fetch gen/clients/typescript
+}
+
+generate_java() {
+  echo "Generating Java client..."
+  mkdir -p gen/clients/java
+  run_openapi_gen java gen/clients/java --additional-properties=library=native
+}
+
+generate_python() {
+  echo "Generating Python client..."
+  mkdir -p gen/clients/python
+  run_openapi_gen python gen/clients/python --additional-properties=packageName=stash_api
+}
+
+generate_csharp() {
+  echo "Generating C# client..."
+  mkdir -p gen/clients/csharp
+  run_openapi_gen csharp gen/clients/csharp \
+    --additional-properties=library=httpclient,targetFramework=netstandard2.0
+}
+
+case "$LANG" in
+  typescript) generate_typescript ;;
+  java)       generate_java ;;
+  python)     generate_python ;;
+  csharp)     generate_csharp ;;
+  all)
+    generate_typescript
+    generate_java
+    generate_python
+    generate_csharp
+    ;;
+esac
 
 echo "Code generation completed successfully!"
