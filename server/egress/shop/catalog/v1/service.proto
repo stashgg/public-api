@@ -643,17 +643,29 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Catalog Section"
-          description: "Represents a section of catalog items with a header, items and display type"
-          required: ["items"]
+          description: "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated."
         }
       };
       LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Row header text"}];
-      repeated CatalogItem items = 2 [
-        (google.api.field_behavior) = REQUIRED,
-        (validate.rules).repeated.min_items = 1,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog items in this section to be displayed in the order they are provided"}
-      ];
+      repeated CatalogItem items = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."}];
       CatalogSectionDisplayType display_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the section should be displayed on the screen"}];
+      message Group {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Catalog Section Group"
+            description: "A titled group of catalog offers within a section"
+            required: ["items"]
+          }
+        };
+        LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Group title, e.g. a bundle name"}];
+        repeated CatalogItem items = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).repeated.min_items = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Offers in this group in display order"}
+        ];
+        optional CatalogGroupDisplayType display_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-group layout override"}];
+      }
+      repeated Group groups = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer groups within this section; array order is display order"}];
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
   }
