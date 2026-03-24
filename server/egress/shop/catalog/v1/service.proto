@@ -731,6 +731,22 @@ message GetOfferDetailsResponse {
       required: ["items"]
     }
   };
+  message Background {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Background"
+        description: "Contains styling information for backgrounds. Note: At least one of image_url or background_style must be provided, and both can be provided when styles should be combined with the image."
+      }
+    };
+    string image_url = 1 [
+      (validate.rules).string = {
+        uri: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to background image"}
+    ];
+    string background_style = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CSS-style background styling information"}];
+  }
   message ContentItem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
@@ -941,6 +957,8 @@ message GetOfferDetailsResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL"}
       ];
       optional bool featured = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this reward should be displayed prominently"}];
+      optional Background primary_background = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional primary background styling for the featured reward item card"}];
+      optional Background secondary_background = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary background styling for the featured reward item card, layered on top of the primary background"}];
 
       message RewardStatistics {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
