@@ -23,6 +23,14 @@ enum CatalogSectionDisplayType {
   CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL = 1;
 }
 
+enum CatalogGroupDisplayType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Display type of a catalog group within a section (optional per-group layout override)"};
+  // Inherit section display behavior
+  CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED = 0;
+  // Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)
+  CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW = 1;
+}
+
 enum PurchasableItemType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of purchasable item"};
   // Default purchasable item type
