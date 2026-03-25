@@ -2969,6 +2969,36 @@
                               "type": "boolean",
                               "description": "Whether this reward should be displayed prominently"
                             },
+                            "primaryBackground": {
+                              "type": "object",
+                              "properties": {
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "URL to background image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "CSS-style background styling information"
+                                }
+                              },
+                              "description": "Optional primary background styling for the featured reward item card",
+                              "title": "Background"
+                            },
+                            "secondaryBackground": {
+                              "type": "object",
+                              "properties": {
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "URL to background image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "CSS-style background styling information"
+                                }
+                              },
+                              "description": "Optional secondary background styling for the featured reward item card, layered on top of the primary background",
+                              "title": "Background"
+                            },
                             "statistics": {
                               "type": "object",
                               "properties": {
@@ -7868,6 +7898,36 @@
           "type": "boolean",
           "description": "Whether this reward should be displayed prominently"
         },
+        "primaryBackground": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional primary background styling for the featured reward item card",
+          "title": "Background"
+        },
+        "secondaryBackground": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional secondary background styling for the featured reward item card, layered on top of the primary background",
+          "title": "Background"
+        },
         "statistics": {
           "type": "object",
           "properties": {
@@ -8272,21 +8332,6 @@
         "headers",
         "rows"
       ]
-    },
-    "GetCatalogResponseBackground": {
-      "type": "object",
-      "properties": {
-        "imageUrl": {
-          "type": "string",
-          "description": "URL to background image"
-        },
-        "backgroundStyle": {
-          "type": "string",
-          "description": "CSS-style background styling information"
-        }
-      },
-      "description": "Contains styling information for backgrounds. Note: At least one of image_url or background_style must be provided, and both can be provided when styles should be combined with the image.",
-      "title": "Background"
     },
     "GetCatalogResponseBadge": {
       "type": "object",
@@ -16693,6 +16738,21 @@
         "catalog"
       ]
     },
+    "v1GetCatalogResponseBackground": {
+      "type": "object",
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to background image"
+        },
+        "backgroundStyle": {
+          "type": "string",
+          "description": "CSS-style background styling information"
+        }
+      },
+      "description": "Contains styling information for backgrounds. Note: At least one of image_url or background_style must be provided, and both can be provided when styles should be combined with the image.",
+      "title": "Background"
+    },
     "v1GetOfferDetailsResponse": {
       "type": "object",
       "properties": {
@@ -17196,6 +17256,36 @@
                       "type": "boolean",
                       "description": "Whether this reward should be displayed prominently"
                     },
+                    "primaryBackground": {
+                      "type": "object",
+                      "properties": {
+                        "imageUrl": {
+                          "type": "string",
+                          "description": "URL to background image"
+                        },
+                        "backgroundStyle": {
+                          "type": "string",
+                          "description": "CSS-style background styling information"
+                        }
+                      },
+                      "description": "Optional primary background styling for the featured reward item card",
+                      "title": "Background"
+                    },
+                    "secondaryBackground": {
+                      "type": "object",
+                      "properties": {
+                        "imageUrl": {
+                          "type": "string",
+                          "description": "URL to background image"
+                        },
+                        "backgroundStyle": {
+                          "type": "string",
+                          "description": "CSS-style background styling information"
+                        }
+                      },
+                      "description": "Optional secondary background styling for the featured reward item card, layered on top of the primary background",
+                      "title": "Background"
+                    },
                     "statistics": {
                       "type": "object",
                       "properties": {
@@ -17314,6 +17404,21 @@
       "required": [
         "items"
       ]
+    },
+    "v1GetOfferDetailsResponseBackground": {
+      "type": "object",
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to background image"
+        },
+        "backgroundStyle": {
+          "type": "string",
+          "description": "CSS-style background styling information"
+        }
+      },
+      "description": "Contains styling information for backgrounds. Note: At least one of image_url or background_style must be provided, and both can be provided when styles should be combined with the image.",
+      "title": "Background"
     },
     "v1GetOfferDetailsResponseContentItem": {
       "type": "object",
@@ -17812,6 +17917,36 @@
               "featured": {
                 "type": "boolean",
                 "description": "Whether this reward should be displayed prominently"
+              },
+              "primaryBackground": {
+                "type": "object",
+                "properties": {
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL to background image"
+                  },
+                  "backgroundStyle": {
+                    "type": "string",
+                    "description": "CSS-style background styling information"
+                  }
+                },
+                "description": "Optional primary background styling for the featured reward item card",
+                "title": "Background"
+              },
+              "secondaryBackground": {
+                "type": "object",
+                "properties": {
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL to background image"
+                  },
+                  "backgroundStyle": {
+                    "type": "string",
+                    "description": "CSS-style background styling information"
+                  }
+                },
+                "description": "Optional secondary background styling for the featured reward item card, layered on top of the primary background",
+                "title": "Background"
               },
               "statistics": {
                 "type": "object",
