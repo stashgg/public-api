@@ -65,7 +65,7 @@ message Product {
   optional LocalizableText display_name = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Human-readable display name. Always non-empty for published products"}];
   repeated Price prices = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
-    example: "[{\"currency\": \"USD\", \"platform\": \"PRODUCT_PRICE_PLATFORM_UNIVERSAL\", \"region\": \"US\", \"cents\": 499, \"updatedAt\": \"2026-01-15T10:30:00Z\"}]"
+    example: "[{\"currency\": \"USD\", \"platform\": \"PRODUCT_PRICE_PLATFORM_UNIVERSAL\", \"region\": \"US\", \"cents\": 499, \"decimalPlaces\": 2, \"updatedAt\": \"2026-01-15T10:30:00Z\"}]"
   }];
   repeated Item items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
@@ -101,6 +101,14 @@ message Price {
     json_schema: {
       title: "Price"
       description: "A price entry for a product"
+      required: [
+        "currency",
+        "platform",
+        "region",
+        "cents",
+        "decimalPlaces",
+        "updatedAt"
+      ]
     }
   };
   string currency = 1 [
@@ -108,7 +116,7 @@ message Price {
       min_len: 3
       max_len: 3
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"}
   ];
   ProductPricePlatform platform = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "Platform (e.g., UNIVERSAL)"
@@ -122,7 +130,11 @@ message Price {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"}
   ];
-  uint32 cents = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g., 499 for $4.99)"}];
+  uint32 cents = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"}];
+  uint32 decimal_places = 6 [
+    (validate.rules).uint32 = {lte: 18},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."}
+  ];
   google.protobuf.Timestamp updated_at = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Timestamp when this price was last updated (RFC 3339)"}];
 }
 

@@ -283,12 +283,12 @@ message GetCatalogResponse {
           min_len: 3
           max_len: 3
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "ISO 4217 currency code (e.g., 'USD', 'EUR')"}
       ];
       uint32 cents = 2 [
         (google.api.field_behavior) = REQUIRED,
         (validate.rules).uint32.gt = 0,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."}
       ];
     }
     oneof price {

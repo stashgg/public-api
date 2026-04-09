@@ -150,6 +150,7 @@
                             "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
                             "region": "US",
                             "cents": 499,
+                            "decimalPlaces": 2,
                             "updatedAt": "2026-01-15T10:30:00Z"
                           }
                         ],
@@ -158,7 +159,7 @@
                           "properties": {
                             "currency": {
                               "type": "string",
-                              "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                              "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
                             },
                             "platform": {
                               "type": "string",
@@ -177,7 +178,12 @@
                             "cents": {
                               "type": "integer",
                               "format": "int64",
-                              "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                              "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+                            },
+                            "decimalPlaces": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
                             },
                             "updatedAt": {
                               "type": "string",
@@ -186,7 +192,15 @@
                             }
                           },
                           "description": "A price entry for a product",
-                          "title": "Price"
+                          "title": "Price",
+                          "required": [
+                            "currency",
+                            "platform",
+                            "region",
+                            "cents",
+                            "decimalPlaces",
+                            "updatedAt"
+                          ]
                         },
                         "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
                       },
@@ -438,6 +452,7 @@
                           "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
                           "region": "US",
                           "cents": 499,
+                          "decimalPlaces": 2,
                           "updatedAt": "2026-01-15T10:30:00Z"
                         }
                       ],
@@ -446,7 +461,7 @@
                         "properties": {
                           "currency": {
                             "type": "string",
-                            "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                            "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
                           },
                           "platform": {
                             "type": "string",
@@ -465,7 +480,12 @@
                           "cents": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                            "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+                          },
+                          "decimalPlaces": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
                           },
                           "updatedAt": {
                             "type": "string",
@@ -474,7 +494,15 @@
                           }
                         },
                         "description": "A price entry for a product",
-                        "title": "Price"
+                        "title": "Price",
+                        "required": [
+                          "currency",
+                          "platform",
+                          "region",
+                          "cents",
+                          "decimalPlaces",
+                          "updatedAt"
+                        ]
                       },
                       "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
                     },
@@ -740,6 +768,7 @@
                   "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
                   "region": "US",
                   "cents": 499,
+                  "decimalPlaces": 2,
                   "updatedAt": "2026-01-15T10:30:00Z"
                 }
               ],
@@ -748,7 +777,7 @@
                 "properties": {
                   "currency": {
                     "type": "string",
-                    "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                    "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
                   },
                   "platform": {
                     "type": "string",
@@ -767,7 +796,12 @@
                   "cents": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                    "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+                  },
+                  "decimalPlaces": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
                   },
                   "updatedAt": {
                     "type": "string",
@@ -776,7 +810,15 @@
                   }
                 },
                 "description": "A price entry for a product",
-                "title": "Price"
+                "title": "Price",
+                "required": [
+                  "currency",
+                  "platform",
+                  "region",
+                  "cents",
+                  "decimalPlaces",
+                  "updatedAt"
+                ]
               },
               "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
             },
@@ -1003,6 +1045,7 @@
                     "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
                     "region": "US",
                     "cents": 499,
+                    "decimalPlaces": 2,
                     "updatedAt": "2026-01-15T10:30:00Z"
                   }
                 ],
@@ -1011,7 +1054,7 @@
                   "properties": {
                     "currency": {
                       "type": "string",
-                      "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                      "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
                     },
                     "platform": {
                       "type": "string",
@@ -1030,7 +1073,12 @@
                     "cents": {
                       "type": "integer",
                       "format": "int64",
-                      "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                      "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+                    },
+                    "decimalPlaces": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
                     },
                     "updatedAt": {
                       "type": "string",
@@ -1039,7 +1087,15 @@
                     }
                   },
                   "description": "A price entry for a product",
-                  "title": "Price"
+                  "title": "Price",
+                  "required": [
+                    "currency",
+                    "platform",
+                    "region",
+                    "cents",
+                    "decimalPlaces",
+                    "updatedAt"
+                  ]
                 },
                 "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
               },
@@ -1129,7 +1185,7 @@
       "properties": {
         "currency": {
           "type": "string",
-          "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+          "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
         },
         "platform": {
           "type": "string",
@@ -1148,7 +1204,12 @@
         "cents": {
           "type": "integer",
           "format": "int64",
-          "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+          "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+        },
+        "decimalPlaces": {
+          "type": "integer",
+          "format": "int64",
+          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
         },
         "updatedAt": {
           "type": "string",
@@ -1157,7 +1218,15 @@
         }
       },
       "description": "A price entry for a product",
-      "title": "Price"
+      "title": "Price",
+      "required": [
+        "currency",
+        "platform",
+        "region",
+        "cents",
+        "decimalPlaces",
+        "updatedAt"
+      ]
     },
     "v1Product": {
       "type": "object",
@@ -1270,6 +1339,7 @@
               "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
               "region": "US",
               "cents": 499,
+              "decimalPlaces": 2,
               "updatedAt": "2026-01-15T10:30:00Z"
             }
           ],
@@ -1278,7 +1348,7 @@
             "properties": {
               "currency": {
                 "type": "string",
-                "description": "Currency code (ISO-4217, e.g., \"USD\", \"EUR\")"
+                "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
               },
               "platform": {
                 "type": "string",
@@ -1297,7 +1367,12 @@
               "cents": {
                 "type": "integer",
                 "format": "int64",
-                "description": "Price in smallest currency unit (e.g., 499 for $4.99)"
+                "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+              },
+              "decimalPlaces": {
+                "type": "integer",
+                "format": "int64",
+                "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
               },
               "updatedAt": {
                 "type": "string",
@@ -1306,7 +1381,15 @@
               }
             },
             "description": "A price entry for a product",
-            "title": "Price"
+            "title": "Price",
+            "required": [
+              "currency",
+              "platform",
+              "region",
+              "cents",
+              "decimalPlaces",
+              "updatedAt"
+            ]
           },
           "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
         },
