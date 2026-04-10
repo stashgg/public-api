@@ -74,6 +74,7 @@ message RegisterPaymentRequest {
         "player_id",
         "transaction_id",
         "currency",
+        "decimal_places",
         "registrations"
       ]
     }
@@ -98,6 +99,10 @@ message RegisterPaymentRequest {
       max_len: 3
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+  ];
+  uint32 decimal_places = 13 [
+    (validate.rules).uint32 = {lte: 18},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."}
   ];
 
   message PurchaseRegistration {
@@ -126,7 +131,7 @@ message RegisterPaymentRequest {
     uint32 cents = 3 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price in smallest currency unit (e.g. 999 for $9.99)"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g. 999 for $9.99 in USD)"}
     ];
     uint32 quantity = 4 [
       (google.api.field_behavior) = REQUIRED,
@@ -206,7 +211,10 @@ message CancelPaymentRequest {
       description: "Request to cancel a pending purchase that was previously registered."
       required: [
         "player_id",
-        "transaction_id"
+        "transaction_id",
+        "currency",
+        "decimal_places",
+        "items"
       ]
     }
   };
@@ -222,6 +230,17 @@ message CancelPaymentRequest {
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
   server.egress.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
+  string currency = 6 [
+    (validate.rules).string = {
+      min_len: 3
+      max_len: 3
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
+  ];
+  uint32 decimal_places = 7 [
+    (validate.rules).uint32 = {lte: 18},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units)."}
+  ];
 
   message CanceledItem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -254,7 +273,7 @@ message CancelPaymentRequest {
     uint32 cents = 4 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price per item in smallest currency unit (e.g. 999 for $9.99)"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"}
     ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
@@ -285,6 +304,7 @@ message ConfirmPaymentRequest {
         "player_id",
         "transaction_id",
         "currency",
+        "decimal_places",
         "tax",
         "total",
         "time_millis",
@@ -313,15 +333,19 @@ message ConfirmPaymentRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
   ];
+  uint32 decimal_places = 23 [
+    (validate.rules).uint32 = {lte: 18},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code."}
+  ];
   uint32 tax = 5 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).uint32.gte = 0,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax amount in smallest currency unit (e.g. 99 for $0.99, can be 0)"}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax as integer minor units per CLDR for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0)"}
   ];
   uint32 total = 6 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).uint32.gt = 0,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Total purchase amount in smallest currency unit including tax (e.g. 1098 for $10.98)"}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Total including tax, as integer minor units per CLDR for this ISO 4217 currency (e.g. 1098 for $10.98 in USD)"}
   ];
   int64 time_millis = 7 [
     (google.api.field_behavior) = REQUIRED,
@@ -361,7 +385,7 @@ message ConfirmPaymentRequest {
     uint32 cents = 4 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price per item in smallest currency unit (e.g. 999 for $9.99)"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"}
     ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }

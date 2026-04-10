@@ -174,12 +174,12 @@
                                           "properties": {
                                             "currency": {
                                               "type": "string",
-                                              "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                              "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                             },
                                             "cents": {
                                               "type": "integer",
                                               "format": "int64",
-                                              "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                              "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                             }
                                           },
                                           "description": "Price amount for the offer",
@@ -795,12 +795,12 @@
                                                 "properties": {
                                                   "currency": {
                                                     "type": "string",
-                                                    "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                                    "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                                   },
                                                   "cents": {
                                                     "type": "integer",
                                                     "format": "int64",
-                                                    "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                                    "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                                   }
                                                 },
                                                 "description": "Price amount for the offer",
@@ -1321,12 +1321,12 @@
                                                 "properties": {
                                                   "currency": {
                                                     "type": "string",
-                                                    "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                                    "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                                   },
                                                   "cents": {
                                                     "type": "integer",
                                                     "format": "int64",
-                                                    "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                                    "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                                   }
                                                 },
                                                 "description": "Price amount for the offer",
@@ -1942,12 +1942,12 @@
                                                       "properties": {
                                                         "currency": {
                                                           "type": "string",
-                                                          "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                                          "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                                         },
                                                         "cents": {
                                                           "type": "integer",
                                                           "format": "int64",
-                                                          "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                                          "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                                         }
                                                       },
                                                       "description": "Price amount for the offer",
@@ -3423,6 +3423,15 @@
                   "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
                   "description": "Payment environment for the request"
                 },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                },
+                "decimalPlaces": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units)."
+                },
                 "items": {
                   "type": "array",
                   "items": {
@@ -3444,7 +3453,7 @@
                       "cents": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+                        "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
                       },
                       "metadata": {
                         "type": "object",
@@ -3469,6 +3478,8 @@
               "description": "Request to cancel a pending purchase that was previously registered.",
               "title": "Cancel Payment Request",
               "required": [
+                "currency",
+                "decimalPlaces",
                 "playerId",
                 "transactionId",
                 "items"
@@ -3587,15 +3598,20 @@
                   "type": "string",
                   "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
                 },
+                "decimalPlaces": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code."
+                },
                 "tax": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Tax amount in smallest currency unit (e.g. 99 for $0.99, can be 0)"
+                  "description": "Tax as integer minor units per CLDR for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0)"
                 },
                 "total": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Total purchase amount in smallest currency unit including tax (e.g. 1098 for $10.98)"
+                  "description": "Total including tax, as integer minor units per CLDR for this ISO 4217 currency (e.g. 1098 for $10.98 in USD)"
                 },
                 "timeMillis": {
                   "type": "string",
@@ -3637,7 +3653,7 @@
                       "cents": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+                        "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
                       },
                       "metadata": {
                         "type": "object",
@@ -3733,6 +3749,7 @@
               "description": "Request to confirm and complete a pending purchase that was previously registered.",
               "title": "Confirm Payment Request",
               "required": [
+                "decimalPlaces",
                 "playerId",
                 "transactionId",
                 "currency",
@@ -3877,6 +3894,11 @@
                   "type": "string",
                   "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
                 },
+                "decimalPlaces": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                },
                 "registrations": {
                   "type": "array",
                   "items": {
@@ -3893,7 +3915,7 @@
                       "cents": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                        "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g. 999 for $9.99 in USD)"
                       },
                       "quantity": {
                         "type": "integer",
@@ -3962,6 +3984,7 @@
               "description": "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase.",
               "title": "Register Payment Request",
               "required": [
+                "decimalPlaces",
                 "playerId",
                 "transactionId",
                 "currency",
@@ -4214,12 +4237,12 @@
                     "properties": {
                       "currency": {
                         "type": "string",
-                        "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                        "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                       },
                       "cents": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                        "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                       }
                     },
                     "description": "Price amount for the offer",
@@ -4538,12 +4561,12 @@
               "properties": {
                 "currency": {
                   "type": "string",
-                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                 },
                 "cents": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                 }
               },
               "description": "Price amount for the offer",
@@ -5517,12 +5540,12 @@
                         "properties": {
                           "currency": {
                             "type": "string",
-                            "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                            "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                           },
                           "cents": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                            "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                           }
                         },
                         "description": "Price amount for the offer",
@@ -6138,12 +6161,12 @@
                               "properties": {
                                 "currency": {
                                   "type": "string",
-                                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                 },
                                 "cents": {
                                   "type": "integer",
                                   "format": "int64",
-                                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                 }
                               },
                               "description": "Price amount for the offer",
@@ -6664,12 +6687,12 @@
                               "properties": {
                                 "currency": {
                                   "type": "string",
-                                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                 },
                                 "cents": {
                                   "type": "integer",
                                   "format": "int64",
-                                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                 }
                               },
                               "description": "Price amount for the offer",
@@ -7285,12 +7308,12 @@
                                     "properties": {
                                       "currency": {
                                         "type": "string",
-                                        "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                        "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                       },
                                       "cents": {
                                         "type": "integer",
                                         "format": "int64",
-                                        "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                        "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                       }
                                     },
                                     "description": "Price amount for the offer",
@@ -8632,12 +8655,12 @@
                               "properties": {
                                 "currency": {
                                   "type": "string",
-                                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                 },
                                 "cents": {
                                   "type": "integer",
                                   "format": "int64",
-                                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                 }
                               },
                               "description": "Price amount for the offer",
@@ -9253,12 +9276,12 @@
                                     "properties": {
                                       "currency": {
                                         "type": "string",
-                                        "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                        "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                       },
                                       "cents": {
                                         "type": "integer",
                                         "format": "int64",
-                                        "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                        "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                       }
                                     },
                                     "description": "Price amount for the offer",
@@ -9779,12 +9802,12 @@
                                     "properties": {
                                       "currency": {
                                         "type": "string",
-                                        "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                        "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                       },
                                       "cents": {
                                         "type": "integer",
                                         "format": "int64",
-                                        "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                        "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                       }
                                     },
                                     "description": "Price amount for the offer",
@@ -10400,12 +10423,12 @@
                                           "properties": {
                                             "currency": {
                                               "type": "string",
-                                              "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                              "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                             },
                                             "cents": {
                                               "type": "integer",
                                               "format": "int64",
-                                              "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                              "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                             }
                                           },
                                           "description": "Price amount for the offer",
@@ -10919,12 +10942,12 @@
                   "properties": {
                     "currency": {
                       "type": "string",
-                      "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                      "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                     },
                     "cents": {
                       "type": "integer",
                       "format": "int64",
-                      "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                      "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                     }
                   },
                   "description": "Price amount for the offer",
@@ -11540,12 +11563,12 @@
                         "properties": {
                           "currency": {
                             "type": "string",
-                            "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                            "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                           },
                           "cents": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                            "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                           }
                         },
                         "description": "Price amount for the offer",
@@ -11948,12 +11971,12 @@
           "properties": {
             "currency": {
               "type": "string",
-              "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+              "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
             },
             "cents": {
               "type": "integer",
               "format": "int64",
-              "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+              "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
             }
           },
           "description": "Price amount for the offer",
@@ -12496,12 +12519,12 @@
               "properties": {
                 "currency": {
                   "type": "string",
-                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                 },
                 "cents": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                 }
               },
               "description": "Price amount for the offer",
@@ -12683,12 +12706,12 @@
       "properties": {
         "currency": {
           "type": "string",
-          "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+          "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
         },
         "cents": {
           "type": "integer",
           "format": "int64",
-          "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+          "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
         }
       },
       "description": "Price amount for the offer",
@@ -13050,12 +13073,12 @@
                         "properties": {
                           "currency": {
                             "type": "string",
-                            "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                            "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                           },
                           "cents": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                            "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                           }
                         },
                         "description": "Price amount for the offer",
@@ -13671,12 +13694,12 @@
                               "properties": {
                                 "currency": {
                                   "type": "string",
-                                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                 },
                                 "cents": {
                                   "type": "integer",
                                   "format": "int64",
-                                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                 }
                               },
                               "description": "Price amount for the offer",
@@ -14543,12 +14566,12 @@
                                   "properties": {
                                     "currency": {
                                       "type": "string",
-                                      "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                      "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                     },
                                     "cents": {
                                       "type": "integer",
                                       "format": "int64",
-                                      "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                      "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                     }
                                   },
                                   "description": "Price amount for the offer",
@@ -15164,12 +15187,12 @@
                                         "properties": {
                                           "currency": {
                                             "type": "string",
-                                            "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                            "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                           },
                                           "cents": {
                                             "type": "integer",
                                             "format": "int64",
-                                            "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                            "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                           }
                                         },
                                         "description": "Price amount for the offer",
@@ -15690,12 +15713,12 @@
                                         "properties": {
                                           "currency": {
                                             "type": "string",
-                                            "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                            "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                           },
                                           "cents": {
                                             "type": "integer",
                                             "format": "int64",
-                                            "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                            "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                           }
                                         },
                                         "description": "Price amount for the offer",
@@ -16311,12 +16334,12 @@
                                               "properties": {
                                                 "currency": {
                                                   "type": "string",
-                                                  "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+                                                  "description": "ISO 4217 currency code (e.g., 'USD', 'EUR')"
                                                 },
                                                 "cents": {
                                                   "type": "integer",
                                                   "format": "int64",
-                                                  "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                                                  "description": "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."
                                                 }
                                               },
                                               "description": "Price amount for the offer",
@@ -18166,7 +18189,7 @@
         "cents": {
           "type": "integer",
           "format": "int64",
-          "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+          "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
         },
         "metadata": {
           "type": "object",
@@ -18224,7 +18247,7 @@
         "cents": {
           "type": "integer",
           "format": "int64",
-          "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+          "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
         },
         "metadata": {
           "type": "object",
@@ -18272,7 +18295,7 @@
         "cents": {
           "type": "integer",
           "format": "int64",
-          "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+          "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g. 999 for $9.99 in USD)"
         },
         "quantity": {
           "type": "integer",
@@ -18358,6 +18381,15 @@
           "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED",
           "description": "Payment environment for the request"
         },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
+        },
+        "decimalPlaces": {
+          "type": "integer",
+          "format": "int64",
+          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units)."
+        },
         "items": {
           "type": "array",
           "items": {
@@ -18379,7 +18411,7 @@
               "cents": {
                 "type": "integer",
                 "format": "int64",
-                "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+                "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
               },
               "metadata": {
                 "type": "object",
@@ -18404,6 +18436,8 @@
       "description": "Request to cancel a pending purchase that was previously registered.",
       "title": "Cancel Payment Request",
       "required": [
+        "currency",
+        "decimalPlaces",
         "playerId",
         "transactionId",
         "items"
@@ -18462,15 +18496,20 @@
           "type": "string",
           "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
         },
+        "decimalPlaces": {
+          "type": "integer",
+          "format": "int64",
+          "description": "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code."
+        },
         "tax": {
           "type": "integer",
           "format": "int64",
-          "description": "Tax amount in smallest currency unit (e.g. 99 for $0.99, can be 0)"
+          "description": "Tax as integer minor units per CLDR for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0)"
         },
         "total": {
           "type": "integer",
           "format": "int64",
-          "description": "Total purchase amount in smallest currency unit including tax (e.g. 1098 for $10.98)"
+          "description": "Total including tax, as integer minor units per CLDR for this ISO 4217 currency (e.g. 1098 for $10.98 in USD)"
         },
         "timeMillis": {
           "type": "string",
@@ -18512,7 +18551,7 @@
               "cents": {
                 "type": "integer",
                 "format": "int64",
-                "description": "Price per item in smallest currency unit (e.g. 999 for $9.99)"
+                "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
               },
               "metadata": {
                 "type": "object",
@@ -18608,6 +18647,7 @@
       "description": "Request to confirm and complete a pending purchase that was previously registered.",
       "title": "Confirm Payment Request",
       "required": [
+        "decimalPlaces",
         "playerId",
         "transactionId",
         "currency",
@@ -18740,6 +18780,11 @@
           "type": "string",
           "description": "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"
         },
+        "decimalPlaces": {
+          "type": "integer",
+          "format": "int64",
+          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+        },
         "registrations": {
           "type": "array",
           "items": {
@@ -18756,7 +18801,7 @@
               "cents": {
                 "type": "integer",
                 "format": "int64",
-                "description": "Price in smallest currency unit (e.g. 999 for $9.99)"
+                "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g. 999 for $9.99 in USD)"
               },
               "quantity": {
                 "type": "integer",
@@ -18825,6 +18870,7 @@
       "description": "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase.",
       "title": "Register Payment Request",
       "required": [
+        "decimalPlaces",
         "playerId",
         "transactionId",
         "currency",
