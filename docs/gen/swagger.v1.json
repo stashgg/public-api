@@ -393,6 +393,16 @@
                                           },
                                           "description": "Optional buy button for the item",
                                           "title": "Button"
+                                        },
+                                        "borderType": {
+                                          "type": "string",
+                                          "enum": [
+                                            "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                            "CATALOG_BORDER_TYPE_GRADIENT"
+                                          ],
+                                          "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                          "description": "Optional border decoration type for this offer card",
+                                          "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                                         }
                                       },
                                       "description": "Optional visual and behavioral attributes",
@@ -1540,6 +1550,16 @@
                                                 },
                                                 "description": "Optional buy button for the item",
                                                 "title": "Button"
+                                              },
+                                              "borderType": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                                  "CATALOG_BORDER_TYPE_GRADIENT"
+                                                ],
+                                                "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                                "description": "Optional border decoration type for this offer card",
+                                                "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                                               }
                                             },
                                             "description": "Optional visual and behavioral attributes",
@@ -2337,23 +2357,56 @@
                                   "type": "string",
                                   "enum": [
                                     "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
-                                    "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW"
+                                    "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW",
+                                    "CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL"
                                   ],
                                   "default": "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
                                   "description": "Optional per-group layout override",
-                                  "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)"
+                                  "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)\n - CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL: Full single-item carousel with pagination dots (different from sliding window peek)"
+                                },
+                                "displaySize": {
+                                  "type": "string",
+                                  "enum": [
+                                    "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                                    "CATALOG_OFFER_DISPLAY_SIZE_SMALL",
+                                    "CATALOG_OFFER_DISPLAY_SIZE_MEDIUM",
+                                    "CATALOG_OFFER_DISPLAY_SIZE_LARGE"
+                                  ],
+                                  "default": "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                                  "description": "Optional display size for offer cards in this group",
+                                  "title": "- CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED: Default (inherits section or theme default)"
                                 }
                               },
-                              "description": "A titled group of catalog offers within a section",
+                              "description": "A titled group of catalog offers within a section; optional display size controls offer card sizing within the group.",
                               "title": "Catalog Section Group",
                               "required": [
                                 "items"
                               ]
                             },
                             "description": "Optional offer groups within this section; array order is display order"
+                          },
+                          "background": {
+                            "type": "object",
+                            "properties": {
+                              "imageUrl": {
+                                "type": "string",
+                                "description": "URL to background image"
+                              },
+                              "backgroundStyle": {
+                                "type": "string",
+                                "description": "CSS-style background styling information"
+                              }
+                            },
+                            "description": "Optional background styling for this section",
+                            "title": "Background"
+                          },
+                          "expiration": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
                           }
                         },
-                        "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated.",
+                        "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
                         "title": "Catalog Section"
                       },
                       "description": "List of catalog sections to be displayed in the order they are provided"
@@ -4780,6 +4833,16 @@
               },
               "description": "Optional buy button for the item",
               "title": "Button"
+            },
+            "borderType": {
+              "type": "string",
+              "enum": [
+                "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                "CATALOG_BORDER_TYPE_GRADIENT"
+              ],
+              "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+              "description": "Optional border decoration type for this offer card",
+              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
             }
           },
           "description": "Optional visual and behavioral attributes",
@@ -5759,6 +5822,16 @@
                         },
                         "description": "Optional buy button for the item",
                         "title": "Button"
+                      },
+                      "borderType": {
+                        "type": "string",
+                        "enum": [
+                          "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                          "CATALOG_BORDER_TYPE_GRADIENT"
+                        ],
+                        "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                        "description": "Optional border decoration type for this offer card",
+                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                       }
                     },
                     "description": "Optional visual and behavioral attributes",
@@ -6906,6 +6979,16 @@
                               },
                               "description": "Optional buy button for the item",
                               "title": "Button"
+                            },
+                            "borderType": {
+                              "type": "string",
+                              "enum": [
+                                "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                "CATALOG_BORDER_TYPE_GRADIENT"
+                              ],
+                              "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                              "description": "Optional border decoration type for this offer card",
+                              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                             }
                           },
                           "description": "Optional visual and behavioral attributes",
@@ -7703,23 +7786,56 @@
                 "type": "string",
                 "enum": [
                   "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
-                  "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW"
+                  "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW",
+                  "CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL"
                 ],
                 "default": "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
                 "description": "Optional per-group layout override",
-                "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)"
+                "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)\n - CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL: Full single-item carousel with pagination dots (different from sliding window peek)"
+              },
+              "displaySize": {
+                "type": "string",
+                "enum": [
+                  "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                  "CATALOG_OFFER_DISPLAY_SIZE_SMALL",
+                  "CATALOG_OFFER_DISPLAY_SIZE_MEDIUM",
+                  "CATALOG_OFFER_DISPLAY_SIZE_LARGE"
+                ],
+                "default": "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                "description": "Optional display size for offer cards in this group",
+                "title": "- CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED: Default (inherits section or theme default)"
               }
             },
-            "description": "A titled group of catalog offers within a section",
+            "description": "A titled group of catalog offers within a section; optional display size controls offer card sizing within the group.",
             "title": "Catalog Section Group",
             "required": [
               "items"
             ]
           },
           "description": "Optional offer groups within this section; array order is display order"
+        },
+        "background": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional background styling for this section",
+          "title": "Background"
+        },
+        "expiration": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
         }
       },
-      "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated.",
+      "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
       "title": "Catalog Section"
     },
     "ContentItemItemDetailSection": {
@@ -8874,6 +8990,16 @@
                               },
                               "description": "Optional buy button for the item",
                               "title": "Button"
+                            },
+                            "borderType": {
+                              "type": "string",
+                              "enum": [
+                                "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                "CATALOG_BORDER_TYPE_GRADIENT"
+                              ],
+                              "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                              "description": "Optional border decoration type for this offer card",
+                              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                             }
                           },
                           "description": "Optional visual and behavioral attributes",
@@ -10021,6 +10147,16 @@
                                     },
                                     "description": "Optional buy button for the item",
                                     "title": "Button"
+                                  },
+                                  "borderType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                      "CATALOG_BORDER_TYPE_GRADIENT"
+                                    ],
+                                    "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                    "description": "Optional border decoration type for this offer card",
+                                    "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                                   }
                                 },
                                 "description": "Optional visual and behavioral attributes",
@@ -10818,23 +10954,56 @@
                       "type": "string",
                       "enum": [
                         "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
-                        "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW"
+                        "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW",
+                        "CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL"
                       ],
                       "default": "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
                       "description": "Optional per-group layout override",
-                      "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)"
+                      "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)\n - CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL: Full single-item carousel with pagination dots (different from sliding window peek)"
+                    },
+                    "displaySize": {
+                      "type": "string",
+                      "enum": [
+                        "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                        "CATALOG_OFFER_DISPLAY_SIZE_SMALL",
+                        "CATALOG_OFFER_DISPLAY_SIZE_MEDIUM",
+                        "CATALOG_OFFER_DISPLAY_SIZE_LARGE"
+                      ],
+                      "default": "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                      "description": "Optional display size for offer cards in this group",
+                      "title": "- CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED: Default (inherits section or theme default)"
                     }
                   },
-                  "description": "A titled group of catalog offers within a section",
+                  "description": "A titled group of catalog offers within a section; optional display size controls offer card sizing within the group.",
                   "title": "Catalog Section Group",
                   "required": [
                     "items"
                   ]
                 },
                 "description": "Optional offer groups within this section; array order is display order"
+              },
+              "background": {
+                "type": "object",
+                "properties": {
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL to background image"
+                  },
+                  "backgroundStyle": {
+                    "type": "string",
+                    "description": "CSS-style background styling information"
+                  }
+                },
+                "description": "Optional background styling for this section",
+                "title": "Background"
+              },
+              "expiration": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
               }
             },
-            "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated.",
+            "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
             "title": "Catalog Section"
           },
           "description": "List of catalog sections to be displayed in the order they are provided"
@@ -11161,6 +11330,16 @@
                   },
                   "description": "Optional buy button for the item",
                   "title": "Button"
+                },
+                "borderType": {
+                  "type": "string",
+                  "enum": [
+                    "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                    "CATALOG_BORDER_TYPE_GRADIENT"
+                  ],
+                  "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                  "description": "Optional border decoration type for this offer card",
+                  "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                 }
               },
               "description": "Optional visual and behavioral attributes",
@@ -12905,6 +13084,16 @@
           },
           "description": "Optional buy button for the item",
           "title": "Button"
+        },
+        "borderType": {
+          "type": "string",
+          "enum": [
+            "CATALOG_BORDER_TYPE_UNSPECIFIED",
+            "CATALOG_BORDER_TYPE_GRADIENT"
+          ],
+          "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+          "description": "Optional border decoration type for this offer card",
+          "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
         }
       },
       "description": "Optional attributes for customizing how a product is displayed",
@@ -13292,6 +13481,16 @@
                         },
                         "description": "Optional buy button for the item",
                         "title": "Button"
+                      },
+                      "borderType": {
+                        "type": "string",
+                        "enum": [
+                          "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                          "CATALOG_BORDER_TYPE_GRADIENT"
+                        ],
+                        "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                        "description": "Optional border decoration type for this offer card",
+                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                       }
                     },
                     "description": "Optional visual and behavioral attributes",
@@ -14089,14 +14288,27 @@
           "type": "string",
           "enum": [
             "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
-            "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW"
+            "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW",
+            "CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL"
           ],
           "default": "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
           "description": "Optional per-group layout override",
-          "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)"
+          "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)\n - CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL: Full single-item carousel with pagination dots (different from sliding window peek)"
+        },
+        "displaySize": {
+          "type": "string",
+          "enum": [
+            "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+            "CATALOG_OFFER_DISPLAY_SIZE_SMALL",
+            "CATALOG_OFFER_DISPLAY_SIZE_MEDIUM",
+            "CATALOG_OFFER_DISPLAY_SIZE_LARGE"
+          ],
+          "default": "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+          "description": "Optional display size for offer cards in this group",
+          "title": "- CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED: Default (inherits section or theme default)"
         }
       },
-      "description": "A titled group of catalog offers within a section",
+      "description": "A titled group of catalog offers within a section; optional display size controls offer card sizing within the group.",
       "title": "Catalog Section Group",
       "required": [
         "items"
@@ -14361,15 +14573,38 @@
       "description": "Represents the action associated with a badge",
       "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
     },
+    "v1CatalogBorderType": {
+      "type": "string",
+      "enum": [
+        "CATALOG_BORDER_TYPE_UNSPECIFIED",
+        "CATALOG_BORDER_TYPE_GRADIENT"
+      ],
+      "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+      "description": "Border decoration type for a catalog offer card",
+      "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+    },
     "v1CatalogGroupDisplayType": {
       "type": "string",
       "enum": [
         "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
-        "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW"
+        "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW",
+        "CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL"
       ],
       "default": "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
       "description": "Display type of a catalog group within a section (optional per-group layout override)",
-      "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)"
+      "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)\n - CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL: Full single-item carousel with pagination dots (different from sliding window peek)"
+    },
+    "v1CatalogOfferDisplaySize": {
+      "type": "string",
+      "enum": [
+        "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+        "CATALOG_OFFER_DISPLAY_SIZE_SMALL",
+        "CATALOG_OFFER_DISPLAY_SIZE_MEDIUM",
+        "CATALOG_OFFER_DISPLAY_SIZE_LARGE"
+      ],
+      "default": "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+      "description": "Display size for offer cards within a catalog group",
+      "title": "- CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED: Default (inherits section or theme default)"
     },
     "v1CatalogPlatform": {
       "type": "string",
@@ -14785,6 +15020,16 @@
                                   },
                                   "description": "Optional buy button for the item",
                                   "title": "Button"
+                                },
+                                "borderType": {
+                                  "type": "string",
+                                  "enum": [
+                                    "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                    "CATALOG_BORDER_TYPE_GRADIENT"
+                                  ],
+                                  "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                  "description": "Optional border decoration type for this offer card",
+                                  "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                                 }
                               },
                               "description": "Optional visual and behavioral attributes",
@@ -15932,6 +16177,16 @@
                                         },
                                         "description": "Optional buy button for the item",
                                         "title": "Button"
+                                      },
+                                      "borderType": {
+                                        "type": "string",
+                                        "enum": [
+                                          "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                          "CATALOG_BORDER_TYPE_GRADIENT"
+                                        ],
+                                        "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
+                                        "description": "Optional border decoration type for this offer card",
+                                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
                                       }
                                     },
                                     "description": "Optional visual and behavioral attributes",
@@ -16729,23 +16984,56 @@
                           "type": "string",
                           "enum": [
                             "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
-                            "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW"
+                            "CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW",
+                            "CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL"
                           ],
                           "default": "CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED",
                           "description": "Optional per-group layout override",
-                          "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)"
+                          "title": "- CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED: Inherit section display behavior\n - CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW: Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)\n - CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL: Full single-item carousel with pagination dots (different from sliding window peek)"
+                        },
+                        "displaySize": {
+                          "type": "string",
+                          "enum": [
+                            "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                            "CATALOG_OFFER_DISPLAY_SIZE_SMALL",
+                            "CATALOG_OFFER_DISPLAY_SIZE_MEDIUM",
+                            "CATALOG_OFFER_DISPLAY_SIZE_LARGE"
+                          ],
+                          "default": "CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED",
+                          "description": "Optional display size for offer cards in this group",
+                          "title": "- CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED: Default (inherits section or theme default)"
                         }
                       },
-                      "description": "A titled group of catalog offers within a section",
+                      "description": "A titled group of catalog offers within a section; optional display size controls offer card sizing within the group.",
                       "title": "Catalog Section Group",
                       "required": [
                         "items"
                       ]
                     },
                     "description": "Optional offer groups within this section; array order is display order"
+                  },
+                  "background": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "URL to background image"
+                      },
+                      "backgroundStyle": {
+                        "type": "string",
+                        "description": "CSS-style background styling information"
+                      }
+                    },
+                    "description": "Optional background styling for this section",
+                    "title": "Background"
+                  },
+                  "expiration": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
                   }
                 },
-                "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated.",
+                "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
                 "title": "Catalog Section"
               },
               "description": "List of catalog sections to be displayed in the order they are provided"

@@ -113,8 +113,8 @@ enum CatalogOfferDisplaySize {
 
 enum CatalogBorderType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Border decoration type for a catalog offer card"};
-  // No border decoration
-  CATALOG_BORDER_TYPE_UNDEFINED = 0;
+  // Default / no border decoration
+  CATALOG_BORDER_TYPE_UNSPECIFIED = 0;
   // Gradient border (partner-configured color)
   CATALOG_BORDER_TYPE_GRADIENT = 1;
 }
