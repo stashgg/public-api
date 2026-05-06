@@ -402,7 +402,7 @@
                                           ],
                                           "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                                           "description": "Optional border decoration type for this offer card",
-                                          "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                                          "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                                         }
                                       },
                                       "description": "Optional visual and behavioral attributes",
@@ -1559,7 +1559,7 @@
                                                 ],
                                                 "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                                                 "description": "Optional border decoration type for this offer card",
-                                                "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                                                "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                                               }
                                             },
                                             "description": "Optional visual and behavioral attributes",
@@ -2400,13 +2400,13 @@
                             "description": "Optional background styling for this section",
                             "title": "Background"
                           },
-                          "expiration": {
+                          "displayExpiration": {
                             "type": "string",
                             "format": "date-time",
-                            "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
+                            "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
                           }
                         },
-                        "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
+                        "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
                         "title": "Catalog Section"
                       },
                       "description": "List of catalog sections to be displayed in the order they are provided"
@@ -4842,7 +4842,7 @@
               ],
               "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
               "description": "Optional border decoration type for this offer card",
-              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
             }
           },
           "description": "Optional visual and behavioral attributes",
@@ -5831,7 +5831,7 @@
                         ],
                         "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                         "description": "Optional border decoration type for this offer card",
-                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                       }
                     },
                     "description": "Optional visual and behavioral attributes",
@@ -6988,7 +6988,7 @@
                               ],
                               "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                               "description": "Optional border decoration type for this offer card",
-                              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                             }
                           },
                           "description": "Optional visual and behavioral attributes",
@@ -7829,13 +7829,13 @@
           "description": "Optional background styling for this section",
           "title": "Background"
         },
-        "expiration": {
+        "displayExpiration": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
+          "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
         }
       },
-      "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
+      "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
       "title": "Catalog Section"
     },
     "ContentItemItemDetailSection": {
@@ -8999,7 +8999,7 @@
                               ],
                               "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                               "description": "Optional border decoration type for this offer card",
-                              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                              "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                             }
                           },
                           "description": "Optional visual and behavioral attributes",
@@ -10156,7 +10156,7 @@
                                     ],
                                     "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                                     "description": "Optional border decoration type for this offer card",
-                                    "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                                    "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                                   }
                                 },
                                 "description": "Optional visual and behavioral attributes",
@@ -10997,13 +10997,13 @@
                 "description": "Optional background styling for this section",
                 "title": "Background"
               },
-              "expiration": {
+              "displayExpiration": {
                 "type": "string",
                 "format": "date-time",
-                "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
+                "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
               }
             },
-            "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
+            "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
             "title": "Catalog Section"
           },
           "description": "List of catalog sections to be displayed in the order they are provided"
@@ -11339,7 +11339,7 @@
                   ],
                   "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                   "description": "Optional border decoration type for this offer card",
-                  "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                  "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                 }
               },
               "description": "Optional visual and behavioral attributes",
@@ -13093,7 +13093,7 @@
           ],
           "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
           "description": "Optional border decoration type for this offer card",
-          "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+          "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
         }
       },
       "description": "Optional attributes for customizing how a product is displayed",
@@ -13490,7 +13490,7 @@
                         ],
                         "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                         "description": "Optional border decoration type for this offer card",
-                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                       }
                     },
                     "description": "Optional visual and behavioral attributes",
@@ -14581,7 +14581,7 @@
       ],
       "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
       "description": "Border decoration type for a catalog offer card",
-      "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+      "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
     },
     "v1CatalogGroupDisplayType": {
       "type": "string",
@@ -15029,7 +15029,7 @@
                                   ],
                                   "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                                   "description": "Optional border decoration type for this offer card",
-                                  "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                                  "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                                 }
                               },
                               "description": "Optional visual and behavioral attributes",
@@ -16186,7 +16186,7 @@
                                         ],
                                         "default": "CATALOG_BORDER_TYPE_UNSPECIFIED",
                                         "description": "Optional border decoration type for this offer card",
-                                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Gradient border (partner-configured color)"
+                                        "title": "- CATALOG_BORDER_TYPE_UNSPECIFIED: Default / no border decoration\n - CATALOG_BORDER_TYPE_GRADIENT: Color gradient border matching shop theme"
                                       }
                                     },
                                     "description": "Optional visual and behavioral attributes",
@@ -17027,13 +17027,13 @@
                     "description": "Optional background styling for this section",
                     "title": "Background"
                   },
-                  "expiration": {
+                  "displayExpiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional expiration time for offers in this section, used to display a countdown timer (e.g., 'Offers expire in 7d 19h')"
+                    "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
                   }
                 },
-                "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and expiration may style the section and drive a countdown for offers in the section.",
+                "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
                 "title": "Catalog Section"
               },
               "description": "List of catalog sections to be displayed in the order they are provided"
