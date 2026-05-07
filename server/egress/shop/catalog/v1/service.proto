@@ -630,36 +630,51 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Free Item"
-          description: "Represents a claimable free catalog item (e.g. daily gift or streak day card)"
-          required: [
-            "item_id",
-            "quantity"
-          ]
+          description: "Represents a claimable free catalog item (e.g. daily streak day card). Servers must include all streak days in the catalog response — past claimed days, the current available/claimed day, and locked future preview days — ordered CLAIMED → AVAILABLE → LOCKED. The streak day number is inferred from array position (Day 1 = index 0)."
+          required: ["item_id"]
         }
       };
-      message FreeItemBonus {
+
+      message FreeContentItem {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
-            title: "Free Item Bonus"
-            description: "Additional reward granted when claiming a free item"
-            required: ["id"]
+            title: "Free Content Item"
+            description: "An in-game item included in a free catalog item (e.g. one day's streak reward)"
+            required: ["quantity"]
           }
         };
-        string id = 1 [
-          (google.api.field_behavior) = REQUIRED,
-          (validate.rules).string.min_len = 1,
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Bonus identifier"}
+        optional string guid = 1 [
+          (validate.rules).string = {
+            uuid: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided)"}
         ];
-        int64 amount = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Bonus quantity"}];
-        BonusType type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Type of bonus"}];
-        optional string icon_image_url = 4 [
+        // field 2: intentionally absent (consistent with ObtainableItem field layout)
+        LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item display name"}];
+        // field 4: intentionally absent (consistent with ObtainableItem field layout)
+        string image = 5 [
           (validate.rules).string = {
             uri: true
             ignore_empty: true
           },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to bonus icon image"}
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
         ];
-        optional string display_amount = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional pre-formatted display string (e.g. '+50')"}];
+        string quantity = 6 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
+        ];
+        optional string unit_image = 7 [
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (single-item display)"}
+        ];
       }
 
       message FreeItemAttributes {
@@ -686,31 +701,20 @@ message GetCatalogResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique identifier for the free item"}
       ];
       LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
-      string image = 4 [
-        (validate.rules).string = {
-          uri: true
-          ignore_empty: true
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
-      ];
-      string quantity = 5 [
-        (google.api.field_behavior) = REQUIRED,
-        (validate.rules).string = {
-          min_len: 1
-          pattern: "^[0-9]+$"
-        },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
-      ];
-      FreeItemStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Current claim status of this free item"}];
+      // fields 4 and 5: removed (replaced by contents = 9)
+      FreeItemStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section."}];
       optional uint32 max_claimable = 7 [
         (validate.rules).uint32 = {
           gte: 0
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."}
       ];
       optional google.protobuf.Timestamp refresh_at = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp when this item becomes claimable again"}];
-      repeated FreeItemBonus bonuses = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Additional bonuses granted on claim"}];
+      repeated FreeContentItem contents = 9 [
+        (validate.rules).repeated.min_items = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."}
+      ];
       optional FreeItemAttributes attributes = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display attributes for the card"}];
     }
 
@@ -763,7 +767,7 @@ message GetCatalogResponse {
         }
       };
       LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Row header text"}];
-      repeated CatalogItem items = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."}];
+      repeated CatalogItem items = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."}];
       CatalogSectionDisplayType display_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the section should be displayed on the screen"}];
       message Group {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {

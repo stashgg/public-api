@@ -1220,77 +1220,77 @@
                                       "description": "Display name of the item",
                                       "title": "Localizable Text"
                                     },
-                                    "image": {
-                                      "type": "string",
-                                      "description": "URL to item image"
-                                    },
-                                    "quantity": {
-                                      "type": "string",
-                                      "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                                    },
                                     "status": {
                                       "type": "string",
                                       "enum": [
                                         "FREE_ITEM_STATUS_UNSPECIFIED",
                                         "FREE_ITEM_STATUS_AVAILABLE",
                                         "FREE_ITEM_STATUS_CLAIMED",
-                                        "FREE_ITEM_STATUS_LOCKED",
-                                        "FREE_ITEM_STATUS_EXPIRED"
+                                        "FREE_ITEM_STATUS_LOCKED"
                                       ],
                                       "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                      "description": "Current claim status of this free item"
+                                      "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                                      "title": "fields 4 and 5: removed (replaced by contents = 9)"
                                     },
                                     "maxClaimable": {
                                       "type": "integer",
                                       "format": "int64",
-                                      "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                      "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                                     },
                                     "refreshAt": {
                                       "type": "string",
                                       "format": "date-time",
                                       "description": "Optional timestamp when this item becomes claimable again"
                                     },
-                                    "bonuses": {
+                                    "contents": {
                                       "type": "array",
                                       "items": {
                                         "type": "object",
                                         "properties": {
-                                          "id": {
+                                          "guid": {
                                             "type": "string",
-                                            "description": "Bonus identifier"
+                                            "description": "Optional unique identifier (UUID v4 if provided)"
                                           },
-                                          "amount": {
-                                            "type": "string",
-                                            "format": "int64",
-                                            "description": "Bonus quantity"
+                                          "name": {
+                                            "type": "object",
+                                            "properties": {
+                                              "defaultText": {
+                                                "type": "string",
+                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                              },
+                                              "localizationKey": {
+                                                "type": "string",
+                                                "description": "The unique key used to identify the localized text content for a specific language"
+                                              },
+                                              "localizedText": {
+                                                "type": "string",
+                                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                                              }
+                                            },
+                                            "description": "Item display name",
+                                            "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                                           },
-                                          "type": {
+                                          "image": {
                                             "type": "string",
-                                            "enum": [
-                                              "BONUS_TYPE_UNSPECIFIED",
-                                              "BONUS_TYPE_IN_GAME_CURRENCY",
-                                              "BONUS_TYPE_LOYALTY_POINTS",
-                                              "BONUS_TYPE_LOYALTY_CURRENCY"
-                                            ],
-                                            "default": "BONUS_TYPE_UNSPECIFIED",
-                                            "description": "Type of bonus"
+                                            "description": "URL to item image",
+                                            "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                                           },
-                                          "iconImageUrl": {
+                                          "quantity": {
                                             "type": "string",
-                                            "description": "Optional URL to bonus icon image"
+                                            "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                                           },
-                                          "displayAmount": {
+                                          "unitImage": {
                                             "type": "string",
-                                            "description": "Optional pre-formatted display string (e.g. '+50')"
+                                            "description": "Optional URL to unit image (single-item display)"
                                           }
                                         },
-                                        "description": "Additional reward granted when claiming a free item",
-                                        "title": "Free Item Bonus",
+                                        "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                        "title": "Free Content Item",
                                         "required": [
-                                          "id"
+                                          "quantity"
                                         ]
                                       },
-                                      "description": "Additional bonuses granted on claim"
+                                      "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                                     },
                                     "attributes": {
                                       "type": "object",
@@ -1378,15 +1378,14 @@
                                   "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                                   "title": "Free Item",
                                   "required": [
-                                    "itemId",
-                                    "quantity"
+                                    "itemId"
                                   ]
                                 }
                               },
                               "description": "Represents any type of catalog item using oneof for polymorphism",
                               "title": "Catalog Item"
                             },
-                            "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
+                            "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
                           },
                           "displayType": {
                             "type": "string",
@@ -2570,77 +2569,77 @@
                                             "description": "Display name of the item",
                                             "title": "Localizable Text"
                                           },
-                                          "image": {
-                                            "type": "string",
-                                            "description": "URL to item image"
-                                          },
-                                          "quantity": {
-                                            "type": "string",
-                                            "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                                          },
                                           "status": {
                                             "type": "string",
                                             "enum": [
                                               "FREE_ITEM_STATUS_UNSPECIFIED",
                                               "FREE_ITEM_STATUS_AVAILABLE",
                                               "FREE_ITEM_STATUS_CLAIMED",
-                                              "FREE_ITEM_STATUS_LOCKED",
-                                              "FREE_ITEM_STATUS_EXPIRED"
+                                              "FREE_ITEM_STATUS_LOCKED"
                                             ],
                                             "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                            "description": "Current claim status of this free item"
+                                            "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                                            "title": "fields 4 and 5: removed (replaced by contents = 9)"
                                           },
                                           "maxClaimable": {
                                             "type": "integer",
                                             "format": "int64",
-                                            "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                            "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                                           },
                                           "refreshAt": {
                                             "type": "string",
                                             "format": "date-time",
                                             "description": "Optional timestamp when this item becomes claimable again"
                                           },
-                                          "bonuses": {
+                                          "contents": {
                                             "type": "array",
                                             "items": {
                                               "type": "object",
                                               "properties": {
-                                                "id": {
+                                                "guid": {
                                                   "type": "string",
-                                                  "description": "Bonus identifier"
+                                                  "description": "Optional unique identifier (UUID v4 if provided)"
                                                 },
-                                                "amount": {
-                                                  "type": "string",
-                                                  "format": "int64",
-                                                  "description": "Bonus quantity"
+                                                "name": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "defaultText": {
+                                                      "type": "string",
+                                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                    },
+                                                    "localizationKey": {
+                                                      "type": "string",
+                                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                                    },
+                                                    "localizedText": {
+                                                      "type": "string",
+                                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                    }
+                                                  },
+                                                  "description": "Item display name",
+                                                  "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                                                 },
-                                                "type": {
+                                                "image": {
                                                   "type": "string",
-                                                  "enum": [
-                                                    "BONUS_TYPE_UNSPECIFIED",
-                                                    "BONUS_TYPE_IN_GAME_CURRENCY",
-                                                    "BONUS_TYPE_LOYALTY_POINTS",
-                                                    "BONUS_TYPE_LOYALTY_CURRENCY"
-                                                  ],
-                                                  "default": "BONUS_TYPE_UNSPECIFIED",
-                                                  "description": "Type of bonus"
+                                                  "description": "URL to item image",
+                                                  "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                                                 },
-                                                "iconImageUrl": {
+                                                "quantity": {
                                                   "type": "string",
-                                                  "description": "Optional URL to bonus icon image"
+                                                  "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                                                 },
-                                                "displayAmount": {
+                                                "unitImage": {
                                                   "type": "string",
-                                                  "description": "Optional pre-formatted display string (e.g. '+50')"
+                                                  "description": "Optional URL to unit image (single-item display)"
                                                 }
                                               },
-                                              "description": "Additional reward granted when claiming a free item",
-                                              "title": "Free Item Bonus",
+                                              "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                              "title": "Free Content Item",
                                               "required": [
-                                                "id"
+                                                "quantity"
                                               ]
                                             },
-                                            "description": "Additional bonuses granted on claim"
+                                            "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                                           },
                                           "attributes": {
                                             "type": "object",
@@ -2728,8 +2727,7 @@
                                         "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                                         "title": "Free Item",
                                         "required": [
-                                          "itemId",
-                                          "quantity"
+                                          "itemId"
                                         ]
                                       }
                                     },
@@ -4558,77 +4556,77 @@
           "description": "Display name of the item",
           "title": "Localizable Text"
         },
-        "image": {
-          "type": "string",
-          "description": "URL to item image"
-        },
-        "quantity": {
-          "type": "string",
-          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-        },
         "status": {
           "type": "string",
           "enum": [
             "FREE_ITEM_STATUS_UNSPECIFIED",
             "FREE_ITEM_STATUS_AVAILABLE",
             "FREE_ITEM_STATUS_CLAIMED",
-            "FREE_ITEM_STATUS_LOCKED",
-            "FREE_ITEM_STATUS_EXPIRED"
+            "FREE_ITEM_STATUS_LOCKED"
           ],
           "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-          "description": "Current claim status of this free item"
+          "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+          "title": "fields 4 and 5: removed (replaced by contents = 9)"
         },
         "maxClaimable": {
           "type": "integer",
           "format": "int64",
-          "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
         },
         "refreshAt": {
           "type": "string",
           "format": "date-time",
           "description": "Optional timestamp when this item becomes claimable again"
         },
-        "bonuses": {
+        "contents": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "id": {
+              "guid": {
                 "type": "string",
-                "description": "Bonus identifier"
+                "description": "Optional unique identifier (UUID v4 if provided)"
               },
-              "amount": {
-                "type": "string",
-                "format": "int64",
-                "description": "Bonus quantity"
+              "name": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Item display name",
+                "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
               },
-              "type": {
+              "image": {
                 "type": "string",
-                "enum": [
-                  "BONUS_TYPE_UNSPECIFIED",
-                  "BONUS_TYPE_IN_GAME_CURRENCY",
-                  "BONUS_TYPE_LOYALTY_POINTS",
-                  "BONUS_TYPE_LOYALTY_CURRENCY"
-                ],
-                "default": "BONUS_TYPE_UNSPECIFIED",
-                "description": "Type of bonus"
+                "description": "URL to item image",
+                "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
               },
-              "iconImageUrl": {
+              "quantity": {
                 "type": "string",
-                "description": "Optional URL to bonus icon image"
+                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
               },
-              "displayAmount": {
+              "unitImage": {
                 "type": "string",
-                "description": "Optional pre-formatted display string (e.g. '+50')"
+                "description": "Optional URL to unit image (single-item display)"
               }
             },
-            "description": "Additional reward granted when claiming a free item",
-            "title": "Free Item Bonus",
+            "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+            "title": "Free Content Item",
             "required": [
-              "id"
+              "quantity"
             ]
           },
-          "description": "Additional bonuses granted on claim"
+          "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
         },
         "attributes": {
           "type": "object",
@@ -4713,11 +4711,10 @@
           "title": "Free Item Attributes"
         }
       },
-      "description": "Represents a claimable free catalog item (e.g. daily gift or streak day card)",
+      "description": "Represents a claimable free catalog item (e.g. daily streak day card). Servers must include all streak days in the catalog response — past claimed days, the current available/claimed day, and locked future preview days — ordered CLAIMED → AVAILABLE → LOCKED. The streak day number is inferred from array position (Day 1 = index 0).",
       "title": "Free Item",
       "required": [
-        "itemId",
-        "quantity"
+        "itemId"
       ]
     },
     "CatalogItemNonPurchasableItem": {
@@ -7311,77 +7308,77 @@
                     "description": "Display name of the item",
                     "title": "Localizable Text"
                   },
-                  "image": {
-                    "type": "string",
-                    "description": "URL to item image"
-                  },
-                  "quantity": {
-                    "type": "string",
-                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                  },
                   "status": {
                     "type": "string",
                     "enum": [
                       "FREE_ITEM_STATUS_UNSPECIFIED",
                       "FREE_ITEM_STATUS_AVAILABLE",
                       "FREE_ITEM_STATUS_CLAIMED",
-                      "FREE_ITEM_STATUS_LOCKED",
-                      "FREE_ITEM_STATUS_EXPIRED"
+                      "FREE_ITEM_STATUS_LOCKED"
                     ],
                     "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                    "description": "Current claim status of this free item"
+                    "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                    "title": "fields 4 and 5: removed (replaced by contents = 9)"
                   },
                   "maxClaimable": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                   },
                   "refreshAt": {
                     "type": "string",
                     "format": "date-time",
                     "description": "Optional timestamp when this item becomes claimable again"
                   },
-                  "bonuses": {
+                  "contents": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "id": {
+                        "guid": {
                           "type": "string",
-                          "description": "Bonus identifier"
+                          "description": "Optional unique identifier (UUID v4 if provided)"
                         },
-                        "amount": {
-                          "type": "string",
-                          "format": "int64",
-                          "description": "Bonus quantity"
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Item display name",
+                          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                         },
-                        "type": {
+                        "image": {
                           "type": "string",
-                          "enum": [
-                            "BONUS_TYPE_UNSPECIFIED",
-                            "BONUS_TYPE_IN_GAME_CURRENCY",
-                            "BONUS_TYPE_LOYALTY_POINTS",
-                            "BONUS_TYPE_LOYALTY_CURRENCY"
-                          ],
-                          "default": "BONUS_TYPE_UNSPECIFIED",
-                          "description": "Type of bonus"
+                          "description": "URL to item image",
+                          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                         },
-                        "iconImageUrl": {
+                        "quantity": {
                           "type": "string",
-                          "description": "Optional URL to bonus icon image"
+                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                         },
-                        "displayAmount": {
+                        "unitImage": {
                           "type": "string",
-                          "description": "Optional pre-formatted display string (e.g. '+50')"
+                          "description": "Optional URL to unit image (single-item display)"
                         }
                       },
-                      "description": "Additional reward granted when claiming a free item",
-                      "title": "Free Item Bonus",
+                      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                      "title": "Free Content Item",
                       "required": [
-                        "id"
+                        "quantity"
                       ]
                     },
-                    "description": "Additional bonuses granted on claim"
+                    "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                   },
                   "attributes": {
                     "type": "object",
@@ -7469,15 +7466,14 @@
                 "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                 "title": "Free Item",
                 "required": [
-                  "itemId",
-                  "quantity"
+                  "itemId"
                 ]
               }
             },
             "description": "Represents any type of catalog item using oneof for polymorphism",
             "title": "Catalog Item"
           },
-          "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
+          "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
         },
         "displayType": {
           "type": "string",
@@ -8661,77 +8657,77 @@
                           "description": "Display name of the item",
                           "title": "Localizable Text"
                         },
-                        "image": {
-                          "type": "string",
-                          "description": "URL to item image"
-                        },
-                        "quantity": {
-                          "type": "string",
-                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                        },
                         "status": {
                           "type": "string",
                           "enum": [
                             "FREE_ITEM_STATUS_UNSPECIFIED",
                             "FREE_ITEM_STATUS_AVAILABLE",
                             "FREE_ITEM_STATUS_CLAIMED",
-                            "FREE_ITEM_STATUS_LOCKED",
-                            "FREE_ITEM_STATUS_EXPIRED"
+                            "FREE_ITEM_STATUS_LOCKED"
                           ],
                           "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                          "description": "Current claim status of this free item"
+                          "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                          "title": "fields 4 and 5: removed (replaced by contents = 9)"
                         },
                         "maxClaimable": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                         },
                         "refreshAt": {
                           "type": "string",
                           "format": "date-time",
                           "description": "Optional timestamp when this item becomes claimable again"
                         },
-                        "bonuses": {
+                        "contents": {
                           "type": "array",
                           "items": {
                             "type": "object",
                             "properties": {
-                              "id": {
+                              "guid": {
                                 "type": "string",
-                                "description": "Bonus identifier"
+                                "description": "Optional unique identifier (UUID v4 if provided)"
                               },
-                              "amount": {
-                                "type": "string",
-                                "format": "int64",
-                                "description": "Bonus quantity"
+                              "name": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Item display name",
+                                "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                               },
-                              "type": {
+                              "image": {
                                 "type": "string",
-                                "enum": [
-                                  "BONUS_TYPE_UNSPECIFIED",
-                                  "BONUS_TYPE_IN_GAME_CURRENCY",
-                                  "BONUS_TYPE_LOYALTY_POINTS",
-                                  "BONUS_TYPE_LOYALTY_CURRENCY"
-                                ],
-                                "default": "BONUS_TYPE_UNSPECIFIED",
-                                "description": "Type of bonus"
+                                "description": "URL to item image",
+                                "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                               },
-                              "iconImageUrl": {
+                              "quantity": {
                                 "type": "string",
-                                "description": "Optional URL to bonus icon image"
+                                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                               },
-                              "displayAmount": {
+                              "unitImage": {
                                 "type": "string",
-                                "description": "Optional pre-formatted display string (e.g. '+50')"
+                                "description": "Optional URL to unit image (single-item display)"
                               }
                             },
-                            "description": "Additional reward granted when claiming a free item",
-                            "title": "Free Item Bonus",
+                            "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                            "title": "Free Content Item",
                             "required": [
-                              "id"
+                              "quantity"
                             ]
                           },
-                          "description": "Additional bonuses granted on claim"
+                          "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                         },
                         "attributes": {
                           "type": "object",
@@ -8819,8 +8815,7 @@
                       "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                       "title": "Free Item",
                       "required": [
-                        "itemId",
-                        "quantity"
+                        "itemId"
                       ]
                     }
                   },
@@ -9542,6 +9537,52 @@
         "rows"
       ]
     },
+    "FreeItemFreeContentItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional unique identifier (UUID v4 if provided)"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Item display name",
+          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL to item image",
+          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+        },
+        "unitImage": {
+          "type": "string",
+          "description": "Optional URL to unit image (single-item display)"
+        }
+      },
+      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+      "title": "Free Content Item",
+      "required": [
+        "quantity"
+      ]
+    },
     "FreeItemFreeItemAttributes": {
       "type": "object",
       "properties": {
@@ -9623,44 +9664,6 @@
       },
       "description": "Optional display attributes for a free item card",
       "title": "Free Item Attributes"
-    },
-    "FreeItemFreeItemBonus": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Bonus identifier"
-        },
-        "amount": {
-          "type": "string",
-          "format": "int64",
-          "description": "Bonus quantity"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "BONUS_TYPE_UNSPECIFIED",
-            "BONUS_TYPE_IN_GAME_CURRENCY",
-            "BONUS_TYPE_LOYALTY_POINTS",
-            "BONUS_TYPE_LOYALTY_CURRENCY"
-          ],
-          "default": "BONUS_TYPE_UNSPECIFIED",
-          "description": "Type of bonus"
-        },
-        "iconImageUrl": {
-          "type": "string",
-          "description": "Optional URL to bonus icon image"
-        },
-        "displayAmount": {
-          "type": "string",
-          "description": "Optional pre-formatted display string (e.g. '+50')"
-        }
-      },
-      "description": "Additional reward granted when claiming a free item",
-      "title": "Free Item Bonus",
-      "required": [
-        "id"
-      ]
     },
     "GetCatalogResponseBadge": {
       "type": "object",
@@ -11007,77 +11010,77 @@
                           "description": "Display name of the item",
                           "title": "Localizable Text"
                         },
-                        "image": {
-                          "type": "string",
-                          "description": "URL to item image"
-                        },
-                        "quantity": {
-                          "type": "string",
-                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                        },
                         "status": {
                           "type": "string",
                           "enum": [
                             "FREE_ITEM_STATUS_UNSPECIFIED",
                             "FREE_ITEM_STATUS_AVAILABLE",
                             "FREE_ITEM_STATUS_CLAIMED",
-                            "FREE_ITEM_STATUS_LOCKED",
-                            "FREE_ITEM_STATUS_EXPIRED"
+                            "FREE_ITEM_STATUS_LOCKED"
                           ],
                           "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                          "description": "Current claim status of this free item"
+                          "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                          "title": "fields 4 and 5: removed (replaced by contents = 9)"
                         },
                         "maxClaimable": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                         },
                         "refreshAt": {
                           "type": "string",
                           "format": "date-time",
                           "description": "Optional timestamp when this item becomes claimable again"
                         },
-                        "bonuses": {
+                        "contents": {
                           "type": "array",
                           "items": {
                             "type": "object",
                             "properties": {
-                              "id": {
+                              "guid": {
                                 "type": "string",
-                                "description": "Bonus identifier"
+                                "description": "Optional unique identifier (UUID v4 if provided)"
                               },
-                              "amount": {
-                                "type": "string",
-                                "format": "int64",
-                                "description": "Bonus quantity"
+                              "name": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Item display name",
+                                "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                               },
-                              "type": {
+                              "image": {
                                 "type": "string",
-                                "enum": [
-                                  "BONUS_TYPE_UNSPECIFIED",
-                                  "BONUS_TYPE_IN_GAME_CURRENCY",
-                                  "BONUS_TYPE_LOYALTY_POINTS",
-                                  "BONUS_TYPE_LOYALTY_CURRENCY"
-                                ],
-                                "default": "BONUS_TYPE_UNSPECIFIED",
-                                "description": "Type of bonus"
+                                "description": "URL to item image",
+                                "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                               },
-                              "iconImageUrl": {
+                              "quantity": {
                                 "type": "string",
-                                "description": "Optional URL to bonus icon image"
+                                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                               },
-                              "displayAmount": {
+                              "unitImage": {
                                 "type": "string",
-                                "description": "Optional pre-formatted display string (e.g. '+50')"
+                                "description": "Optional URL to unit image (single-item display)"
                               }
                             },
-                            "description": "Additional reward granted when claiming a free item",
-                            "title": "Free Item Bonus",
+                            "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                            "title": "Free Content Item",
                             "required": [
-                              "id"
+                              "quantity"
                             ]
                           },
-                          "description": "Additional bonuses granted on claim"
+                          "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                         },
                         "attributes": {
                           "type": "object",
@@ -11165,15 +11168,14 @@
                       "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                       "title": "Free Item",
                       "required": [
-                        "itemId",
-                        "quantity"
+                        "itemId"
                       ]
                     }
                   },
                   "description": "Represents any type of catalog item using oneof for polymorphism",
                   "title": "Catalog Item"
                 },
-                "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
+                "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
               },
               "displayType": {
                 "type": "string",
@@ -12357,77 +12359,77 @@
                                 "description": "Display name of the item",
                                 "title": "Localizable Text"
                               },
-                              "image": {
-                                "type": "string",
-                                "description": "URL to item image"
-                              },
-                              "quantity": {
-                                "type": "string",
-                                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                              },
                               "status": {
                                 "type": "string",
                                 "enum": [
                                   "FREE_ITEM_STATUS_UNSPECIFIED",
                                   "FREE_ITEM_STATUS_AVAILABLE",
                                   "FREE_ITEM_STATUS_CLAIMED",
-                                  "FREE_ITEM_STATUS_LOCKED",
-                                  "FREE_ITEM_STATUS_EXPIRED"
+                                  "FREE_ITEM_STATUS_LOCKED"
                                 ],
                                 "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                "description": "Current claim status of this free item"
+                                "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                                "title": "fields 4 and 5: removed (replaced by contents = 9)"
                               },
                               "maxClaimable": {
                                 "type": "integer",
                                 "format": "int64",
-                                "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                               },
                               "refreshAt": {
                                 "type": "string",
                                 "format": "date-time",
                                 "description": "Optional timestamp when this item becomes claimable again"
                               },
-                              "bonuses": {
+                              "contents": {
                                 "type": "array",
                                 "items": {
                                   "type": "object",
                                   "properties": {
-                                    "id": {
+                                    "guid": {
                                       "type": "string",
-                                      "description": "Bonus identifier"
+                                      "description": "Optional unique identifier (UUID v4 if provided)"
                                     },
-                                    "amount": {
-                                      "type": "string",
-                                      "format": "int64",
-                                      "description": "Bonus quantity"
+                                    "name": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Item display name",
+                                      "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                                     },
-                                    "type": {
+                                    "image": {
                                       "type": "string",
-                                      "enum": [
-                                        "BONUS_TYPE_UNSPECIFIED",
-                                        "BONUS_TYPE_IN_GAME_CURRENCY",
-                                        "BONUS_TYPE_LOYALTY_POINTS",
-                                        "BONUS_TYPE_LOYALTY_CURRENCY"
-                                      ],
-                                      "default": "BONUS_TYPE_UNSPECIFIED",
-                                      "description": "Type of bonus"
+                                      "description": "URL to item image",
+                                      "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                                     },
-                                    "iconImageUrl": {
+                                    "quantity": {
                                       "type": "string",
-                                      "description": "Optional URL to bonus icon image"
+                                      "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                                     },
-                                    "displayAmount": {
+                                    "unitImage": {
                                       "type": "string",
-                                      "description": "Optional pre-formatted display string (e.g. '+50')"
+                                      "description": "Optional URL to unit image (single-item display)"
                                     }
                                   },
-                                  "description": "Additional reward granted when claiming a free item",
-                                  "title": "Free Item Bonus",
+                                  "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                  "title": "Free Content Item",
                                   "required": [
-                                    "id"
+                                    "quantity"
                                   ]
                                 },
-                                "description": "Additional bonuses granted on claim"
+                                "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                               },
                               "attributes": {
                                 "type": "object",
@@ -12515,8 +12517,7 @@
                             "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                             "title": "Free Item",
                             "required": [
-                              "itemId",
-                              "quantity"
+                              "itemId"
                             ]
                           }
                         },
@@ -13788,77 +13789,77 @@
               "description": "Display name of the item",
               "title": "Localizable Text"
             },
-            "image": {
-              "type": "string",
-              "description": "URL to item image"
-            },
-            "quantity": {
-              "type": "string",
-              "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-            },
             "status": {
               "type": "string",
               "enum": [
                 "FREE_ITEM_STATUS_UNSPECIFIED",
                 "FREE_ITEM_STATUS_AVAILABLE",
                 "FREE_ITEM_STATUS_CLAIMED",
-                "FREE_ITEM_STATUS_LOCKED",
-                "FREE_ITEM_STATUS_EXPIRED"
+                "FREE_ITEM_STATUS_LOCKED"
               ],
               "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-              "description": "Current claim status of this free item"
+              "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+              "title": "fields 4 and 5: removed (replaced by contents = 9)"
             },
             "maxClaimable": {
               "type": "integer",
               "format": "int64",
-              "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
             },
             "refreshAt": {
               "type": "string",
               "format": "date-time",
               "description": "Optional timestamp when this item becomes claimable again"
             },
-            "bonuses": {
+            "contents": {
               "type": "array",
               "items": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "guid": {
                     "type": "string",
-                    "description": "Bonus identifier"
+                    "description": "Optional unique identifier (UUID v4 if provided)"
                   },
-                  "amount": {
-                    "type": "string",
-                    "format": "int64",
-                    "description": "Bonus quantity"
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Item display name",
+                    "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                   },
-                  "type": {
+                  "image": {
                     "type": "string",
-                    "enum": [
-                      "BONUS_TYPE_UNSPECIFIED",
-                      "BONUS_TYPE_IN_GAME_CURRENCY",
-                      "BONUS_TYPE_LOYALTY_POINTS",
-                      "BONUS_TYPE_LOYALTY_CURRENCY"
-                    ],
-                    "default": "BONUS_TYPE_UNSPECIFIED",
-                    "description": "Type of bonus"
+                    "description": "URL to item image",
+                    "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                   },
-                  "iconImageUrl": {
+                  "quantity": {
                     "type": "string",
-                    "description": "Optional URL to bonus icon image"
+                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                   },
-                  "displayAmount": {
+                  "unitImage": {
                     "type": "string",
-                    "description": "Optional pre-formatted display string (e.g. '+50')"
+                    "description": "Optional URL to unit image (single-item display)"
                   }
                 },
-                "description": "Additional reward granted when claiming a free item",
-                "title": "Free Item Bonus",
+                "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                "title": "Free Content Item",
                 "required": [
-                  "id"
+                  "quantity"
                 ]
               },
-              "description": "Additional bonuses granted on claim"
+              "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
             },
             "attributes": {
               "type": "object",
@@ -13946,8 +13947,7 @@
           "description": "Free-to-claim catalog item (e.g. daily streak day card)",
           "title": "Free Item",
           "required": [
-            "itemId",
-            "quantity"
+            "itemId"
           ]
         }
       },
@@ -16131,77 +16131,77 @@
                     "description": "Display name of the item",
                     "title": "Localizable Text"
                   },
-                  "image": {
-                    "type": "string",
-                    "description": "URL to item image"
-                  },
-                  "quantity": {
-                    "type": "string",
-                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                  },
                   "status": {
                     "type": "string",
                     "enum": [
                       "FREE_ITEM_STATUS_UNSPECIFIED",
                       "FREE_ITEM_STATUS_AVAILABLE",
                       "FREE_ITEM_STATUS_CLAIMED",
-                      "FREE_ITEM_STATUS_LOCKED",
-                      "FREE_ITEM_STATUS_EXPIRED"
+                      "FREE_ITEM_STATUS_LOCKED"
                     ],
                     "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                    "description": "Current claim status of this free item"
+                    "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                    "title": "fields 4 and 5: removed (replaced by contents = 9)"
                   },
                   "maxClaimable": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                   },
                   "refreshAt": {
                     "type": "string",
                     "format": "date-time",
                     "description": "Optional timestamp when this item becomes claimable again"
                   },
-                  "bonuses": {
+                  "contents": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "id": {
+                        "guid": {
                           "type": "string",
-                          "description": "Bonus identifier"
+                          "description": "Optional unique identifier (UUID v4 if provided)"
                         },
-                        "amount": {
-                          "type": "string",
-                          "format": "int64",
-                          "description": "Bonus quantity"
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Item display name",
+                          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                         },
-                        "type": {
+                        "image": {
                           "type": "string",
-                          "enum": [
-                            "BONUS_TYPE_UNSPECIFIED",
-                            "BONUS_TYPE_IN_GAME_CURRENCY",
-                            "BONUS_TYPE_LOYALTY_POINTS",
-                            "BONUS_TYPE_LOYALTY_CURRENCY"
-                          ],
-                          "default": "BONUS_TYPE_UNSPECIFIED",
-                          "description": "Type of bonus"
+                          "description": "URL to item image",
+                          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                         },
-                        "iconImageUrl": {
+                        "quantity": {
                           "type": "string",
-                          "description": "Optional URL to bonus icon image"
+                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                         },
-                        "displayAmount": {
+                        "unitImage": {
                           "type": "string",
-                          "description": "Optional pre-formatted display string (e.g. '+50')"
+                          "description": "Optional URL to unit image (single-item display)"
                         }
                       },
-                      "description": "Additional reward granted when claiming a free item",
-                      "title": "Free Item Bonus",
+                      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                      "title": "Free Content Item",
                       "required": [
-                        "id"
+                        "quantity"
                       ]
                     },
-                    "description": "Additional bonuses granted on claim"
+                    "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                   },
                   "attributes": {
                     "type": "object",
@@ -16289,8 +16289,7 @@
                 "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                 "title": "Free Item",
                 "required": [
-                  "itemId",
-                  "quantity"
+                  "itemId"
                 ]
               }
             },
@@ -16588,17 +16587,6 @@
       "description": "Represents the action associated with a badge",
       "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
     },
-    "v1BonusType": {
-      "type": "string",
-      "enum": [
-        "BONUS_TYPE_UNSPECIFIED",
-        "BONUS_TYPE_IN_GAME_CURRENCY",
-        "BONUS_TYPE_LOYALTY_POINTS",
-        "BONUS_TYPE_LOYALTY_CURRENCY"
-      ],
-      "default": "BONUS_TYPE_UNSPECIFIED",
-      "description": "Type of bonus granted with a free item claim"
-    },
     "v1CatalogBorderType": {
       "type": "string",
       "enum": [
@@ -16712,11 +16700,10 @@
         "FREE_ITEM_STATUS_UNSPECIFIED",
         "FREE_ITEM_STATUS_AVAILABLE",
         "FREE_ITEM_STATUS_CLAIMED",
-        "FREE_ITEM_STATUS_LOCKED",
-        "FREE_ITEM_STATUS_EXPIRED"
+        "FREE_ITEM_STATUS_LOCKED"
       ],
       "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-      "description": "Claim status of a free catalog item"
+      "description": "Claim status of a free catalog item. For streak sections, items in Section.items must appear in order: all CLAIMED entries first (past days), then at most one AVAILABLE entry (today), then all LOCKED entries (future preview days). The streak day number is inferred from array position (0-indexed: Day 1 = index 0). Responses that violate this ordering are considered invalid and the streak UI will be omitted."
     },
     "v1GetCatalogResponse": {
       "type": "object",
@@ -17895,77 +17882,77 @@
                               "description": "Display name of the item",
                               "title": "Localizable Text"
                             },
-                            "image": {
-                              "type": "string",
-                              "description": "URL to item image"
-                            },
-                            "quantity": {
-                              "type": "string",
-                              "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                            },
                             "status": {
                               "type": "string",
                               "enum": [
                                 "FREE_ITEM_STATUS_UNSPECIFIED",
                                 "FREE_ITEM_STATUS_AVAILABLE",
                                 "FREE_ITEM_STATUS_CLAIMED",
-                                "FREE_ITEM_STATUS_LOCKED",
-                                "FREE_ITEM_STATUS_EXPIRED"
+                                "FREE_ITEM_STATUS_LOCKED"
                               ],
                               "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                              "description": "Current claim status of this free item"
+                              "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                              "title": "fields 4 and 5: removed (replaced by contents = 9)"
                             },
                             "maxClaimable": {
                               "type": "integer",
                               "format": "int64",
-                              "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                             },
                             "refreshAt": {
                               "type": "string",
                               "format": "date-time",
                               "description": "Optional timestamp when this item becomes claimable again"
                             },
-                            "bonuses": {
+                            "contents": {
                               "type": "array",
                               "items": {
                                 "type": "object",
                                 "properties": {
-                                  "id": {
+                                  "guid": {
                                     "type": "string",
-                                    "description": "Bonus identifier"
+                                    "description": "Optional unique identifier (UUID v4 if provided)"
                                   },
-                                  "amount": {
-                                    "type": "string",
-                                    "format": "int64",
-                                    "description": "Bonus quantity"
+                                  "name": {
+                                    "type": "object",
+                                    "properties": {
+                                      "defaultText": {
+                                        "type": "string",
+                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                      },
+                                      "localizationKey": {
+                                        "type": "string",
+                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                      },
+                                      "localizedText": {
+                                        "type": "string",
+                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                      }
+                                    },
+                                    "description": "Item display name",
+                                    "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                                   },
-                                  "type": {
+                                  "image": {
                                     "type": "string",
-                                    "enum": [
-                                      "BONUS_TYPE_UNSPECIFIED",
-                                      "BONUS_TYPE_IN_GAME_CURRENCY",
-                                      "BONUS_TYPE_LOYALTY_POINTS",
-                                      "BONUS_TYPE_LOYALTY_CURRENCY"
-                                    ],
-                                    "default": "BONUS_TYPE_UNSPECIFIED",
-                                    "description": "Type of bonus"
+                                    "description": "URL to item image",
+                                    "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                                   },
-                                  "iconImageUrl": {
+                                  "quantity": {
                                     "type": "string",
-                                    "description": "Optional URL to bonus icon image"
+                                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                                   },
-                                  "displayAmount": {
+                                  "unitImage": {
                                     "type": "string",
-                                    "description": "Optional pre-formatted display string (e.g. '+50')"
+                                    "description": "Optional URL to unit image (single-item display)"
                                   }
                                 },
-                                "description": "Additional reward granted when claiming a free item",
-                                "title": "Free Item Bonus",
+                                "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                "title": "Free Content Item",
                                 "required": [
-                                  "id"
+                                  "quantity"
                                 ]
                               },
-                              "description": "Additional bonuses granted on claim"
+                              "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                             },
                             "attributes": {
                               "type": "object",
@@ -18053,15 +18040,14 @@
                           "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                           "title": "Free Item",
                           "required": [
-                            "itemId",
-                            "quantity"
+                            "itemId"
                           ]
                         }
                       },
                       "description": "Represents any type of catalog item using oneof for polymorphism",
                       "title": "Catalog Item"
                     },
-                    "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
+                    "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
                   },
                   "displayType": {
                     "type": "string",
@@ -19245,77 +19231,77 @@
                                     "description": "Display name of the item",
                                     "title": "Localizable Text"
                                   },
-                                  "image": {
-                                    "type": "string",
-                                    "description": "URL to item image"
-                                  },
-                                  "quantity": {
-                                    "type": "string",
-                                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
-                                  },
                                   "status": {
                                     "type": "string",
                                     "enum": [
                                       "FREE_ITEM_STATUS_UNSPECIFIED",
                                       "FREE_ITEM_STATUS_AVAILABLE",
                                       "FREE_ITEM_STATUS_CLAIMED",
-                                      "FREE_ITEM_STATUS_LOCKED",
-                                      "FREE_ITEM_STATUS_EXPIRED"
+                                      "FREE_ITEM_STATUS_LOCKED"
                                     ],
                                     "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                    "description": "Current claim status of this free item"
+                                    "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
+                                    "title": "fields 4 and 5: removed (replaced by contents = 9)"
                                   },
                                   "maxClaimable": {
                                     "type": "integer",
                                     "format": "int64",
-                                    "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                                   },
                                   "refreshAt": {
                                     "type": "string",
                                     "format": "date-time",
                                     "description": "Optional timestamp when this item becomes claimable again"
                                   },
-                                  "bonuses": {
+                                  "contents": {
                                     "type": "array",
                                     "items": {
                                       "type": "object",
                                       "properties": {
-                                        "id": {
+                                        "guid": {
                                           "type": "string",
-                                          "description": "Bonus identifier"
+                                          "description": "Optional unique identifier (UUID v4 if provided)"
                                         },
-                                        "amount": {
-                                          "type": "string",
-                                          "format": "int64",
-                                          "description": "Bonus quantity"
+                                        "name": {
+                                          "type": "object",
+                                          "properties": {
+                                            "defaultText": {
+                                              "type": "string",
+                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                            },
+                                            "localizationKey": {
+                                              "type": "string",
+                                              "description": "The unique key used to identify the localized text content for a specific language"
+                                            },
+                                            "localizedText": {
+                                              "type": "string",
+                                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                                            }
+                                          },
+                                          "description": "Item display name",
+                                          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
                                         },
-                                        "type": {
+                                        "image": {
                                           "type": "string",
-                                          "enum": [
-                                            "BONUS_TYPE_UNSPECIFIED",
-                                            "BONUS_TYPE_IN_GAME_CURRENCY",
-                                            "BONUS_TYPE_LOYALTY_POINTS",
-                                            "BONUS_TYPE_LOYALTY_CURRENCY"
-                                          ],
-                                          "default": "BONUS_TYPE_UNSPECIFIED",
-                                          "description": "Type of bonus"
+                                          "description": "URL to item image",
+                                          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
                                         },
-                                        "iconImageUrl": {
+                                        "quantity": {
                                           "type": "string",
-                                          "description": "Optional URL to bonus icon image"
+                                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
                                         },
-                                        "displayAmount": {
+                                        "unitImage": {
                                           "type": "string",
-                                          "description": "Optional pre-formatted display string (e.g. '+50')"
+                                          "description": "Optional URL to unit image (single-item display)"
                                         }
                                       },
-                                      "description": "Additional reward granted when claiming a free item",
-                                      "title": "Free Item Bonus",
+                                      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                      "title": "Free Content Item",
                                       "required": [
-                                        "id"
+                                        "quantity"
                                       ]
                                     },
-                                    "description": "Additional bonuses granted on claim"
+                                    "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
                                   },
                                   "attributes": {
                                     "type": "object",
@@ -19403,8 +19389,7 @@
                                 "description": "Free-to-claim catalog item (e.g. daily streak day card)",
                                 "title": "Free Item",
                                 "required": [
-                                  "itemId",
-                                  "quantity"
+                                  "itemId"
                                 ]
                               }
                             },

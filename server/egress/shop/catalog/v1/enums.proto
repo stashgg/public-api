@@ -122,20 +122,11 @@ enum CatalogBorderType {
 }
 
 enum FreeItemStatus {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Claim status of a free catalog item"};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Claim status of a free catalog item. For streak sections, items in Section.items must appear in order: all CLAIMED entries first (past days), then at most one AVAILABLE entry (today), then all LOCKED entries (future preview days). The streak day number is inferred from array position (0-indexed: Day 1 = index 0). Responses that violate this ordering are considered invalid and the streak UI will be omitted."};
   FREE_ITEM_STATUS_UNSPECIFIED = 0;
   FREE_ITEM_STATUS_AVAILABLE = 1;
   FREE_ITEM_STATUS_CLAIMED = 2;
   FREE_ITEM_STATUS_LOCKED = 3;
-  FREE_ITEM_STATUS_EXPIRED = 4;
-}
-
-enum BonusType {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Type of bonus granted with a free item claim"};
-  BONUS_TYPE_UNSPECIFIED = 0;
-  BONUS_TYPE_IN_GAME_CURRENCY = 1;
-  BONUS_TYPE_LOYALTY_POINTS = 2;
-  BONUS_TYPE_LOYALTY_CURRENCY = 3;
 }
 
 enum CatalogTriggerDisplayType {
