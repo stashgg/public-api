@@ -1,3 +1,2 @@
-# Redoc HTML is generated from OpenAPI; exclude from language stats / PR noise.
-docs/gen/redoc.v1.html linguist-generated
-docs/gen/redoc.ingress.v1.html linguist-generated
+# Generated API docs under docs/gen (OpenAPI JSON, Redoc HTML, etc.).
+docs/gen/** linguist-generated
