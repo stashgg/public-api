@@ -367,6 +367,7 @@ message GetCatalogResponse {
         optional Background background = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for the item"}];
         optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
         optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item"}];
+        optional CatalogBorderType border_type = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional border decoration type for this offer card"}];
       }
       optional PurchasableAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual and behavioral attributes"}];
 
@@ -643,7 +644,7 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Catalog Section"
-          description: "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated."
+          description: "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses)."
         }
       };
       LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Row header text"}];
@@ -653,7 +654,7 @@ message GetCatalogResponse {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Catalog Section Group"
-            description: "A titled group of catalog offers within a section"
+            description: "A titled group of catalog offers within a section; optional display size controls offer card sizing within the group."
             required: ["items"]
           }
         };
@@ -664,8 +665,11 @@ message GetCatalogResponse {
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Offers in this group in display order"}
         ];
         optional CatalogGroupDisplayType display_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-group layout override"}];
+        optional CatalogOfferDisplaySize display_size = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display size for offer cards in this group"}];
       }
       repeated Group groups = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer groups within this section; array order is display order"}];
+      optional Background background = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for this section"}];
+      optional google.protobuf.Timestamp display_expiration = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."}];
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
   }

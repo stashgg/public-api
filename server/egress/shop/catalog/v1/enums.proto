@@ -29,6 +29,8 @@ enum CatalogGroupDisplayType {
   CATALOG_GROUP_DISPLAY_TYPE_UNSPECIFIED = 0;
   // Sliding window displays items in a horizontal scrollable area (e.g. peek of next card)
   CATALOG_GROUP_DISPLAY_TYPE_SLIDING_WINDOW = 1;
+  // Full single-item carousel with pagination dots (different from sliding window peek)
+  CATALOG_GROUP_DISPLAY_TYPE_CAROUSEL = 2;
 }
 
 enum PurchasableItemType {
@@ -98,4 +100,21 @@ enum CellAlignment {
   CELL_ALIGNMENT_CENTER = 2;
   // Align content to the end (right in LTR layouts)
   CELL_ALIGNMENT_END = 3;
+}
+
+enum CatalogOfferDisplaySize {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Display size for offer cards within a catalog group"};
+  // Default (inherits section or theme default)
+  CATALOG_OFFER_DISPLAY_SIZE_UNSPECIFIED = 0;
+  CATALOG_OFFER_DISPLAY_SIZE_SMALL = 1;
+  CATALOG_OFFER_DISPLAY_SIZE_MEDIUM = 2;
+  CATALOG_OFFER_DISPLAY_SIZE_LARGE = 3;
+}
+
+enum CatalogBorderType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Border decoration type for a catalog offer card"};
+  // Default / no border decoration
+  CATALOG_BORDER_TYPE_UNSPECIFIED = 0;
+  // Color gradient border matching shop theme
+  CATALOG_BORDER_TYPE_GRADIENT = 1;
 }
