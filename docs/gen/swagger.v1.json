@@ -2833,7 +2833,7 @@
                           },
                           "iconImageUrl": {
                             "type": "string",
-                            "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+                            "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
                           },
                           "nextResetAt": {
                             "type": "string",
@@ -4511,7 +4511,7 @@
         },
         "iconImageUrl": {
           "type": "string",
-          "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+          "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
         },
         "nextResetAt": {
           "type": "string",
@@ -12623,7 +12623,7 @@
               },
               "iconImageUrl": {
                 "type": "string",
-                "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+                "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
               },
               "nextResetAt": {
                 "type": "string",
@@ -19495,7 +19495,7 @@
                   },
                   "iconImageUrl": {
                     "type": "string",
-                    "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+                    "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
                   },
                   "nextResetAt": {
                     "type": "string",

@@ -742,12 +742,12 @@ message GetCatalogResponse {
         }
       };
       CatalogTriggerDisplayType display_type = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the trigger should be displayed"}];
-      string icon_image_url = 2 [
+      optional string icon_image_url = 2 [
         (validate.rules).string = {
           uri: true
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to the icon image for the trigger (e.g. floating gift button)"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"}
       ];
       optional google.protobuf.Timestamp next_reset_at = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp for countdown until next reset or claim availability"}];
       optional string linked_section_guid = 4 [
