@@ -1189,6 +1189,198 @@
                                     "itemId",
                                     "type"
                                   ]
+                                },
+                                "free": {
+                                  "type": "object",
+                                  "properties": {
+                                    "guid": {
+                                      "type": "string",
+                                      "description": "Optional unique identifier (UUID v4 if provided)"
+                                    },
+                                    "itemId": {
+                                      "type": "string",
+                                      "description": "Required unique identifier for the free item"
+                                    },
+                                    "name": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Display name of the item",
+                                      "title": "Localizable Text"
+                                    },
+                                    "image": {
+                                      "type": "string",
+                                      "description": "URL to item image"
+                                    },
+                                    "quantity": {
+                                      "type": "string",
+                                      "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "enum": [
+                                        "FREE_ITEM_STATUS_UNSPECIFIED",
+                                        "FREE_ITEM_STATUS_AVAILABLE",
+                                        "FREE_ITEM_STATUS_CLAIMED",
+                                        "FREE_ITEM_STATUS_LOCKED",
+                                        "FREE_ITEM_STATUS_EXPIRED"
+                                      ],
+                                      "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                      "description": "Current claim status of this free item"
+                                    },
+                                    "maxClaimable": {
+                                      "type": "integer",
+                                      "format": "int64",
+                                      "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                    },
+                                    "refreshAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "description": "Optional timestamp when this item becomes claimable again"
+                                    },
+                                    "bonuses": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "description": "Bonus identifier"
+                                          },
+                                          "amount": {
+                                            "type": "string",
+                                            "format": "int64",
+                                            "description": "Bonus quantity"
+                                          },
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "BONUS_TYPE_UNSPECIFIED",
+                                              "BONUS_TYPE_IN_GAME_CURRENCY",
+                                              "BONUS_TYPE_LOYALTY_POINTS",
+                                              "BONUS_TYPE_LOYALTY_CURRENCY"
+                                            ],
+                                            "default": "BONUS_TYPE_UNSPECIFIED",
+                                            "description": "Type of bonus"
+                                          },
+                                          "iconImageUrl": {
+                                            "type": "string",
+                                            "description": "Optional URL to bonus icon image"
+                                          },
+                                          "displayAmount": {
+                                            "type": "string",
+                                            "description": "Optional pre-formatted display string (e.g. '+50')"
+                                          }
+                                        },
+                                        "description": "Additional reward granted when claiming a free item",
+                                        "title": "Free Item Bonus",
+                                        "required": [
+                                          "id"
+                                        ]
+                                      },
+                                      "description": "Additional bonuses granted on claim"
+                                    },
+                                    "attributes": {
+                                      "type": "object",
+                                      "properties": {
+                                        "background": {
+                                          "type": "object",
+                                          "properties": {
+                                            "imageUrl": {
+                                              "type": "string",
+                                              "description": "URL to background image"
+                                            },
+                                            "backgroundStyle": {
+                                              "type": "string",
+                                              "description": "CSS-style background styling information"
+                                            }
+                                          },
+                                          "description": "Optional per-card background styling",
+                                          "title": "Background"
+                                        },
+                                        "button": {
+                                          "type": "object",
+                                          "properties": {
+                                            "text": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                              "title": "Localizable Text"
+                                            },
+                                            "iconImageUrl": {
+                                              "type": "string",
+                                              "description": "Optional URL to button icon image"
+                                            },
+                                            "backgroundStyle": {
+                                              "type": "string",
+                                              "description": "Optional CSS-style background styling information for button"
+                                            },
+                                            "tooltip": {
+                                              "type": "object",
+                                              "properties": {
+                                                "text": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "defaultText": {
+                                                      "type": "string",
+                                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                    },
+                                                    "localizationKey": {
+                                                      "type": "string",
+                                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                                    },
+                                                    "localizedText": {
+                                                      "type": "string",
+                                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                    }
+                                                  },
+                                                  "description": "Tooltip text providing additional information",
+                                                  "title": "Localizable Text"
+                                                }
+                                              },
+                                              "description": "Optional popup tooltip for additional information",
+                                              "title": "Tooltip"
+                                            }
+                                          },
+                                          "description": "Optional action button; server sets text and style for the item's current status",
+                                          "title": "Button"
+                                        }
+                                      },
+                                      "description": "Optional display attributes for the card",
+                                      "title": "Free Item Attributes"
+                                    }
+                                  },
+                                  "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                                  "title": "Free Item",
+                                  "required": [
+                                    "itemId",
+                                    "quantity"
+                                  ]
                                 }
                               },
                               "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -1200,11 +1392,12 @@
                             "type": "string",
                             "enum": [
                               "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-                              "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                              "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+                              "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
                             ],
                             "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                             "description": "How the section should be displayed on the screen",
-                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
                           },
                           "groups": {
                             "type": "array",
@@ -2346,6 +2539,198 @@
                                           "itemId",
                                           "type"
                                         ]
+                                      },
+                                      "free": {
+                                        "type": "object",
+                                        "properties": {
+                                          "guid": {
+                                            "type": "string",
+                                            "description": "Optional unique identifier (UUID v4 if provided)"
+                                          },
+                                          "itemId": {
+                                            "type": "string",
+                                            "description": "Required unique identifier for the free item"
+                                          },
+                                          "name": {
+                                            "type": "object",
+                                            "properties": {
+                                              "defaultText": {
+                                                "type": "string",
+                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                              },
+                                              "localizationKey": {
+                                                "type": "string",
+                                                "description": "The unique key used to identify the localized text content for a specific language"
+                                              },
+                                              "localizedText": {
+                                                "type": "string",
+                                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                                              }
+                                            },
+                                            "description": "Display name of the item",
+                                            "title": "Localizable Text"
+                                          },
+                                          "image": {
+                                            "type": "string",
+                                            "description": "URL to item image"
+                                          },
+                                          "quantity": {
+                                            "type": "string",
+                                            "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                          },
+                                          "status": {
+                                            "type": "string",
+                                            "enum": [
+                                              "FREE_ITEM_STATUS_UNSPECIFIED",
+                                              "FREE_ITEM_STATUS_AVAILABLE",
+                                              "FREE_ITEM_STATUS_CLAIMED",
+                                              "FREE_ITEM_STATUS_LOCKED",
+                                              "FREE_ITEM_STATUS_EXPIRED"
+                                            ],
+                                            "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                            "description": "Current claim status of this free item"
+                                          },
+                                          "maxClaimable": {
+                                            "type": "integer",
+                                            "format": "int64",
+                                            "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                          },
+                                          "refreshAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Optional timestamp when this item becomes claimable again"
+                                          },
+                                          "bonuses": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string",
+                                                  "description": "Bonus identifier"
+                                                },
+                                                "amount": {
+                                                  "type": "string",
+                                                  "format": "int64",
+                                                  "description": "Bonus quantity"
+                                                },
+                                                "type": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "BONUS_TYPE_UNSPECIFIED",
+                                                    "BONUS_TYPE_IN_GAME_CURRENCY",
+                                                    "BONUS_TYPE_LOYALTY_POINTS",
+                                                    "BONUS_TYPE_LOYALTY_CURRENCY"
+                                                  ],
+                                                  "default": "BONUS_TYPE_UNSPECIFIED",
+                                                  "description": "Type of bonus"
+                                                },
+                                                "iconImageUrl": {
+                                                  "type": "string",
+                                                  "description": "Optional URL to bonus icon image"
+                                                },
+                                                "displayAmount": {
+                                                  "type": "string",
+                                                  "description": "Optional pre-formatted display string (e.g. '+50')"
+                                                }
+                                              },
+                                              "description": "Additional reward granted when claiming a free item",
+                                              "title": "Free Item Bonus",
+                                              "required": [
+                                                "id"
+                                              ]
+                                            },
+                                            "description": "Additional bonuses granted on claim"
+                                          },
+                                          "attributes": {
+                                            "type": "object",
+                                            "properties": {
+                                              "background": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "imageUrl": {
+                                                    "type": "string",
+                                                    "description": "URL to background image"
+                                                  },
+                                                  "backgroundStyle": {
+                                                    "type": "string",
+                                                    "description": "CSS-style background styling information"
+                                                  }
+                                                },
+                                                "description": "Optional per-card background styling",
+                                                "title": "Background"
+                                              },
+                                              "button": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "text": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "defaultText": {
+                                                        "type": "string",
+                                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                      },
+                                                      "localizationKey": {
+                                                        "type": "string",
+                                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                                      },
+                                                      "localizedText": {
+                                                        "type": "string",
+                                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                      }
+                                                    },
+                                                    "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                                    "title": "Localizable Text"
+                                                  },
+                                                  "iconImageUrl": {
+                                                    "type": "string",
+                                                    "description": "Optional URL to button icon image"
+                                                  },
+                                                  "backgroundStyle": {
+                                                    "type": "string",
+                                                    "description": "Optional CSS-style background styling information for button"
+                                                  },
+                                                  "tooltip": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "text": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "defaultText": {
+                                                            "type": "string",
+                                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                          },
+                                                          "localizationKey": {
+                                                            "type": "string",
+                                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                                          },
+                                                          "localizedText": {
+                                                            "type": "string",
+                                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                          }
+                                                        },
+                                                        "description": "Tooltip text providing additional information",
+                                                        "title": "Localizable Text"
+                                                      }
+                                                    },
+                                                    "description": "Optional popup tooltip for additional information",
+                                                    "title": "Tooltip"
+                                                  }
+                                                },
+                                                "description": "Optional action button; server sets text and style for the item's current status",
+                                                "title": "Button"
+                                              }
+                                            },
+                                            "description": "Optional display attributes for the card",
+                                            "title": "Free Item Attributes"
+                                          }
+                                        },
+                                        "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                                        "title": "Free Item",
+                                        "required": [
+                                          "itemId",
+                                          "quantity"
+                                        ]
                                       }
                                     },
                                     "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -2404,12 +2789,68 @@
                             "type": "string",
                             "format": "date-time",
                             "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
+                          },
+                          "guid": {
+                            "type": "string",
+                            "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+                          },
+                          "subHeader": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Optional subtitle below the section header (e.g. streak popup description)",
+                            "title": "Localizable Text"
                           }
                         },
                         "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
                         "title": "Catalog Section"
                       },
                       "description": "List of catalog sections to be displayed in the order they are provided"
+                    },
+                    "triggers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "displayType": {
+                            "type": "string",
+                            "enum": [
+                              "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                              "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+                            ],
+                            "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                            "description": "How the trigger should be displayed"
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+                          },
+                          "nextResetAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Optional timestamp for countdown until next reset or claim availability"
+                          },
+                          "linkedSectionGuid": {
+                            "type": "string",
+                            "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+                          }
+                        },
+                        "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+                        "title": "Catalog Trigger"
+                      },
+                      "description": "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"
                     }
                   },
                   "description": "The product catalog organized in sections",
@@ -4058,6 +4499,227 @@
     }
   },
   "definitions": {
+    "CatalogCatalogTrigger": {
+      "type": "object",
+      "properties": {
+        "displayType": {
+          "type": "string",
+          "enum": [
+            "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+            "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+          ],
+          "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+          "description": "How the trigger should be displayed"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+        },
+        "nextResetAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp for countdown until next reset or claim availability"
+        },
+        "linkedSectionGuid": {
+          "type": "string",
+          "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+        }
+      },
+      "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+      "title": "Catalog Trigger"
+    },
+    "CatalogItemFreeItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional unique identifier (UUID v4 if provided)"
+        },
+        "itemId": {
+          "type": "string",
+          "description": "Required unique identifier for the free item"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Display name of the item",
+          "title": "Localizable Text"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL to item image"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "FREE_ITEM_STATUS_UNSPECIFIED",
+            "FREE_ITEM_STATUS_AVAILABLE",
+            "FREE_ITEM_STATUS_CLAIMED",
+            "FREE_ITEM_STATUS_LOCKED",
+            "FREE_ITEM_STATUS_EXPIRED"
+          ],
+          "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+          "description": "Current claim status of this free item"
+        },
+        "maxClaimable": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+        },
+        "refreshAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when this item becomes claimable again"
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Bonus identifier"
+              },
+              "amount": {
+                "type": "string",
+                "format": "int64",
+                "description": "Bonus quantity"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "BONUS_TYPE_UNSPECIFIED",
+                  "BONUS_TYPE_IN_GAME_CURRENCY",
+                  "BONUS_TYPE_LOYALTY_POINTS",
+                  "BONUS_TYPE_LOYALTY_CURRENCY"
+                ],
+                "default": "BONUS_TYPE_UNSPECIFIED",
+                "description": "Type of bonus"
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Optional URL to bonus icon image"
+              },
+              "displayAmount": {
+                "type": "string",
+                "description": "Optional pre-formatted display string (e.g. '+50')"
+              }
+            },
+            "description": "Additional reward granted when claiming a free item",
+            "title": "Free Item Bonus",
+            "required": [
+              "id"
+            ]
+          },
+          "description": "Additional bonuses granted on claim"
+        },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "background": {
+              "type": "object",
+              "properties": {
+                "imageUrl": {
+                  "type": "string",
+                  "description": "URL to background image"
+                },
+                "backgroundStyle": {
+                  "type": "string",
+                  "description": "CSS-style background styling information"
+                }
+              },
+              "description": "Optional per-card background styling",
+              "title": "Background"
+            },
+            "button": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                  "title": "Localizable Text"
+                },
+                "iconImageUrl": {
+                  "type": "string",
+                  "description": "Optional URL to button icon image"
+                },
+                "backgroundStyle": {
+                  "type": "string",
+                  "description": "Optional CSS-style background styling information for button"
+                },
+                "tooltip": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Tooltip text providing additional information",
+                      "title": "Localizable Text"
+                    }
+                  },
+                  "description": "Optional popup tooltip for additional information",
+                  "title": "Tooltip"
+                }
+              },
+              "description": "Optional action button; server sets text and style for the item's current status",
+              "title": "Button"
+            }
+          },
+          "description": "Optional display attributes for the card",
+          "title": "Free Item Attributes"
+        }
+      },
+      "description": "Represents a claimable free catalog item (e.g. daily gift or streak day card)",
+      "title": "Free Item",
+      "required": [
+        "itemId",
+        "quantity"
+      ]
+    },
     "CatalogItemNonPurchasableItem": {
       "type": "object",
       "properties": {
@@ -6618,6 +7280,198 @@
                   "itemId",
                   "type"
                 ]
+              },
+              "free": {
+                "type": "object",
+                "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional unique identifier (UUID v4 if provided)"
+                  },
+                  "itemId": {
+                    "type": "string",
+                    "description": "Required unique identifier for the free item"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Display name of the item",
+                    "title": "Localizable Text"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "URL to item image"
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "FREE_ITEM_STATUS_UNSPECIFIED",
+                      "FREE_ITEM_STATUS_AVAILABLE",
+                      "FREE_ITEM_STATUS_CLAIMED",
+                      "FREE_ITEM_STATUS_LOCKED",
+                      "FREE_ITEM_STATUS_EXPIRED"
+                    ],
+                    "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                    "description": "Current claim status of this free item"
+                  },
+                  "maxClaimable": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                  },
+                  "refreshAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional timestamp when this item becomes claimable again"
+                  },
+                  "bonuses": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Bonus identifier"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "format": "int64",
+                          "description": "Bonus quantity"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "BONUS_TYPE_UNSPECIFIED",
+                            "BONUS_TYPE_IN_GAME_CURRENCY",
+                            "BONUS_TYPE_LOYALTY_POINTS",
+                            "BONUS_TYPE_LOYALTY_CURRENCY"
+                          ],
+                          "default": "BONUS_TYPE_UNSPECIFIED",
+                          "description": "Type of bonus"
+                        },
+                        "iconImageUrl": {
+                          "type": "string",
+                          "description": "Optional URL to bonus icon image"
+                        },
+                        "displayAmount": {
+                          "type": "string",
+                          "description": "Optional pre-formatted display string (e.g. '+50')"
+                        }
+                      },
+                      "description": "Additional reward granted when claiming a free item",
+                      "title": "Free Item Bonus",
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "description": "Additional bonuses granted on claim"
+                  },
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "background": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "URL to background image"
+                          },
+                          "backgroundStyle": {
+                            "type": "string",
+                            "description": "CSS-style background styling information"
+                          }
+                        },
+                        "description": "Optional per-card background styling",
+                        "title": "Background"
+                      },
+                      "button": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                            "title": "Localizable Text"
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "Optional URL to button icon image"
+                          },
+                          "backgroundStyle": {
+                            "type": "string",
+                            "description": "Optional CSS-style background styling information for button"
+                          },
+                          "tooltip": {
+                            "type": "object",
+                            "properties": {
+                              "text": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Tooltip text providing additional information",
+                                "title": "Localizable Text"
+                              }
+                            },
+                            "description": "Optional popup tooltip for additional information",
+                            "title": "Tooltip"
+                          }
+                        },
+                        "description": "Optional action button; server sets text and style for the item's current status",
+                        "title": "Button"
+                      }
+                    },
+                    "description": "Optional display attributes for the card",
+                    "title": "Free Item Attributes"
+                  }
+                },
+                "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                "title": "Free Item",
+                "required": [
+                  "itemId",
+                  "quantity"
+                ]
               }
             },
             "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -6629,11 +7483,12 @@
           "type": "string",
           "enum": [
             "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-            "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+            "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+            "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
           ],
           "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
           "description": "How the section should be displayed on the screen",
-          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
         },
         "groups": {
           "type": "array",
@@ -7775,6 +8630,198 @@
                         "itemId",
                         "type"
                       ]
+                    },
+                    "free": {
+                      "type": "object",
+                      "properties": {
+                        "guid": {
+                          "type": "string",
+                          "description": "Optional unique identifier (UUID v4 if provided)"
+                        },
+                        "itemId": {
+                          "type": "string",
+                          "description": "Required unique identifier for the free item"
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Display name of the item",
+                          "title": "Localizable Text"
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL to item image"
+                        },
+                        "quantity": {
+                          "type": "string",
+                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "FREE_ITEM_STATUS_UNSPECIFIED",
+                            "FREE_ITEM_STATUS_AVAILABLE",
+                            "FREE_ITEM_STATUS_CLAIMED",
+                            "FREE_ITEM_STATUS_LOCKED",
+                            "FREE_ITEM_STATUS_EXPIRED"
+                          ],
+                          "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                          "description": "Current claim status of this free item"
+                        },
+                        "maxClaimable": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                        },
+                        "refreshAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Optional timestamp when this item becomes claimable again"
+                        },
+                        "bonuses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Bonus identifier"
+                              },
+                              "amount": {
+                                "type": "string",
+                                "format": "int64",
+                                "description": "Bonus quantity"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "BONUS_TYPE_UNSPECIFIED",
+                                  "BONUS_TYPE_IN_GAME_CURRENCY",
+                                  "BONUS_TYPE_LOYALTY_POINTS",
+                                  "BONUS_TYPE_LOYALTY_CURRENCY"
+                                ],
+                                "default": "BONUS_TYPE_UNSPECIFIED",
+                                "description": "Type of bonus"
+                              },
+                              "iconImageUrl": {
+                                "type": "string",
+                                "description": "Optional URL to bonus icon image"
+                              },
+                              "displayAmount": {
+                                "type": "string",
+                                "description": "Optional pre-formatted display string (e.g. '+50')"
+                              }
+                            },
+                            "description": "Additional reward granted when claiming a free item",
+                            "title": "Free Item Bonus",
+                            "required": [
+                              "id"
+                            ]
+                          },
+                          "description": "Additional bonuses granted on claim"
+                        },
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "background": {
+                              "type": "object",
+                              "properties": {
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "URL to background image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "CSS-style background styling information"
+                                }
+                              },
+                              "description": "Optional per-card background styling",
+                              "title": "Background"
+                            },
+                            "button": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                  "title": "Localizable Text"
+                                },
+                                "iconImageUrl": {
+                                  "type": "string",
+                                  "description": "Optional URL to button icon image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "Optional CSS-style background styling information for button"
+                                },
+                                "tooltip": {
+                                  "type": "object",
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Tooltip text providing additional information",
+                                      "title": "Localizable Text"
+                                    }
+                                  },
+                                  "description": "Optional popup tooltip for additional information",
+                                  "title": "Tooltip"
+                                }
+                              },
+                              "description": "Optional action button; server sets text and style for the item's current status",
+                              "title": "Button"
+                            }
+                          },
+                          "description": "Optional display attributes for the card",
+                          "title": "Free Item Attributes"
+                        }
+                      },
+                      "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                      "title": "Free Item",
+                      "required": [
+                        "itemId",
+                        "quantity"
+                      ]
                     }
                   },
                   "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -7833,6 +8880,29 @@
           "type": "string",
           "format": "date-time",
           "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
+        },
+        "guid": {
+          "type": "string",
+          "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+        },
+        "subHeader": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Optional subtitle below the section header (e.g. streak popup description)",
+          "title": "Localizable Text"
         }
       },
       "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
@@ -8470,6 +9540,126 @@
       "required": [
         "headers",
         "rows"
+      ]
+    },
+    "FreeItemFreeItemAttributes": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional per-card background styling",
+          "title": "Background"
+        },
+        "button": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+              "title": "Localizable Text"
+            },
+            "iconImageUrl": {
+              "type": "string",
+              "description": "Optional URL to button icon image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "Optional CSS-style background styling information for button"
+            },
+            "tooltip": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "defaultText": {
+                      "type": "string",
+                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                    },
+                    "localizationKey": {
+                      "type": "string",
+                      "description": "The unique key used to identify the localized text content for a specific language"
+                    },
+                    "localizedText": {
+                      "type": "string",
+                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                    }
+                  },
+                  "description": "Tooltip text providing additional information",
+                  "title": "Localizable Text"
+                }
+              },
+              "description": "Optional popup tooltip for additional information",
+              "title": "Tooltip"
+            }
+          },
+          "description": "Optional action button; server sets text and style for the item's current status",
+          "title": "Button"
+        }
+      },
+      "description": "Optional display attributes for a free item card",
+      "title": "Free Item Attributes"
+    },
+    "FreeItemFreeItemBonus": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Bonus identifier"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64",
+          "description": "Bonus quantity"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "BONUS_TYPE_UNSPECIFIED",
+            "BONUS_TYPE_IN_GAME_CURRENCY",
+            "BONUS_TYPE_LOYALTY_POINTS",
+            "BONUS_TYPE_LOYALTY_CURRENCY"
+          ],
+          "default": "BONUS_TYPE_UNSPECIFIED",
+          "description": "Type of bonus"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Optional URL to bonus icon image"
+        },
+        "displayAmount": {
+          "type": "string",
+          "description": "Optional pre-formatted display string (e.g. '+50')"
+        }
+      },
+      "description": "Additional reward granted when claiming a free item",
+      "title": "Free Item Bonus",
+      "required": [
+        "id"
       ]
     },
     "GetCatalogResponseBadge": {
@@ -9786,6 +10976,198 @@
                         "itemId",
                         "type"
                       ]
+                    },
+                    "free": {
+                      "type": "object",
+                      "properties": {
+                        "guid": {
+                          "type": "string",
+                          "description": "Optional unique identifier (UUID v4 if provided)"
+                        },
+                        "itemId": {
+                          "type": "string",
+                          "description": "Required unique identifier for the free item"
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Display name of the item",
+                          "title": "Localizable Text"
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL to item image"
+                        },
+                        "quantity": {
+                          "type": "string",
+                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "FREE_ITEM_STATUS_UNSPECIFIED",
+                            "FREE_ITEM_STATUS_AVAILABLE",
+                            "FREE_ITEM_STATUS_CLAIMED",
+                            "FREE_ITEM_STATUS_LOCKED",
+                            "FREE_ITEM_STATUS_EXPIRED"
+                          ],
+                          "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                          "description": "Current claim status of this free item"
+                        },
+                        "maxClaimable": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                        },
+                        "refreshAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Optional timestamp when this item becomes claimable again"
+                        },
+                        "bonuses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Bonus identifier"
+                              },
+                              "amount": {
+                                "type": "string",
+                                "format": "int64",
+                                "description": "Bonus quantity"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "BONUS_TYPE_UNSPECIFIED",
+                                  "BONUS_TYPE_IN_GAME_CURRENCY",
+                                  "BONUS_TYPE_LOYALTY_POINTS",
+                                  "BONUS_TYPE_LOYALTY_CURRENCY"
+                                ],
+                                "default": "BONUS_TYPE_UNSPECIFIED",
+                                "description": "Type of bonus"
+                              },
+                              "iconImageUrl": {
+                                "type": "string",
+                                "description": "Optional URL to bonus icon image"
+                              },
+                              "displayAmount": {
+                                "type": "string",
+                                "description": "Optional pre-formatted display string (e.g. '+50')"
+                              }
+                            },
+                            "description": "Additional reward granted when claiming a free item",
+                            "title": "Free Item Bonus",
+                            "required": [
+                              "id"
+                            ]
+                          },
+                          "description": "Additional bonuses granted on claim"
+                        },
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "background": {
+                              "type": "object",
+                              "properties": {
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "URL to background image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "CSS-style background styling information"
+                                }
+                              },
+                              "description": "Optional per-card background styling",
+                              "title": "Background"
+                            },
+                            "button": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                  "title": "Localizable Text"
+                                },
+                                "iconImageUrl": {
+                                  "type": "string",
+                                  "description": "Optional URL to button icon image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "Optional CSS-style background styling information for button"
+                                },
+                                "tooltip": {
+                                  "type": "object",
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Tooltip text providing additional information",
+                                      "title": "Localizable Text"
+                                    }
+                                  },
+                                  "description": "Optional popup tooltip for additional information",
+                                  "title": "Tooltip"
+                                }
+                              },
+                              "description": "Optional action button; server sets text and style for the item's current status",
+                              "title": "Button"
+                            }
+                          },
+                          "description": "Optional display attributes for the card",
+                          "title": "Free Item Attributes"
+                        }
+                      },
+                      "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                      "title": "Free Item",
+                      "required": [
+                        "itemId",
+                        "quantity"
+                      ]
                     }
                   },
                   "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -9797,11 +11179,12 @@
                 "type": "string",
                 "enum": [
                   "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-                  "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                  "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+                  "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
                 ],
                 "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                 "description": "How the section should be displayed on the screen",
-                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
               },
               "groups": {
                 "type": "array",
@@ -10943,6 +12326,198 @@
                               "itemId",
                               "type"
                             ]
+                          },
+                          "free": {
+                            "type": "object",
+                            "properties": {
+                              "guid": {
+                                "type": "string",
+                                "description": "Optional unique identifier (UUID v4 if provided)"
+                              },
+                              "itemId": {
+                                "type": "string",
+                                "description": "Required unique identifier for the free item"
+                              },
+                              "name": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Display name of the item",
+                                "title": "Localizable Text"
+                              },
+                              "image": {
+                                "type": "string",
+                                "description": "URL to item image"
+                              },
+                              "quantity": {
+                                "type": "string",
+                                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "FREE_ITEM_STATUS_UNSPECIFIED",
+                                  "FREE_ITEM_STATUS_AVAILABLE",
+                                  "FREE_ITEM_STATUS_CLAIMED",
+                                  "FREE_ITEM_STATUS_LOCKED",
+                                  "FREE_ITEM_STATUS_EXPIRED"
+                                ],
+                                "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                "description": "Current claim status of this free item"
+                              },
+                              "maxClaimable": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                              },
+                              "refreshAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Optional timestamp when this item becomes claimable again"
+                              },
+                              "bonuses": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "description": "Bonus identifier"
+                                    },
+                                    "amount": {
+                                      "type": "string",
+                                      "format": "int64",
+                                      "description": "Bonus quantity"
+                                    },
+                                    "type": {
+                                      "type": "string",
+                                      "enum": [
+                                        "BONUS_TYPE_UNSPECIFIED",
+                                        "BONUS_TYPE_IN_GAME_CURRENCY",
+                                        "BONUS_TYPE_LOYALTY_POINTS",
+                                        "BONUS_TYPE_LOYALTY_CURRENCY"
+                                      ],
+                                      "default": "BONUS_TYPE_UNSPECIFIED",
+                                      "description": "Type of bonus"
+                                    },
+                                    "iconImageUrl": {
+                                      "type": "string",
+                                      "description": "Optional URL to bonus icon image"
+                                    },
+                                    "displayAmount": {
+                                      "type": "string",
+                                      "description": "Optional pre-formatted display string (e.g. '+50')"
+                                    }
+                                  },
+                                  "description": "Additional reward granted when claiming a free item",
+                                  "title": "Free Item Bonus",
+                                  "required": [
+                                    "id"
+                                  ]
+                                },
+                                "description": "Additional bonuses granted on claim"
+                              },
+                              "attributes": {
+                                "type": "object",
+                                "properties": {
+                                  "background": {
+                                    "type": "object",
+                                    "properties": {
+                                      "imageUrl": {
+                                        "type": "string",
+                                        "description": "URL to background image"
+                                      },
+                                      "backgroundStyle": {
+                                        "type": "string",
+                                        "description": "CSS-style background styling information"
+                                      }
+                                    },
+                                    "description": "Optional per-card background styling",
+                                    "title": "Background"
+                                  },
+                                  "button": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                        "title": "Localizable Text"
+                                      },
+                                      "iconImageUrl": {
+                                        "type": "string",
+                                        "description": "Optional URL to button icon image"
+                                      },
+                                      "backgroundStyle": {
+                                        "type": "string",
+                                        "description": "Optional CSS-style background styling information for button"
+                                      },
+                                      "tooltip": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "type": "object",
+                                            "properties": {
+                                              "defaultText": {
+                                                "type": "string",
+                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                              },
+                                              "localizationKey": {
+                                                "type": "string",
+                                                "description": "The unique key used to identify the localized text content for a specific language"
+                                              },
+                                              "localizedText": {
+                                                "type": "string",
+                                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                                              }
+                                            },
+                                            "description": "Tooltip text providing additional information",
+                                            "title": "Localizable Text"
+                                          }
+                                        },
+                                        "description": "Optional popup tooltip for additional information",
+                                        "title": "Tooltip"
+                                      }
+                                    },
+                                    "description": "Optional action button; server sets text and style for the item's current status",
+                                    "title": "Button"
+                                  }
+                                },
+                                "description": "Optional display attributes for the card",
+                                "title": "Free Item Attributes"
+                              }
+                            },
+                            "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                            "title": "Free Item",
+                            "required": [
+                              "itemId",
+                              "quantity"
+                            ]
                           }
                         },
                         "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -11001,12 +12576,68 @@
                 "type": "string",
                 "format": "date-time",
                 "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
+              },
+              "guid": {
+                "type": "string",
+                "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+              },
+              "subHeader": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Optional subtitle below the section header (e.g. streak popup description)",
+                "title": "Localizable Text"
               }
             },
             "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
             "title": "Catalog Section"
           },
           "description": "List of catalog sections to be displayed in the order they are provided"
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "displayType": {
+                "type": "string",
+                "enum": [
+                  "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                  "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+                ],
+                "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                "description": "How the trigger should be displayed"
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+              },
+              "nextResetAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Optional timestamp for countdown until next reset or claim availability"
+              },
+              "linkedSectionGuid": {
+                "type": "string",
+                "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+              }
+            },
+            "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+            "title": "Catalog Trigger"
+          },
+          "description": "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"
         }
       },
       "description": "Represents the complete product catalog",
@@ -12125,6 +13756,198 @@
           "required": [
             "itemId",
             "type"
+          ]
+        },
+        "free": {
+          "type": "object",
+          "properties": {
+            "guid": {
+              "type": "string",
+              "description": "Optional unique identifier (UUID v4 if provided)"
+            },
+            "itemId": {
+              "type": "string",
+              "description": "Required unique identifier for the free item"
+            },
+            "name": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Display name of the item",
+              "title": "Localizable Text"
+            },
+            "image": {
+              "type": "string",
+              "description": "URL to item image"
+            },
+            "quantity": {
+              "type": "string",
+              "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "FREE_ITEM_STATUS_UNSPECIFIED",
+                "FREE_ITEM_STATUS_AVAILABLE",
+                "FREE_ITEM_STATUS_CLAIMED",
+                "FREE_ITEM_STATUS_LOCKED",
+                "FREE_ITEM_STATUS_EXPIRED"
+              ],
+              "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+              "description": "Current claim status of this free item"
+            },
+            "maxClaimable": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+            },
+            "refreshAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Optional timestamp when this item becomes claimable again"
+            },
+            "bonuses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Bonus identifier"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "Bonus quantity"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "BONUS_TYPE_UNSPECIFIED",
+                      "BONUS_TYPE_IN_GAME_CURRENCY",
+                      "BONUS_TYPE_LOYALTY_POINTS",
+                      "BONUS_TYPE_LOYALTY_CURRENCY"
+                    ],
+                    "default": "BONUS_TYPE_UNSPECIFIED",
+                    "description": "Type of bonus"
+                  },
+                  "iconImageUrl": {
+                    "type": "string",
+                    "description": "Optional URL to bonus icon image"
+                  },
+                  "displayAmount": {
+                    "type": "string",
+                    "description": "Optional pre-formatted display string (e.g. '+50')"
+                  }
+                },
+                "description": "Additional reward granted when claiming a free item",
+                "title": "Free Item Bonus",
+                "required": [
+                  "id"
+                ]
+              },
+              "description": "Additional bonuses granted on claim"
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "background": {
+                  "type": "object",
+                  "properties": {
+                    "imageUrl": {
+                      "type": "string",
+                      "description": "URL to background image"
+                    },
+                    "backgroundStyle": {
+                      "type": "string",
+                      "description": "CSS-style background styling information"
+                    }
+                  },
+                  "description": "Optional per-card background styling",
+                  "title": "Background"
+                },
+                "button": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                      "title": "Localizable Text"
+                    },
+                    "iconImageUrl": {
+                      "type": "string",
+                      "description": "Optional URL to button icon image"
+                    },
+                    "backgroundStyle": {
+                      "type": "string",
+                      "description": "Optional CSS-style background styling information for button"
+                    },
+                    "tooltip": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Tooltip text providing additional information",
+                          "title": "Localizable Text"
+                        }
+                      },
+                      "description": "Optional popup tooltip for additional information",
+                      "title": "Tooltip"
+                    }
+                  },
+                  "description": "Optional action button; server sets text and style for the item's current status",
+                  "title": "Button"
+                }
+              },
+              "description": "Optional display attributes for the card",
+              "title": "Free Item Attributes"
+            }
+          },
+          "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+          "title": "Free Item",
+          "required": [
+            "itemId",
+            "quantity"
           ]
         }
       },
@@ -14277,6 +16100,198 @@
                   "itemId",
                   "type"
                 ]
+              },
+              "free": {
+                "type": "object",
+                "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional unique identifier (UUID v4 if provided)"
+                  },
+                  "itemId": {
+                    "type": "string",
+                    "description": "Required unique identifier for the free item"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Display name of the item",
+                    "title": "Localizable Text"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "URL to item image"
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "FREE_ITEM_STATUS_UNSPECIFIED",
+                      "FREE_ITEM_STATUS_AVAILABLE",
+                      "FREE_ITEM_STATUS_CLAIMED",
+                      "FREE_ITEM_STATUS_LOCKED",
+                      "FREE_ITEM_STATUS_EXPIRED"
+                    ],
+                    "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                    "description": "Current claim status of this free item"
+                  },
+                  "maxClaimable": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                  },
+                  "refreshAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional timestamp when this item becomes claimable again"
+                  },
+                  "bonuses": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Bonus identifier"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "format": "int64",
+                          "description": "Bonus quantity"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "BONUS_TYPE_UNSPECIFIED",
+                            "BONUS_TYPE_IN_GAME_CURRENCY",
+                            "BONUS_TYPE_LOYALTY_POINTS",
+                            "BONUS_TYPE_LOYALTY_CURRENCY"
+                          ],
+                          "default": "BONUS_TYPE_UNSPECIFIED",
+                          "description": "Type of bonus"
+                        },
+                        "iconImageUrl": {
+                          "type": "string",
+                          "description": "Optional URL to bonus icon image"
+                        },
+                        "displayAmount": {
+                          "type": "string",
+                          "description": "Optional pre-formatted display string (e.g. '+50')"
+                        }
+                      },
+                      "description": "Additional reward granted when claiming a free item",
+                      "title": "Free Item Bonus",
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "description": "Additional bonuses granted on claim"
+                  },
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "background": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "URL to background image"
+                          },
+                          "backgroundStyle": {
+                            "type": "string",
+                            "description": "CSS-style background styling information"
+                          }
+                        },
+                        "description": "Optional per-card background styling",
+                        "title": "Background"
+                      },
+                      "button": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                            "title": "Localizable Text"
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "Optional URL to button icon image"
+                          },
+                          "backgroundStyle": {
+                            "type": "string",
+                            "description": "Optional CSS-style background styling information for button"
+                          },
+                          "tooltip": {
+                            "type": "object",
+                            "properties": {
+                              "text": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Tooltip text providing additional information",
+                                "title": "Localizable Text"
+                              }
+                            },
+                            "description": "Optional popup tooltip for additional information",
+                            "title": "Tooltip"
+                          }
+                        },
+                        "description": "Optional action button; server sets text and style for the item's current status",
+                        "title": "Button"
+                      }
+                    },
+                    "description": "Optional display attributes for the card",
+                    "title": "Free Item Attributes"
+                  }
+                },
+                "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                "title": "Free Item",
+                "required": [
+                  "itemId",
+                  "quantity"
+                ]
               }
             },
             "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -14573,6 +16588,17 @@
       "description": "Represents the action associated with a badge",
       "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
     },
+    "v1BonusType": {
+      "type": "string",
+      "enum": [
+        "BONUS_TYPE_UNSPECIFIED",
+        "BONUS_TYPE_IN_GAME_CURRENCY",
+        "BONUS_TYPE_LOYALTY_POINTS",
+        "BONUS_TYPE_LOYALTY_CURRENCY"
+      ],
+      "default": "BONUS_TYPE_UNSPECIFIED",
+      "description": "Type of bonus granted with a free item claim"
+    },
     "v1CatalogBorderType": {
       "type": "string",
       "enum": [
@@ -14622,11 +16648,21 @@
       "type": "string",
       "enum": [
         "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-        "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+        "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+        "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
       ],
       "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
       "description": "Display type of a catalog section",
-      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
+    },
+    "v1CatalogTriggerDisplayType": {
+      "type": "string",
+      "enum": [
+        "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+        "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+      ],
+      "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+      "description": "Display placement for a catalog UI trigger"
     },
     "v1CellAlignment": {
       "type": "string",
@@ -14669,6 +16705,18 @@
       "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
       "description": "Represents the type of content item",
       "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
+    },
+    "v1FreeItemStatus": {
+      "type": "string",
+      "enum": [
+        "FREE_ITEM_STATUS_UNSPECIFIED",
+        "FREE_ITEM_STATUS_AVAILABLE",
+        "FREE_ITEM_STATUS_CLAIMED",
+        "FREE_ITEM_STATUS_LOCKED",
+        "FREE_ITEM_STATUS_EXPIRED"
+      ],
+      "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+      "description": "Claim status of a free catalog item"
     },
     "v1GetCatalogResponse": {
       "type": "object",
@@ -15816,6 +17864,198 @@
                             "itemId",
                             "type"
                           ]
+                        },
+                        "free": {
+                          "type": "object",
+                          "properties": {
+                            "guid": {
+                              "type": "string",
+                              "description": "Optional unique identifier (UUID v4 if provided)"
+                            },
+                            "itemId": {
+                              "type": "string",
+                              "description": "Required unique identifier for the free item"
+                            },
+                            "name": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Display name of the item",
+                              "title": "Localizable Text"
+                            },
+                            "image": {
+                              "type": "string",
+                              "description": "URL to item image"
+                            },
+                            "quantity": {
+                              "type": "string",
+                              "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "FREE_ITEM_STATUS_UNSPECIFIED",
+                                "FREE_ITEM_STATUS_AVAILABLE",
+                                "FREE_ITEM_STATUS_CLAIMED",
+                                "FREE_ITEM_STATUS_LOCKED",
+                                "FREE_ITEM_STATUS_EXPIRED"
+                              ],
+                              "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                              "description": "Current claim status of this free item"
+                            },
+                            "maxClaimable": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                            },
+                            "refreshAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Optional timestamp when this item becomes claimable again"
+                            },
+                            "bonuses": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Bonus identifier"
+                                  },
+                                  "amount": {
+                                    "type": "string",
+                                    "format": "int64",
+                                    "description": "Bonus quantity"
+                                  },
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "BONUS_TYPE_UNSPECIFIED",
+                                      "BONUS_TYPE_IN_GAME_CURRENCY",
+                                      "BONUS_TYPE_LOYALTY_POINTS",
+                                      "BONUS_TYPE_LOYALTY_CURRENCY"
+                                    ],
+                                    "default": "BONUS_TYPE_UNSPECIFIED",
+                                    "description": "Type of bonus"
+                                  },
+                                  "iconImageUrl": {
+                                    "type": "string",
+                                    "description": "Optional URL to bonus icon image"
+                                  },
+                                  "displayAmount": {
+                                    "type": "string",
+                                    "description": "Optional pre-formatted display string (e.g. '+50')"
+                                  }
+                                },
+                                "description": "Additional reward granted when claiming a free item",
+                                "title": "Free Item Bonus",
+                                "required": [
+                                  "id"
+                                ]
+                              },
+                              "description": "Additional bonuses granted on claim"
+                            },
+                            "attributes": {
+                              "type": "object",
+                              "properties": {
+                                "background": {
+                                  "type": "object",
+                                  "properties": {
+                                    "imageUrl": {
+                                      "type": "string",
+                                      "description": "URL to background image"
+                                    },
+                                    "backgroundStyle": {
+                                      "type": "string",
+                                      "description": "CSS-style background styling information"
+                                    }
+                                  },
+                                  "description": "Optional per-card background styling",
+                                  "title": "Background"
+                                },
+                                "button": {
+                                  "type": "object",
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                      "title": "Localizable Text"
+                                    },
+                                    "iconImageUrl": {
+                                      "type": "string",
+                                      "description": "Optional URL to button icon image"
+                                    },
+                                    "backgroundStyle": {
+                                      "type": "string",
+                                      "description": "Optional CSS-style background styling information for button"
+                                    },
+                                    "tooltip": {
+                                      "type": "object",
+                                      "properties": {
+                                        "text": {
+                                          "type": "object",
+                                          "properties": {
+                                            "defaultText": {
+                                              "type": "string",
+                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                            },
+                                            "localizationKey": {
+                                              "type": "string",
+                                              "description": "The unique key used to identify the localized text content for a specific language"
+                                            },
+                                            "localizedText": {
+                                              "type": "string",
+                                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                                            }
+                                          },
+                                          "description": "Tooltip text providing additional information",
+                                          "title": "Localizable Text"
+                                        }
+                                      },
+                                      "description": "Optional popup tooltip for additional information",
+                                      "title": "Tooltip"
+                                    }
+                                  },
+                                  "description": "Optional action button; server sets text and style for the item's current status",
+                                  "title": "Button"
+                                }
+                              },
+                              "description": "Optional display attributes for the card",
+                              "title": "Free Item Attributes"
+                            }
+                          },
+                          "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                          "title": "Free Item",
+                          "required": [
+                            "itemId",
+                            "quantity"
+                          ]
                         }
                       },
                       "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -15827,11 +18067,12 @@
                     "type": "string",
                     "enum": [
                       "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-                      "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                      "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+                      "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
                     ],
                     "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                     "description": "How the section should be displayed on the screen",
-                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
                   },
                   "groups": {
                     "type": "array",
@@ -16973,6 +19214,198 @@
                                   "itemId",
                                   "type"
                                 ]
+                              },
+                              "free": {
+                                "type": "object",
+                                "properties": {
+                                  "guid": {
+                                    "type": "string",
+                                    "description": "Optional unique identifier (UUID v4 if provided)"
+                                  },
+                                  "itemId": {
+                                    "type": "string",
+                                    "description": "Required unique identifier for the free item"
+                                  },
+                                  "name": {
+                                    "type": "object",
+                                    "properties": {
+                                      "defaultText": {
+                                        "type": "string",
+                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                      },
+                                      "localizationKey": {
+                                        "type": "string",
+                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                      },
+                                      "localizedText": {
+                                        "type": "string",
+                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                      }
+                                    },
+                                    "description": "Display name of the item",
+                                    "title": "Localizable Text"
+                                  },
+                                  "image": {
+                                    "type": "string",
+                                    "description": "URL to item image"
+                                  },
+                                  "quantity": {
+                                    "type": "string",
+                                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "FREE_ITEM_STATUS_UNSPECIFIED",
+                                      "FREE_ITEM_STATUS_AVAILABLE",
+                                      "FREE_ITEM_STATUS_CLAIMED",
+                                      "FREE_ITEM_STATUS_LOCKED",
+                                      "FREE_ITEM_STATUS_EXPIRED"
+                                    ],
+                                    "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                    "description": "Current claim status of this free item"
+                                  },
+                                  "maxClaimable": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Maximum claims allowed for this period; 0 may mean already claimed depending on server semantics"
+                                  },
+                                  "refreshAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "Optional timestamp when this item becomes claimable again"
+                                  },
+                                  "bonuses": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string",
+                                          "description": "Bonus identifier"
+                                        },
+                                        "amount": {
+                                          "type": "string",
+                                          "format": "int64",
+                                          "description": "Bonus quantity"
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "BONUS_TYPE_UNSPECIFIED",
+                                            "BONUS_TYPE_IN_GAME_CURRENCY",
+                                            "BONUS_TYPE_LOYALTY_POINTS",
+                                            "BONUS_TYPE_LOYALTY_CURRENCY"
+                                          ],
+                                          "default": "BONUS_TYPE_UNSPECIFIED",
+                                          "description": "Type of bonus"
+                                        },
+                                        "iconImageUrl": {
+                                          "type": "string",
+                                          "description": "Optional URL to bonus icon image"
+                                        },
+                                        "displayAmount": {
+                                          "type": "string",
+                                          "description": "Optional pre-formatted display string (e.g. '+50')"
+                                        }
+                                      },
+                                      "description": "Additional reward granted when claiming a free item",
+                                      "title": "Free Item Bonus",
+                                      "required": [
+                                        "id"
+                                      ]
+                                    },
+                                    "description": "Additional bonuses granted on claim"
+                                  },
+                                  "attributes": {
+                                    "type": "object",
+                                    "properties": {
+                                      "background": {
+                                        "type": "object",
+                                        "properties": {
+                                          "imageUrl": {
+                                            "type": "string",
+                                            "description": "URL to background image"
+                                          },
+                                          "backgroundStyle": {
+                                            "type": "string",
+                                            "description": "CSS-style background styling information"
+                                          }
+                                        },
+                                        "description": "Optional per-card background styling",
+                                        "title": "Background"
+                                      },
+                                      "button": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "type": "object",
+                                            "properties": {
+                                              "defaultText": {
+                                                "type": "string",
+                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                              },
+                                              "localizationKey": {
+                                                "type": "string",
+                                                "description": "The unique key used to identify the localized text content for a specific language"
+                                              },
+                                              "localizedText": {
+                                                "type": "string",
+                                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                                              }
+                                            },
+                                            "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
+                                            "title": "Localizable Text"
+                                          },
+                                          "iconImageUrl": {
+                                            "type": "string",
+                                            "description": "Optional URL to button icon image"
+                                          },
+                                          "backgroundStyle": {
+                                            "type": "string",
+                                            "description": "Optional CSS-style background styling information for button"
+                                          },
+                                          "tooltip": {
+                                            "type": "object",
+                                            "properties": {
+                                              "text": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "defaultText": {
+                                                    "type": "string",
+                                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                  },
+                                                  "localizationKey": {
+                                                    "type": "string",
+                                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                                  },
+                                                  "localizedText": {
+                                                    "type": "string",
+                                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                  }
+                                                },
+                                                "description": "Tooltip text providing additional information",
+                                                "title": "Localizable Text"
+                                              }
+                                            },
+                                            "description": "Optional popup tooltip for additional information",
+                                            "title": "Tooltip"
+                                          }
+                                        },
+                                        "description": "Optional action button; server sets text and style for the item's current status",
+                                        "title": "Button"
+                                      }
+                                    },
+                                    "description": "Optional display attributes for the card",
+                                    "title": "Free Item Attributes"
+                                  }
+                                },
+                                "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                                "title": "Free Item",
+                                "required": [
+                                  "itemId",
+                                  "quantity"
+                                ]
                               }
                             },
                             "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -17031,12 +19464,68 @@
                     "type": "string",
                     "format": "date-time",
                     "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
+                  },
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+                  },
+                  "subHeader": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Optional subtitle below the section header (e.g. streak popup description)",
+                    "title": "Localizable Text"
                   }
                 },
                 "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
                 "title": "Catalog Section"
               },
               "description": "List of catalog sections to be displayed in the order they are provided"
+            },
+            "triggers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "displayType": {
+                    "type": "string",
+                    "enum": [
+                      "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                      "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+                    ],
+                    "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                    "description": "How the trigger should be displayed"
+                  },
+                  "iconImageUrl": {
+                    "type": "string",
+                    "description": "URL to the icon image for the trigger (e.g. floating gift button)"
+                  },
+                  "nextResetAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional timestamp for countdown until next reset or claim availability"
+                  },
+                  "linkedSectionGuid": {
+                    "type": "string",
+                    "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+                  }
+                },
+                "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+                "title": "Catalog Trigger"
+              },
+              "description": "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"
             }
           },
           "description": "The product catalog organized in sections",
