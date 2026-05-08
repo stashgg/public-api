@@ -54,6 +54,10 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "guid": {
+                            "type": "string",
+                            "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+                          },
                           "header": {
                             "type": "object",
                             "properties": {
@@ -1189,6 +1193,135 @@
                                     "itemId",
                                     "type"
                                   ]
+                                },
+                                "free": {
+                                  "type": "object",
+                                  "properties": {
+                                    "guid": {
+                                      "type": "string",
+                                      "description": "Optional unique identifier (UUID v4 if provided)"
+                                    },
+                                    "itemId": {
+                                      "type": "string",
+                                      "description": "Required unique identifier for the free item"
+                                    },
+                                    "name": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Display name of the item",
+                                      "title": "Localizable Text"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "enum": [
+                                        "FREE_ITEM_STATUS_UNSPECIFIED",
+                                        "FREE_ITEM_STATUS_AVAILABLE",
+                                        "FREE_ITEM_STATUS_CLAIMED",
+                                        "FREE_ITEM_STATUS_LOCKED"
+                                      ],
+                                      "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                      "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                                    },
+                                    "maxClaimable": {
+                                      "type": "integer",
+                                      "format": "int64",
+                                      "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                    },
+                                    "refreshAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "description": "Optional timestamp when this item becomes claimable again"
+                                    },
+                                    "contents": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "guid": {
+                                            "type": "string",
+                                            "description": "Optional unique identifier (UUID v4 if provided)"
+                                          },
+                                          "name": {
+                                            "type": "object",
+                                            "properties": {
+                                              "defaultText": {
+                                                "type": "string",
+                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                              },
+                                              "localizationKey": {
+                                                "type": "string",
+                                                "description": "The unique key used to identify the localized text content for a specific language"
+                                              },
+                                              "localizedText": {
+                                                "type": "string",
+                                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                                              }
+                                            },
+                                            "description": "Item display name",
+                                            "title": "Localizable Text"
+                                          },
+                                          "image": {
+                                            "type": "string",
+                                            "description": "URL to item image"
+                                          },
+                                          "quantity": {
+                                            "type": "string",
+                                            "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                          },
+                                          "unitImage": {
+                                            "type": "string",
+                                            "description": "Optional URL to unit image (used to display a single item)"
+                                          }
+                                        },
+                                        "description": "An in-game item included in a free catalog item",
+                                        "title": "Free Content Item",
+                                        "required": [
+                                          "quantity"
+                                        ]
+                                      },
+                                      "description": "In-game items included in this free item as a bundle"
+                                    },
+                                    "attributes": {
+                                      "type": "object",
+                                      "properties": {
+                                        "background": {
+                                          "type": "object",
+                                          "properties": {
+                                            "imageUrl": {
+                                              "type": "string",
+                                              "description": "URL to background image"
+                                            },
+                                            "backgroundStyle": {
+                                              "type": "string",
+                                              "description": "CSS-style background styling information"
+                                            }
+                                          },
+                                          "description": "Optional per-card background styling",
+                                          "title": "Background"
+                                        }
+                                      },
+                                      "description": "Optional display attributes for the card",
+                                      "title": "Free Item Attributes"
+                                    }
+                                  },
+                                  "description": "Free-to-claim catalog item",
+                                  "title": "Free Item",
+                                  "required": [
+                                    "itemId"
+                                  ]
                                 }
                               },
                               "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -1200,11 +1333,12 @@
                             "type": "string",
                             "enum": [
                               "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-                              "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                              "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+                              "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
                             ],
                             "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                             "description": "How the section should be displayed on the screen",
-                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
                           },
                           "groups": {
                             "type": "array",
@@ -2346,6 +2480,135 @@
                                           "itemId",
                                           "type"
                                         ]
+                                      },
+                                      "free": {
+                                        "type": "object",
+                                        "properties": {
+                                          "guid": {
+                                            "type": "string",
+                                            "description": "Optional unique identifier (UUID v4 if provided)"
+                                          },
+                                          "itemId": {
+                                            "type": "string",
+                                            "description": "Required unique identifier for the free item"
+                                          },
+                                          "name": {
+                                            "type": "object",
+                                            "properties": {
+                                              "defaultText": {
+                                                "type": "string",
+                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                              },
+                                              "localizationKey": {
+                                                "type": "string",
+                                                "description": "The unique key used to identify the localized text content for a specific language"
+                                              },
+                                              "localizedText": {
+                                                "type": "string",
+                                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                                              }
+                                            },
+                                            "description": "Display name of the item",
+                                            "title": "Localizable Text"
+                                          },
+                                          "status": {
+                                            "type": "string",
+                                            "enum": [
+                                              "FREE_ITEM_STATUS_UNSPECIFIED",
+                                              "FREE_ITEM_STATUS_AVAILABLE",
+                                              "FREE_ITEM_STATUS_CLAIMED",
+                                              "FREE_ITEM_STATUS_LOCKED"
+                                            ],
+                                            "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                            "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                                          },
+                                          "maxClaimable": {
+                                            "type": "integer",
+                                            "format": "int64",
+                                            "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                          },
+                                          "refreshAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Optional timestamp when this item becomes claimable again"
+                                          },
+                                          "contents": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "properties": {
+                                                "guid": {
+                                                  "type": "string",
+                                                  "description": "Optional unique identifier (UUID v4 if provided)"
+                                                },
+                                                "name": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "defaultText": {
+                                                      "type": "string",
+                                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                    },
+                                                    "localizationKey": {
+                                                      "type": "string",
+                                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                                    },
+                                                    "localizedText": {
+                                                      "type": "string",
+                                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                    }
+                                                  },
+                                                  "description": "Item display name",
+                                                  "title": "Localizable Text"
+                                                },
+                                                "image": {
+                                                  "type": "string",
+                                                  "description": "URL to item image"
+                                                },
+                                                "quantity": {
+                                                  "type": "string",
+                                                  "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                                },
+                                                "unitImage": {
+                                                  "type": "string",
+                                                  "description": "Optional URL to unit image (used to display a single item)"
+                                                }
+                                              },
+                                              "description": "An in-game item included in a free catalog item",
+                                              "title": "Free Content Item",
+                                              "required": [
+                                                "quantity"
+                                              ]
+                                            },
+                                            "description": "In-game items included in this free item as a bundle"
+                                          },
+                                          "attributes": {
+                                            "type": "object",
+                                            "properties": {
+                                              "background": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "imageUrl": {
+                                                    "type": "string",
+                                                    "description": "URL to background image"
+                                                  },
+                                                  "backgroundStyle": {
+                                                    "type": "string",
+                                                    "description": "CSS-style background styling information"
+                                                  }
+                                                },
+                                                "description": "Optional per-card background styling",
+                                                "title": "Background"
+                                              }
+                                            },
+                                            "description": "Optional display attributes for the card",
+                                            "title": "Free Item Attributes"
+                                          }
+                                        },
+                                        "description": "Free-to-claim catalog item",
+                                        "title": "Free Item",
+                                        "required": [
+                                          "itemId"
+                                        ]
                                       }
                                     },
                                     "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -2410,6 +2673,39 @@
                         "title": "Catalog Section"
                       },
                       "description": "List of catalog sections to be displayed in the order they are provided"
+                    },
+                    "triggers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "displayType": {
+                            "type": "string",
+                            "enum": [
+                              "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                              "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+                            ],
+                            "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                            "description": "How the trigger should be displayed"
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
+                          },
+                          "nextResetAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Optional timestamp for countdown until next reset or claim availability"
+                          },
+                          "linkedSectionGuid": {
+                            "type": "string",
+                            "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+                          }
+                        },
+                        "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+                        "title": "Catalog Trigger"
+                      },
+                      "description": "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"
                     }
                   },
                   "description": "The product catalog organized in sections",
@@ -4058,6 +4354,164 @@
     }
   },
   "definitions": {
+    "CatalogCatalogTrigger": {
+      "type": "object",
+      "properties": {
+        "displayType": {
+          "type": "string",
+          "enum": [
+            "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+            "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+          ],
+          "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+          "description": "How the trigger should be displayed"
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
+        },
+        "nextResetAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp for countdown until next reset or claim availability"
+        },
+        "linkedSectionGuid": {
+          "type": "string",
+          "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+        }
+      },
+      "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+      "title": "Catalog Trigger"
+    },
+    "CatalogItemFreeItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional unique identifier (UUID v4 if provided)"
+        },
+        "itemId": {
+          "type": "string",
+          "description": "Required unique identifier for the free item"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Display name of the item",
+          "title": "Localizable Text"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "FREE_ITEM_STATUS_UNSPECIFIED",
+            "FREE_ITEM_STATUS_AVAILABLE",
+            "FREE_ITEM_STATUS_CLAIMED",
+            "FREE_ITEM_STATUS_LOCKED"
+          ],
+          "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+          "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+        },
+        "maxClaimable": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+        },
+        "refreshAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional timestamp when this item becomes claimable again"
+        },
+        "contents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": {
+                "type": "string",
+                "description": "Optional unique identifier (UUID v4 if provided)"
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Item display name",
+                "title": "Localizable Text"
+              },
+              "image": {
+                "type": "string",
+                "description": "URL to item image"
+              },
+              "quantity": {
+                "type": "string",
+                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+              },
+              "unitImage": {
+                "type": "string",
+                "description": "Optional URL to unit image (used to display a single item)"
+              }
+            },
+            "description": "An in-game item included in a free catalog item",
+            "title": "Free Content Item",
+            "required": [
+              "quantity"
+            ]
+          },
+          "description": "In-game items included in this free item as a bundle"
+        },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "background": {
+              "type": "object",
+              "properties": {
+                "imageUrl": {
+                  "type": "string",
+                  "description": "URL to background image"
+                },
+                "backgroundStyle": {
+                  "type": "string",
+                  "description": "CSS-style background styling information"
+                }
+              },
+              "description": "Optional per-card background styling",
+              "title": "Background"
+            }
+          },
+          "description": "Optional display attributes for the card",
+          "title": "Free Item Attributes"
+        }
+      },
+      "description": "Represents a claimable free catalog item",
+      "title": "Free Item",
+      "required": [
+        "itemId"
+      ]
+    },
     "CatalogItemNonPurchasableItem": {
       "type": "object",
       "properties": {
@@ -5483,6 +5937,10 @@
     "CatalogSection": {
       "type": "object",
       "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+        },
         "header": {
           "type": "object",
           "properties": {
@@ -6618,6 +7076,135 @@
                   "itemId",
                   "type"
                 ]
+              },
+              "free": {
+                "type": "object",
+                "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional unique identifier (UUID v4 if provided)"
+                  },
+                  "itemId": {
+                    "type": "string",
+                    "description": "Required unique identifier for the free item"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Display name of the item",
+                    "title": "Localizable Text"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "FREE_ITEM_STATUS_UNSPECIFIED",
+                      "FREE_ITEM_STATUS_AVAILABLE",
+                      "FREE_ITEM_STATUS_CLAIMED",
+                      "FREE_ITEM_STATUS_LOCKED"
+                    ],
+                    "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                    "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                  },
+                  "maxClaimable": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                  },
+                  "refreshAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional timestamp when this item becomes claimable again"
+                  },
+                  "contents": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "guid": {
+                          "type": "string",
+                          "description": "Optional unique identifier (UUID v4 if provided)"
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Item display name",
+                          "title": "Localizable Text"
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL to item image"
+                        },
+                        "quantity": {
+                          "type": "string",
+                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                        },
+                        "unitImage": {
+                          "type": "string",
+                          "description": "Optional URL to unit image (used to display a single item)"
+                        }
+                      },
+                      "description": "An in-game item included in a free catalog item",
+                      "title": "Free Content Item",
+                      "required": [
+                        "quantity"
+                      ]
+                    },
+                    "description": "In-game items included in this free item as a bundle"
+                  },
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "background": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "URL to background image"
+                          },
+                          "backgroundStyle": {
+                            "type": "string",
+                            "description": "CSS-style background styling information"
+                          }
+                        },
+                        "description": "Optional per-card background styling",
+                        "title": "Background"
+                      }
+                    },
+                    "description": "Optional display attributes for the card",
+                    "title": "Free Item Attributes"
+                  }
+                },
+                "description": "Free-to-claim catalog item",
+                "title": "Free Item",
+                "required": [
+                  "itemId"
+                ]
               }
             },
             "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -6629,11 +7216,12 @@
           "type": "string",
           "enum": [
             "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-            "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+            "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+            "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
           ],
           "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
           "description": "How the section should be displayed on the screen",
-          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
         },
         "groups": {
           "type": "array",
@@ -7775,6 +8363,135 @@
                         "itemId",
                         "type"
                       ]
+                    },
+                    "free": {
+                      "type": "object",
+                      "properties": {
+                        "guid": {
+                          "type": "string",
+                          "description": "Optional unique identifier (UUID v4 if provided)"
+                        },
+                        "itemId": {
+                          "type": "string",
+                          "description": "Required unique identifier for the free item"
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Display name of the item",
+                          "title": "Localizable Text"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "FREE_ITEM_STATUS_UNSPECIFIED",
+                            "FREE_ITEM_STATUS_AVAILABLE",
+                            "FREE_ITEM_STATUS_CLAIMED",
+                            "FREE_ITEM_STATUS_LOCKED"
+                          ],
+                          "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                          "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                        },
+                        "maxClaimable": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                        },
+                        "refreshAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Optional timestamp when this item becomes claimable again"
+                        },
+                        "contents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "guid": {
+                                "type": "string",
+                                "description": "Optional unique identifier (UUID v4 if provided)"
+                              },
+                              "name": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Item display name",
+                                "title": "Localizable Text"
+                              },
+                              "image": {
+                                "type": "string",
+                                "description": "URL to item image"
+                              },
+                              "quantity": {
+                                "type": "string",
+                                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                              },
+                              "unitImage": {
+                                "type": "string",
+                                "description": "Optional URL to unit image (used to display a single item)"
+                              }
+                            },
+                            "description": "An in-game item included in a free catalog item",
+                            "title": "Free Content Item",
+                            "required": [
+                              "quantity"
+                            ]
+                          },
+                          "description": "In-game items included in this free item as a bundle"
+                        },
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "background": {
+                              "type": "object",
+                              "properties": {
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "URL to background image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "CSS-style background styling information"
+                                }
+                              },
+                              "description": "Optional per-card background styling",
+                              "title": "Background"
+                            }
+                          },
+                          "description": "Optional display attributes for the card",
+                          "title": "Free Item Attributes"
+                        }
+                      },
+                      "description": "Free-to-claim catalog item",
+                      "title": "Free Item",
+                      "required": [
+                        "itemId"
+                      ]
                     }
                   },
                   "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -8472,6 +9189,73 @@
         "rows"
       ]
     },
+    "FreeItemFreeContentItem": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional unique identifier (UUID v4 if provided)"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "The unique key used to identify the localized text content for a specific language"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Localized text content for the language specified by the code sent in the request filters"
+            }
+          },
+          "description": "Item display name",
+          "title": "Localizable Text"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL to item image"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+        },
+        "unitImage": {
+          "type": "string",
+          "description": "Optional URL to unit image (used to display a single item)"
+        }
+      },
+      "description": "An in-game item included in a free catalog item",
+      "title": "Free Content Item",
+      "required": [
+        "quantity"
+      ]
+    },
+    "FreeItemFreeItemAttributes": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "description": "URL to background image"
+            },
+            "backgroundStyle": {
+              "type": "string",
+              "description": "CSS-style background styling information"
+            }
+          },
+          "description": "Optional per-card background styling",
+          "title": "Background"
+        }
+      },
+      "description": "Optional display attributes for a free item card",
+      "title": "Free Item Attributes"
+    },
     "GetCatalogResponseBadge": {
       "type": "object",
       "properties": {
@@ -8651,6 +9435,10 @@
           "items": {
             "type": "object",
             "properties": {
+              "guid": {
+                "type": "string",
+                "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+              },
               "header": {
                 "type": "object",
                 "properties": {
@@ -9786,6 +10574,135 @@
                         "itemId",
                         "type"
                       ]
+                    },
+                    "free": {
+                      "type": "object",
+                      "properties": {
+                        "guid": {
+                          "type": "string",
+                          "description": "Optional unique identifier (UUID v4 if provided)"
+                        },
+                        "itemId": {
+                          "type": "string",
+                          "description": "Required unique identifier for the free item"
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Display name of the item",
+                          "title": "Localizable Text"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "FREE_ITEM_STATUS_UNSPECIFIED",
+                            "FREE_ITEM_STATUS_AVAILABLE",
+                            "FREE_ITEM_STATUS_CLAIMED",
+                            "FREE_ITEM_STATUS_LOCKED"
+                          ],
+                          "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                          "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                        },
+                        "maxClaimable": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                        },
+                        "refreshAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Optional timestamp when this item becomes claimable again"
+                        },
+                        "contents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "guid": {
+                                "type": "string",
+                                "description": "Optional unique identifier (UUID v4 if provided)"
+                              },
+                              "name": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Item display name",
+                                "title": "Localizable Text"
+                              },
+                              "image": {
+                                "type": "string",
+                                "description": "URL to item image"
+                              },
+                              "quantity": {
+                                "type": "string",
+                                "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                              },
+                              "unitImage": {
+                                "type": "string",
+                                "description": "Optional URL to unit image (used to display a single item)"
+                              }
+                            },
+                            "description": "An in-game item included in a free catalog item",
+                            "title": "Free Content Item",
+                            "required": [
+                              "quantity"
+                            ]
+                          },
+                          "description": "In-game items included in this free item as a bundle"
+                        },
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "background": {
+                              "type": "object",
+                              "properties": {
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "URL to background image"
+                                },
+                                "backgroundStyle": {
+                                  "type": "string",
+                                  "description": "CSS-style background styling information"
+                                }
+                              },
+                              "description": "Optional per-card background styling",
+                              "title": "Background"
+                            }
+                          },
+                          "description": "Optional display attributes for the card",
+                          "title": "Free Item Attributes"
+                        }
+                      },
+                      "description": "Free-to-claim catalog item",
+                      "title": "Free Item",
+                      "required": [
+                        "itemId"
+                      ]
                     }
                   },
                   "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -9797,11 +10714,12 @@
                 "type": "string",
                 "enum": [
                   "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-                  "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                  "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+                  "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
                 ],
                 "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                 "description": "How the section should be displayed on the screen",
-                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
               },
               "groups": {
                 "type": "array",
@@ -10943,6 +11861,135 @@
                               "itemId",
                               "type"
                             ]
+                          },
+                          "free": {
+                            "type": "object",
+                            "properties": {
+                              "guid": {
+                                "type": "string",
+                                "description": "Optional unique identifier (UUID v4 if provided)"
+                              },
+                              "itemId": {
+                                "type": "string",
+                                "description": "Required unique identifier for the free item"
+                              },
+                              "name": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Display name of the item",
+                                "title": "Localizable Text"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "FREE_ITEM_STATUS_UNSPECIFIED",
+                                  "FREE_ITEM_STATUS_AVAILABLE",
+                                  "FREE_ITEM_STATUS_CLAIMED",
+                                  "FREE_ITEM_STATUS_LOCKED"
+                                ],
+                                "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                              },
+                              "maxClaimable": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                              },
+                              "refreshAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Optional timestamp when this item becomes claimable again"
+                              },
+                              "contents": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "guid": {
+                                      "type": "string",
+                                      "description": "Optional unique identifier (UUID v4 if provided)"
+                                    },
+                                    "name": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Item display name",
+                                      "title": "Localizable Text"
+                                    },
+                                    "image": {
+                                      "type": "string",
+                                      "description": "URL to item image"
+                                    },
+                                    "quantity": {
+                                      "type": "string",
+                                      "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                    },
+                                    "unitImage": {
+                                      "type": "string",
+                                      "description": "Optional URL to unit image (used to display a single item)"
+                                    }
+                                  },
+                                  "description": "An in-game item included in a free catalog item",
+                                  "title": "Free Content Item",
+                                  "required": [
+                                    "quantity"
+                                  ]
+                                },
+                                "description": "In-game items included in this free item as a bundle"
+                              },
+                              "attributes": {
+                                "type": "object",
+                                "properties": {
+                                  "background": {
+                                    "type": "object",
+                                    "properties": {
+                                      "imageUrl": {
+                                        "type": "string",
+                                        "description": "URL to background image"
+                                      },
+                                      "backgroundStyle": {
+                                        "type": "string",
+                                        "description": "CSS-style background styling information"
+                                      }
+                                    },
+                                    "description": "Optional per-card background styling",
+                                    "title": "Background"
+                                  }
+                                },
+                                "description": "Optional display attributes for the card",
+                                "title": "Free Item Attributes"
+                              }
+                            },
+                            "description": "Free-to-claim catalog item",
+                            "title": "Free Item",
+                            "required": [
+                              "itemId"
+                            ]
                           }
                         },
                         "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -11007,6 +12054,39 @@
             "title": "Catalog Section"
           },
           "description": "List of catalog sections to be displayed in the order they are provided"
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "displayType": {
+                "type": "string",
+                "enum": [
+                  "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                  "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+                ],
+                "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                "description": "How the trigger should be displayed"
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
+              },
+              "nextResetAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Optional timestamp for countdown until next reset or claim availability"
+              },
+              "linkedSectionGuid": {
+                "type": "string",
+                "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+              }
+            },
+            "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+            "title": "Catalog Trigger"
+          },
+          "description": "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"
         }
       },
       "description": "Represents the complete product catalog",
@@ -12125,6 +13205,135 @@
           "required": [
             "itemId",
             "type"
+          ]
+        },
+        "free": {
+          "type": "object",
+          "properties": {
+            "guid": {
+              "type": "string",
+              "description": "Optional unique identifier (UUID v4 if provided)"
+            },
+            "itemId": {
+              "type": "string",
+              "description": "Required unique identifier for the free item"
+            },
+            "name": {
+              "type": "object",
+              "properties": {
+                "defaultText": {
+                  "type": "string",
+                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                },
+                "localizationKey": {
+                  "type": "string",
+                  "description": "The unique key used to identify the localized text content for a specific language"
+                },
+                "localizedText": {
+                  "type": "string",
+                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                }
+              },
+              "description": "Display name of the item",
+              "title": "Localizable Text"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "FREE_ITEM_STATUS_UNSPECIFIED",
+                "FREE_ITEM_STATUS_AVAILABLE",
+                "FREE_ITEM_STATUS_CLAIMED",
+                "FREE_ITEM_STATUS_LOCKED"
+              ],
+              "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+              "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+            },
+            "maxClaimable": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+            },
+            "refreshAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Optional timestamp when this item becomes claimable again"
+            },
+            "contents": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional unique identifier (UUID v4 if provided)"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Item display name",
+                    "title": "Localizable Text"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "URL to item image"
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                  },
+                  "unitImage": {
+                    "type": "string",
+                    "description": "Optional URL to unit image (used to display a single item)"
+                  }
+                },
+                "description": "An in-game item included in a free catalog item",
+                "title": "Free Content Item",
+                "required": [
+                  "quantity"
+                ]
+              },
+              "description": "In-game items included in this free item as a bundle"
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "background": {
+                  "type": "object",
+                  "properties": {
+                    "imageUrl": {
+                      "type": "string",
+                      "description": "URL to background image"
+                    },
+                    "backgroundStyle": {
+                      "type": "string",
+                      "description": "CSS-style background styling information"
+                    }
+                  },
+                  "description": "Optional per-card background styling",
+                  "title": "Background"
+                }
+              },
+              "description": "Optional display attributes for the card",
+              "title": "Free Item Attributes"
+            }
+          },
+          "description": "Free-to-claim catalog item",
+          "title": "Free Item",
+          "required": [
+            "itemId"
           ]
         }
       },
@@ -14277,6 +15486,135 @@
                   "itemId",
                   "type"
                 ]
+              },
+              "free": {
+                "type": "object",
+                "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional unique identifier (UUID v4 if provided)"
+                  },
+                  "itemId": {
+                    "type": "string",
+                    "description": "Required unique identifier for the free item"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "The unique key used to identify the localized text content for a specific language"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                      }
+                    },
+                    "description": "Display name of the item",
+                    "title": "Localizable Text"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "FREE_ITEM_STATUS_UNSPECIFIED",
+                      "FREE_ITEM_STATUS_AVAILABLE",
+                      "FREE_ITEM_STATUS_CLAIMED",
+                      "FREE_ITEM_STATUS_LOCKED"
+                    ],
+                    "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                    "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                  },
+                  "maxClaimable": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                  },
+                  "refreshAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional timestamp when this item becomes claimable again"
+                  },
+                  "contents": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "guid": {
+                          "type": "string",
+                          "description": "Optional unique identifier (UUID v4 if provided)"
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "defaultText": {
+                              "type": "string",
+                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                            },
+                            "localizationKey": {
+                              "type": "string",
+                              "description": "The unique key used to identify the localized text content for a specific language"
+                            },
+                            "localizedText": {
+                              "type": "string",
+                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                            }
+                          },
+                          "description": "Item display name",
+                          "title": "Localizable Text"
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL to item image"
+                        },
+                        "quantity": {
+                          "type": "string",
+                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                        },
+                        "unitImage": {
+                          "type": "string",
+                          "description": "Optional URL to unit image (used to display a single item)"
+                        }
+                      },
+                      "description": "An in-game item included in a free catalog item",
+                      "title": "Free Content Item",
+                      "required": [
+                        "quantity"
+                      ]
+                    },
+                    "description": "In-game items included in this free item as a bundle"
+                  },
+                  "attributes": {
+                    "type": "object",
+                    "properties": {
+                      "background": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "URL to background image"
+                          },
+                          "backgroundStyle": {
+                            "type": "string",
+                            "description": "CSS-style background styling information"
+                          }
+                        },
+                        "description": "Optional per-card background styling",
+                        "title": "Background"
+                      }
+                    },
+                    "description": "Optional display attributes for the card",
+                    "title": "Free Item Attributes"
+                  }
+                },
+                "description": "Free-to-claim catalog item",
+                "title": "Free Item",
+                "required": [
+                  "itemId"
+                ]
               }
             },
             "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -14622,11 +15960,21 @@
       "type": "string",
       "enum": [
         "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-        "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+        "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+        "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
       ],
       "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
       "description": "Display type of a catalog section",
-      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
+    },
+    "v1CatalogTriggerDisplayType": {
+      "type": "string",
+      "enum": [
+        "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+        "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+      ],
+      "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+      "description": "Display placement for a catalog UI trigger"
     },
     "v1CellAlignment": {
       "type": "string",
@@ -14670,6 +16018,17 @@
       "description": "Represents the type of content item",
       "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
     },
+    "v1FreeItemStatus": {
+      "type": "string",
+      "enum": [
+        "FREE_ITEM_STATUS_UNSPECIFIED",
+        "FREE_ITEM_STATUS_AVAILABLE",
+        "FREE_ITEM_STATUS_CLAIMED",
+        "FREE_ITEM_STATUS_LOCKED"
+      ],
+      "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+      "description": "Claim status of a free catalog item"
+    },
     "v1GetCatalogResponse": {
       "type": "object",
       "properties": {
@@ -14681,6 +16040,10 @@
               "items": {
                 "type": "object",
                 "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+                  },
                   "header": {
                     "type": "object",
                     "properties": {
@@ -15816,6 +17179,135 @@
                             "itemId",
                             "type"
                           ]
+                        },
+                        "free": {
+                          "type": "object",
+                          "properties": {
+                            "guid": {
+                              "type": "string",
+                              "description": "Optional unique identifier (UUID v4 if provided)"
+                            },
+                            "itemId": {
+                              "type": "string",
+                              "description": "Required unique identifier for the free item"
+                            },
+                            "name": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                }
+                              },
+                              "description": "Display name of the item",
+                              "title": "Localizable Text"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "FREE_ITEM_STATUS_UNSPECIFIED",
+                                "FREE_ITEM_STATUS_AVAILABLE",
+                                "FREE_ITEM_STATUS_CLAIMED",
+                                "FREE_ITEM_STATUS_LOCKED"
+                              ],
+                              "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                              "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                            },
+                            "maxClaimable": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                            },
+                            "refreshAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Optional timestamp when this item becomes claimable again"
+                            },
+                            "contents": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "guid": {
+                                    "type": "string",
+                                    "description": "Optional unique identifier (UUID v4 if provided)"
+                                  },
+                                  "name": {
+                                    "type": "object",
+                                    "properties": {
+                                      "defaultText": {
+                                        "type": "string",
+                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                      },
+                                      "localizationKey": {
+                                        "type": "string",
+                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                      },
+                                      "localizedText": {
+                                        "type": "string",
+                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                      }
+                                    },
+                                    "description": "Item display name",
+                                    "title": "Localizable Text"
+                                  },
+                                  "image": {
+                                    "type": "string",
+                                    "description": "URL to item image"
+                                  },
+                                  "quantity": {
+                                    "type": "string",
+                                    "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                  },
+                                  "unitImage": {
+                                    "type": "string",
+                                    "description": "Optional URL to unit image (used to display a single item)"
+                                  }
+                                },
+                                "description": "An in-game item included in a free catalog item",
+                                "title": "Free Content Item",
+                                "required": [
+                                  "quantity"
+                                ]
+                              },
+                              "description": "In-game items included in this free item as a bundle"
+                            },
+                            "attributes": {
+                              "type": "object",
+                              "properties": {
+                                "background": {
+                                  "type": "object",
+                                  "properties": {
+                                    "imageUrl": {
+                                      "type": "string",
+                                      "description": "URL to background image"
+                                    },
+                                    "backgroundStyle": {
+                                      "type": "string",
+                                      "description": "CSS-style background styling information"
+                                    }
+                                  },
+                                  "description": "Optional per-card background styling",
+                                  "title": "Background"
+                                }
+                              },
+                              "description": "Optional display attributes for the card",
+                              "title": "Free Item Attributes"
+                            }
+                          },
+                          "description": "Free-to-claim catalog item",
+                          "title": "Free Item",
+                          "required": [
+                            "itemId"
+                          ]
                         }
                       },
                       "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -15827,11 +17319,12 @@
                     "type": "string",
                     "enum": [
                       "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
-                      "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL"
+                      "CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL",
+                      "CATALOG_SECTION_DISPLAY_TYPE_POPUP"
                     ],
                     "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                     "description": "How the section should be displayed on the screen",
-                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area"
+                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
                   },
                   "groups": {
                     "type": "array",
@@ -16973,6 +18466,135 @@
                                   "itemId",
                                   "type"
                                 ]
+                              },
+                              "free": {
+                                "type": "object",
+                                "properties": {
+                                  "guid": {
+                                    "type": "string",
+                                    "description": "Optional unique identifier (UUID v4 if provided)"
+                                  },
+                                  "itemId": {
+                                    "type": "string",
+                                    "description": "Required unique identifier for the free item"
+                                  },
+                                  "name": {
+                                    "type": "object",
+                                    "properties": {
+                                      "defaultText": {
+                                        "type": "string",
+                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                      },
+                                      "localizationKey": {
+                                        "type": "string",
+                                        "description": "The unique key used to identify the localized text content for a specific language"
+                                      },
+                                      "localizedText": {
+                                        "type": "string",
+                                        "description": "Localized text content for the language specified by the code sent in the request filters"
+                                      }
+                                    },
+                                    "description": "Display name of the item",
+                                    "title": "Localizable Text"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "FREE_ITEM_STATUS_UNSPECIFIED",
+                                      "FREE_ITEM_STATUS_AVAILABLE",
+                                      "FREE_ITEM_STATUS_CLAIMED",
+                                      "FREE_ITEM_STATUS_LOCKED"
+                                    ],
+                                    "default": "FREE_ITEM_STATUS_UNSPECIFIED",
+                                    "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+                                  },
+                                  "maxClaimable": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                  },
+                                  "refreshAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "Optional timestamp when this item becomes claimable again"
+                                  },
+                                  "contents": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "guid": {
+                                          "type": "string",
+                                          "description": "Optional unique identifier (UUID v4 if provided)"
+                                        },
+                                        "name": {
+                                          "type": "object",
+                                          "properties": {
+                                            "defaultText": {
+                                              "type": "string",
+                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                            },
+                                            "localizationKey": {
+                                              "type": "string",
+                                              "description": "The unique key used to identify the localized text content for a specific language"
+                                            },
+                                            "localizedText": {
+                                              "type": "string",
+                                              "description": "Localized text content for the language specified by the code sent in the request filters"
+                                            }
+                                          },
+                                          "description": "Item display name",
+                                          "title": "Localizable Text"
+                                        },
+                                        "image": {
+                                          "type": "string",
+                                          "description": "URL to item image"
+                                        },
+                                        "quantity": {
+                                          "type": "string",
+                                          "description": "In-game item quantity as string for big integer support (no decimals allowed)"
+                                        },
+                                        "unitImage": {
+                                          "type": "string",
+                                          "description": "Optional URL to unit image (used to display a single item)"
+                                        }
+                                      },
+                                      "description": "An in-game item included in a free catalog item",
+                                      "title": "Free Content Item",
+                                      "required": [
+                                        "quantity"
+                                      ]
+                                    },
+                                    "description": "In-game items included in this free item as a bundle"
+                                  },
+                                  "attributes": {
+                                    "type": "object",
+                                    "properties": {
+                                      "background": {
+                                        "type": "object",
+                                        "properties": {
+                                          "imageUrl": {
+                                            "type": "string",
+                                            "description": "URL to background image"
+                                          },
+                                          "backgroundStyle": {
+                                            "type": "string",
+                                            "description": "CSS-style background styling information"
+                                          }
+                                        },
+                                        "description": "Optional per-card background styling",
+                                        "title": "Background"
+                                      }
+                                    },
+                                    "description": "Optional display attributes for the card",
+                                    "title": "Free Item Attributes"
+                                  }
+                                },
+                                "description": "Free-to-claim catalog item",
+                                "title": "Free Item",
+                                "required": [
+                                  "itemId"
+                                ]
                               }
                             },
                             "description": "Represents any type of catalog item using oneof for polymorphism",
@@ -17037,6 +18659,39 @@
                 "title": "Catalog Section"
               },
               "description": "List of catalog sections to be displayed in the order they are provided"
+            },
+            "triggers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "displayType": {
+                    "type": "string",
+                    "enum": [
+                      "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                      "CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING"
+                    ],
+                    "default": "CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED",
+                    "description": "How the trigger should be displayed"
+                  },
+                  "iconImageUrl": {
+                    "type": "string",
+                    "description": "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"
+                  },
+                  "nextResetAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Optional timestamp for countdown until next reset or claim availability"
+                  },
+                  "linkedSectionGuid": {
+                    "type": "string",
+                    "description": "Optional UUID matching Section.guid of the popup section this trigger opens"
+                  }
+                },
+                "description": "UI trigger that opens a catalog section (e.g. floating button over the catalog)",
+                "title": "Catalog Trigger"
+              },
+              "description": "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"
             }
           },
           "description": "The product catalog organized in sections",

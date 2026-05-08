@@ -626,10 +626,99 @@ message GetCatalogResponse {
       repeated NonPurchasableContentItem contents = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Content items within a non-purchasable item bundle"}];
     }
 
+    message FreeItem {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Free Item"
+          description: "Represents a claimable free catalog item"
+          required: ["item_id"]
+        }
+      };
+
+      message FreeContentItem {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Free Content Item"
+            description: "An in-game item included in a free catalog item"
+            required: ["quantity"]
+          }
+        };
+        optional string guid = 1 [
+          (validate.rules).string = {
+            uuid: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided)"}
+        ];
+        LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item display name"}];
+        string image = 5 [
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
+        ];
+        string quantity = 6 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
+        ];
+        optional string unit_image = 7 [
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+        ];
+      }
+
+      message FreeItemAttributes {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Free Item Attributes"
+            description: "Optional display attributes for a free item card"
+          }
+        };
+        optional Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-card background styling"}];
+      }
+
+      optional string guid = 1 [
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided)"}
+      ];
+      string item_id = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique identifier for the free item"}
+      ];
+      LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
+      FreeItemStatus status = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."}];
+      optional uint32 max_claimable = 5 [
+        (validate.rules).uint32 = {
+          gte: 0
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."}
+      ];
+      optional google.protobuf.Timestamp refresh_at = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp when this item becomes claimable again"}];
+      repeated FreeContentItem contents = 7 [
+        (validate.rules).repeated.min_items = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items included in this free item as a bundle"}
+      ];
+      optional FreeItemAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display attributes for the card"}];
+    }
+
     oneof item {
       PurchasableItem product = 1;
       OfferChainItem chain = 2;
       NonPurchasableItem info = 3;
+      FreeItem free = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Free-to-claim catalog item"}];
     }
   }
 
@@ -640,6 +729,32 @@ message GetCatalogResponse {
         description: "Represents the complete product catalog"
       }
     };
+
+    message CatalogTrigger {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Catalog Trigger"
+          description: "UI trigger that opens a catalog section (e.g. floating button over the catalog)"
+        }
+      };
+      CatalogTriggerDisplayType display_type = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the trigger should be displayed"}];
+      optional string icon_image_url = 2 [
+        (validate.rules).string = {
+          uri: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to the icon image for the trigger (e.g. floating gift button); clients should use a generic fallback when absent"}
+      ];
+      optional google.protobuf.Timestamp next_reset_at = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp for countdown until next reset or claim availability"}];
+      optional string linked_section_guid = 4 [
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UUID matching Section.guid of the popup section this trigger opens"}
+      ];
+    }
+
     message Section {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
@@ -647,6 +762,13 @@ message GetCatalogResponse {
           description: "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses)."
         }
       };
+      optional string guid = 7 [
+        (validate.rules).string = {
+          uuid: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"}
+      ];
       LocalizableText header = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Row header text"}];
       repeated CatalogItem items = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."}];
       CatalogSectionDisplayType display_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the section should be displayed on the screen"}];
@@ -672,6 +794,7 @@ message GetCatalogResponse {
       optional google.protobuf.Timestamp display_expiration = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."}];
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
+    repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
   }
   Catalog catalog = 1 [
     (google.api.field_behavior) = REQUIRED,

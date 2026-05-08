@@ -21,6 +21,8 @@ enum CatalogSectionDisplayType {
   CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED = 0;
   // Carousel displays items in a horizontal scrollable area
   CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL = 1;
+  // Popup displays section content in an overlay
+  CATALOG_SECTION_DISPLAY_TYPE_POPUP = 2;
 }
 
 enum CatalogGroupDisplayType {
@@ -117,4 +119,18 @@ enum CatalogBorderType {
   CATALOG_BORDER_TYPE_UNSPECIFIED = 0;
   // Color gradient border matching shop theme
   CATALOG_BORDER_TYPE_GRADIENT = 1;
+}
+
+enum FreeItemStatus {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Claim status of a free catalog item"};
+  FREE_ITEM_STATUS_UNSPECIFIED = 0;
+  FREE_ITEM_STATUS_AVAILABLE = 1;
+  FREE_ITEM_STATUS_CLAIMED = 2;
+  FREE_ITEM_STATUS_LOCKED = 3;
+}
+
+enum CatalogTriggerDisplayType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Display placement for a catalog UI trigger"};
+  CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED = 0;
+  CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING = 1;
 }
