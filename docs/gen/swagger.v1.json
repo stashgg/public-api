@@ -54,6 +54,10 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "guid": {
+                            "type": "string",
+                            "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+                          },
                           "header": {
                             "type": "object",
                             "properties": {
@@ -1229,13 +1233,12 @@
                                         "FREE_ITEM_STATUS_LOCKED"
                                       ],
                                       "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                      "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                                      "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                                      "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                                     },
                                     "maxClaimable": {
                                       "type": "integer",
                                       "format": "int64",
-                                      "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                      "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                                     },
                                     "refreshAt": {
                                       "type": "string",
@@ -1268,12 +1271,11 @@
                                               }
                                             },
                                             "description": "Item display name",
-                                            "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                            "title": "Localizable Text"
                                           },
                                           "image": {
                                             "type": "string",
-                                            "description": "URL to item image",
-                                            "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                            "description": "URL to item image"
                                           },
                                           "quantity": {
                                             "type": "string",
@@ -1281,16 +1283,16 @@
                                           },
                                           "unitImage": {
                                             "type": "string",
-                                            "description": "Optional URL to unit image (single-item display)"
+                                            "description": "Optional URL to unit image (used to display a single item)"
                                           }
                                         },
-                                        "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                        "description": "An in-game item included in a free catalog item",
                                         "title": "Free Content Item",
                                         "required": [
                                           "quantity"
                                         ]
                                       },
-                                      "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                                      "description": "In-game items included in this free item as a bundle"
                                     },
                                     "attributes": {
                                       "type": "object",
@@ -1309,73 +1311,13 @@
                                           },
                                           "description": "Optional per-card background styling",
                                           "title": "Background"
-                                        },
-                                        "button": {
-                                          "type": "object",
-                                          "properties": {
-                                            "text": {
-                                              "type": "object",
-                                              "properties": {
-                                                "defaultText": {
-                                                  "type": "string",
-                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                },
-                                                "localizationKey": {
-                                                  "type": "string",
-                                                  "description": "The unique key used to identify the localized text content for a specific language"
-                                                },
-                                                "localizedText": {
-                                                  "type": "string",
-                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                }
-                                              },
-                                              "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                              "title": "Localizable Text"
-                                            },
-                                            "iconImageUrl": {
-                                              "type": "string",
-                                              "description": "Optional URL to button icon image"
-                                            },
-                                            "backgroundStyle": {
-                                              "type": "string",
-                                              "description": "Optional CSS-style background styling information for button"
-                                            },
-                                            "tooltip": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "object",
-                                                  "properties": {
-                                                    "defaultText": {
-                                                      "type": "string",
-                                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                    },
-                                                    "localizationKey": {
-                                                      "type": "string",
-                                                      "description": "The unique key used to identify the localized text content for a specific language"
-                                                    },
-                                                    "localizedText": {
-                                                      "type": "string",
-                                                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                    }
-                                                  },
-                                                  "description": "Tooltip text providing additional information",
-                                                  "title": "Localizable Text"
-                                                }
-                                              },
-                                              "description": "Optional popup tooltip for additional information",
-                                              "title": "Tooltip"
-                                            }
-                                          },
-                                          "description": "Optional action button; server sets text and style for the item's current status",
-                                          "title": "Button"
                                         }
                                       },
                                       "description": "Optional display attributes for the card",
                                       "title": "Free Item Attributes"
                                     }
                                   },
-                                  "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                                  "description": "Free-to-claim catalog item",
                                   "title": "Free Item",
                                   "required": [
                                     "itemId"
@@ -1385,7 +1327,7 @@
                               "description": "Represents any type of catalog item using oneof for polymorphism",
                               "title": "Catalog Item"
                             },
-                            "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
+                            "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
                           },
                           "displayType": {
                             "type": "string",
@@ -1396,7 +1338,7 @@
                             ],
                             "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                             "description": "How the section should be displayed on the screen",
-                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
+                            "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
                           },
                           "groups": {
                             "type": "array",
@@ -2578,13 +2520,12 @@
                                               "FREE_ITEM_STATUS_LOCKED"
                                             ],
                                             "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                            "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                                            "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                                            "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                                           },
                                           "maxClaimable": {
                                             "type": "integer",
                                             "format": "int64",
-                                            "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                            "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                                           },
                                           "refreshAt": {
                                             "type": "string",
@@ -2617,12 +2558,11 @@
                                                     }
                                                   },
                                                   "description": "Item display name",
-                                                  "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                                  "title": "Localizable Text"
                                                 },
                                                 "image": {
                                                   "type": "string",
-                                                  "description": "URL to item image",
-                                                  "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                                  "description": "URL to item image"
                                                 },
                                                 "quantity": {
                                                   "type": "string",
@@ -2630,16 +2570,16 @@
                                                 },
                                                 "unitImage": {
                                                   "type": "string",
-                                                  "description": "Optional URL to unit image (single-item display)"
+                                                  "description": "Optional URL to unit image (used to display a single item)"
                                                 }
                                               },
-                                              "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                              "description": "An in-game item included in a free catalog item",
                                               "title": "Free Content Item",
                                               "required": [
                                                 "quantity"
                                               ]
                                             },
-                                            "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                                            "description": "In-game items included in this free item as a bundle"
                                           },
                                           "attributes": {
                                             "type": "object",
@@ -2658,73 +2598,13 @@
                                                 },
                                                 "description": "Optional per-card background styling",
                                                 "title": "Background"
-                                              },
-                                              "button": {
-                                                "type": "object",
-                                                "properties": {
-                                                  "text": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                      "defaultText": {
-                                                        "type": "string",
-                                                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                      },
-                                                      "localizationKey": {
-                                                        "type": "string",
-                                                        "description": "The unique key used to identify the localized text content for a specific language"
-                                                      },
-                                                      "localizedText": {
-                                                        "type": "string",
-                                                        "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                      }
-                                                    },
-                                                    "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                                    "title": "Localizable Text"
-                                                  },
-                                                  "iconImageUrl": {
-                                                    "type": "string",
-                                                    "description": "Optional URL to button icon image"
-                                                  },
-                                                  "backgroundStyle": {
-                                                    "type": "string",
-                                                    "description": "Optional CSS-style background styling information for button"
-                                                  },
-                                                  "tooltip": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                      "text": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                          "defaultText": {
-                                                            "type": "string",
-                                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                          },
-                                                          "localizationKey": {
-                                                            "type": "string",
-                                                            "description": "The unique key used to identify the localized text content for a specific language"
-                                                          },
-                                                          "localizedText": {
-                                                            "type": "string",
-                                                            "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                          }
-                                                        },
-                                                        "description": "Tooltip text providing additional information",
-                                                        "title": "Localizable Text"
-                                                      }
-                                                    },
-                                                    "description": "Optional popup tooltip for additional information",
-                                                    "title": "Tooltip"
-                                                  }
-                                                },
-                                                "description": "Optional action button; server sets text and style for the item's current status",
-                                                "title": "Button"
                                               }
                                             },
                                             "description": "Optional display attributes for the card",
                                             "title": "Free Item Attributes"
                                           }
                                         },
-                                        "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                                        "description": "Free-to-claim catalog item",
                                         "title": "Free Item",
                                         "required": [
                                           "itemId"
@@ -2787,29 +2667,6 @@
                             "type": "string",
                             "format": "date-time",
                             "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
-                          },
-                          "guid": {
-                            "type": "string",
-                            "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
-                          },
-                          "subHeader": {
-                            "type": "object",
-                            "properties": {
-                              "defaultText": {
-                                "type": "string",
-                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                              },
-                              "localizationKey": {
-                                "type": "string",
-                                "description": "The unique key used to identify the localized text content for a specific language"
-                              },
-                              "localizedText": {
-                                "type": "string",
-                                "description": "Localized text content for the language specified by the code sent in the request filters"
-                              }
-                            },
-                            "description": "Optional subtitle below the section header (e.g. streak popup description)",
-                            "title": "Localizable Text"
                           }
                         },
                         "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
@@ -4565,13 +4422,12 @@
             "FREE_ITEM_STATUS_LOCKED"
           ],
           "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-          "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-          "title": "fields 4 and 5: removed (replaced by contents = 9)"
+          "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
         },
         "maxClaimable": {
           "type": "integer",
           "format": "int64",
-          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
         },
         "refreshAt": {
           "type": "string",
@@ -4604,12 +4460,11 @@
                   }
                 },
                 "description": "Item display name",
-                "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                "title": "Localizable Text"
               },
               "image": {
                 "type": "string",
-                "description": "URL to item image",
-                "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                "description": "URL to item image"
               },
               "quantity": {
                 "type": "string",
@@ -4617,16 +4472,16 @@
               },
               "unitImage": {
                 "type": "string",
-                "description": "Optional URL to unit image (single-item display)"
+                "description": "Optional URL to unit image (used to display a single item)"
               }
             },
-            "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+            "description": "An in-game item included in a free catalog item",
             "title": "Free Content Item",
             "required": [
               "quantity"
             ]
           },
-          "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+          "description": "In-game items included in this free item as a bundle"
         },
         "attributes": {
           "type": "object",
@@ -4645,73 +4500,13 @@
               },
               "description": "Optional per-card background styling",
               "title": "Background"
-            },
-            "button": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "object",
-                  "properties": {
-                    "defaultText": {
-                      "type": "string",
-                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                    },
-                    "localizationKey": {
-                      "type": "string",
-                      "description": "The unique key used to identify the localized text content for a specific language"
-                    },
-                    "localizedText": {
-                      "type": "string",
-                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                    }
-                  },
-                  "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                  "title": "Localizable Text"
-                },
-                "iconImageUrl": {
-                  "type": "string",
-                  "description": "Optional URL to button icon image"
-                },
-                "backgroundStyle": {
-                  "type": "string",
-                  "description": "Optional CSS-style background styling information for button"
-                },
-                "tooltip": {
-                  "type": "object",
-                  "properties": {
-                    "text": {
-                      "type": "object",
-                      "properties": {
-                        "defaultText": {
-                          "type": "string",
-                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                        },
-                        "localizationKey": {
-                          "type": "string",
-                          "description": "The unique key used to identify the localized text content for a specific language"
-                        },
-                        "localizedText": {
-                          "type": "string",
-                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                        }
-                      },
-                      "description": "Tooltip text providing additional information",
-                      "title": "Localizable Text"
-                    }
-                  },
-                  "description": "Optional popup tooltip for additional information",
-                  "title": "Tooltip"
-                }
-              },
-              "description": "Optional action button; server sets text and style for the item's current status",
-              "title": "Button"
             }
           },
           "description": "Optional display attributes for the card",
           "title": "Free Item Attributes"
         }
       },
-      "description": "Represents a claimable free catalog item (e.g. daily streak day card). Servers must include all streak days in the catalog response — past claimed days, the current available/claimed day, and locked future preview days — ordered CLAIMED → AVAILABLE → LOCKED. The streak day number is inferred from array position (Day 1 = index 0).",
+      "description": "Represents a claimable free catalog item",
       "title": "Free Item",
       "required": [
         "itemId"
@@ -6142,6 +5937,10 @@
     "CatalogSection": {
       "type": "object",
       "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+        },
         "header": {
           "type": "object",
           "properties": {
@@ -7317,13 +7116,12 @@
                       "FREE_ITEM_STATUS_LOCKED"
                     ],
                     "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                    "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                    "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                    "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                   },
                   "maxClaimable": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                   },
                   "refreshAt": {
                     "type": "string",
@@ -7356,12 +7154,11 @@
                             }
                           },
                           "description": "Item display name",
-                          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                          "title": "Localizable Text"
                         },
                         "image": {
                           "type": "string",
-                          "description": "URL to item image",
-                          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                          "description": "URL to item image"
                         },
                         "quantity": {
                           "type": "string",
@@ -7369,16 +7166,16 @@
                         },
                         "unitImage": {
                           "type": "string",
-                          "description": "Optional URL to unit image (single-item display)"
+                          "description": "Optional URL to unit image (used to display a single item)"
                         }
                       },
-                      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                      "description": "An in-game item included in a free catalog item",
                       "title": "Free Content Item",
                       "required": [
                         "quantity"
                       ]
                     },
-                    "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                    "description": "In-game items included in this free item as a bundle"
                   },
                   "attributes": {
                     "type": "object",
@@ -7397,73 +7194,13 @@
                         },
                         "description": "Optional per-card background styling",
                         "title": "Background"
-                      },
-                      "button": {
-                        "type": "object",
-                        "properties": {
-                          "text": {
-                            "type": "object",
-                            "properties": {
-                              "defaultText": {
-                                "type": "string",
-                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                              },
-                              "localizationKey": {
-                                "type": "string",
-                                "description": "The unique key used to identify the localized text content for a specific language"
-                              },
-                              "localizedText": {
-                                "type": "string",
-                                "description": "Localized text content for the language specified by the code sent in the request filters"
-                              }
-                            },
-                            "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                            "title": "Localizable Text"
-                          },
-                          "iconImageUrl": {
-                            "type": "string",
-                            "description": "Optional URL to button icon image"
-                          },
-                          "backgroundStyle": {
-                            "type": "string",
-                            "description": "Optional CSS-style background styling information for button"
-                          },
-                          "tooltip": {
-                            "type": "object",
-                            "properties": {
-                              "text": {
-                                "type": "object",
-                                "properties": {
-                                  "defaultText": {
-                                    "type": "string",
-                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                  },
-                                  "localizationKey": {
-                                    "type": "string",
-                                    "description": "The unique key used to identify the localized text content for a specific language"
-                                  },
-                                  "localizedText": {
-                                    "type": "string",
-                                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                                  }
-                                },
-                                "description": "Tooltip text providing additional information",
-                                "title": "Localizable Text"
-                              }
-                            },
-                            "description": "Optional popup tooltip for additional information",
-                            "title": "Tooltip"
-                          }
-                        },
-                        "description": "Optional action button; server sets text and style for the item's current status",
-                        "title": "Button"
                       }
                     },
                     "description": "Optional display attributes for the card",
                     "title": "Free Item Attributes"
                   }
                 },
-                "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                "description": "Free-to-claim catalog item",
                 "title": "Free Item",
                 "required": [
                   "itemId"
@@ -7473,7 +7210,7 @@
             "description": "Represents any type of catalog item using oneof for polymorphism",
             "title": "Catalog Item"
           },
-          "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
+          "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
         },
         "displayType": {
           "type": "string",
@@ -7484,7 +7221,7 @@
           ],
           "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
           "description": "How the section should be displayed on the screen",
-          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
+          "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
         },
         "groups": {
           "type": "array",
@@ -8666,13 +8403,12 @@
                             "FREE_ITEM_STATUS_LOCKED"
                           ],
                           "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                          "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                          "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                          "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                         },
                         "maxClaimable": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                         },
                         "refreshAt": {
                           "type": "string",
@@ -8705,12 +8441,11 @@
                                   }
                                 },
                                 "description": "Item display name",
-                                "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                "title": "Localizable Text"
                               },
                               "image": {
                                 "type": "string",
-                                "description": "URL to item image",
-                                "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                "description": "URL to item image"
                               },
                               "quantity": {
                                 "type": "string",
@@ -8718,16 +8453,16 @@
                               },
                               "unitImage": {
                                 "type": "string",
-                                "description": "Optional URL to unit image (single-item display)"
+                                "description": "Optional URL to unit image (used to display a single item)"
                               }
                             },
-                            "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                            "description": "An in-game item included in a free catalog item",
                             "title": "Free Content Item",
                             "required": [
                               "quantity"
                             ]
                           },
-                          "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                          "description": "In-game items included in this free item as a bundle"
                         },
                         "attributes": {
                           "type": "object",
@@ -8746,73 +8481,13 @@
                               },
                               "description": "Optional per-card background styling",
                               "title": "Background"
-                            },
-                            "button": {
-                              "type": "object",
-                              "properties": {
-                                "text": {
-                                  "type": "object",
-                                  "properties": {
-                                    "defaultText": {
-                                      "type": "string",
-                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                    },
-                                    "localizationKey": {
-                                      "type": "string",
-                                      "description": "The unique key used to identify the localized text content for a specific language"
-                                    },
-                                    "localizedText": {
-                                      "type": "string",
-                                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                                    }
-                                  },
-                                  "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                  "title": "Localizable Text"
-                                },
-                                "iconImageUrl": {
-                                  "type": "string",
-                                  "description": "Optional URL to button icon image"
-                                },
-                                "backgroundStyle": {
-                                  "type": "string",
-                                  "description": "Optional CSS-style background styling information for button"
-                                },
-                                "tooltip": {
-                                  "type": "object",
-                                  "properties": {
-                                    "text": {
-                                      "type": "object",
-                                      "properties": {
-                                        "defaultText": {
-                                          "type": "string",
-                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                        },
-                                        "localizationKey": {
-                                          "type": "string",
-                                          "description": "The unique key used to identify the localized text content for a specific language"
-                                        },
-                                        "localizedText": {
-                                          "type": "string",
-                                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                                        }
-                                      },
-                                      "description": "Tooltip text providing additional information",
-                                      "title": "Localizable Text"
-                                    }
-                                  },
-                                  "description": "Optional popup tooltip for additional information",
-                                  "title": "Tooltip"
-                                }
-                              },
-                              "description": "Optional action button; server sets text and style for the item's current status",
-                              "title": "Button"
                             }
                           },
                           "description": "Optional display attributes for the card",
                           "title": "Free Item Attributes"
                         }
                       },
-                      "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                      "description": "Free-to-claim catalog item",
                       "title": "Free Item",
                       "required": [
                         "itemId"
@@ -8875,29 +8550,6 @@
           "type": "string",
           "format": "date-time",
           "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
-        },
-        "guid": {
-          "type": "string",
-          "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
-        },
-        "subHeader": {
-          "type": "object",
-          "properties": {
-            "defaultText": {
-              "type": "string",
-              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-            },
-            "localizationKey": {
-              "type": "string",
-              "description": "The unique key used to identify the localized text content for a specific language"
-            },
-            "localizedText": {
-              "type": "string",
-              "description": "Localized text content for the language specified by the code sent in the request filters"
-            }
-          },
-          "description": "Optional subtitle below the section header (e.g. streak popup description)",
-          "title": "Localizable Text"
         }
       },
       "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
@@ -9561,12 +9213,11 @@
             }
           },
           "description": "Item display name",
-          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+          "title": "Localizable Text"
         },
         "image": {
           "type": "string",
-          "description": "URL to item image",
-          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+          "description": "URL to item image"
         },
         "quantity": {
           "type": "string",
@@ -9574,10 +9225,10 @@
         },
         "unitImage": {
           "type": "string",
-          "description": "Optional URL to unit image (single-item display)"
+          "description": "Optional URL to unit image (used to display a single item)"
         }
       },
-      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+      "description": "An in-game item included in a free catalog item",
       "title": "Free Content Item",
       "required": [
         "quantity"
@@ -9600,66 +9251,6 @@
           },
           "description": "Optional per-card background styling",
           "title": "Background"
-        },
-        "button": {
-          "type": "object",
-          "properties": {
-            "text": {
-              "type": "object",
-              "properties": {
-                "defaultText": {
-                  "type": "string",
-                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                },
-                "localizationKey": {
-                  "type": "string",
-                  "description": "The unique key used to identify the localized text content for a specific language"
-                },
-                "localizedText": {
-                  "type": "string",
-                  "description": "Localized text content for the language specified by the code sent in the request filters"
-                }
-              },
-              "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-              "title": "Localizable Text"
-            },
-            "iconImageUrl": {
-              "type": "string",
-              "description": "Optional URL to button icon image"
-            },
-            "backgroundStyle": {
-              "type": "string",
-              "description": "Optional CSS-style background styling information for button"
-            },
-            "tooltip": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "object",
-                  "properties": {
-                    "defaultText": {
-                      "type": "string",
-                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                    },
-                    "localizationKey": {
-                      "type": "string",
-                      "description": "The unique key used to identify the localized text content for a specific language"
-                    },
-                    "localizedText": {
-                      "type": "string",
-                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                    }
-                  },
-                  "description": "Tooltip text providing additional information",
-                  "title": "Localizable Text"
-                }
-              },
-              "description": "Optional popup tooltip for additional information",
-              "title": "Tooltip"
-            }
-          },
-          "description": "Optional action button; server sets text and style for the item's current status",
-          "title": "Button"
         }
       },
       "description": "Optional display attributes for a free item card",
@@ -9844,6 +9435,10 @@
           "items": {
             "type": "object",
             "properties": {
+              "guid": {
+                "type": "string",
+                "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+              },
               "header": {
                 "type": "object",
                 "properties": {
@@ -11019,13 +10614,12 @@
                             "FREE_ITEM_STATUS_LOCKED"
                           ],
                           "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                          "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                          "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                          "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                         },
                         "maxClaimable": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                          "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                         },
                         "refreshAt": {
                           "type": "string",
@@ -11058,12 +10652,11 @@
                                   }
                                 },
                                 "description": "Item display name",
-                                "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                "title": "Localizable Text"
                               },
                               "image": {
                                 "type": "string",
-                                "description": "URL to item image",
-                                "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                "description": "URL to item image"
                               },
                               "quantity": {
                                 "type": "string",
@@ -11071,16 +10664,16 @@
                               },
                               "unitImage": {
                                 "type": "string",
-                                "description": "Optional URL to unit image (single-item display)"
+                                "description": "Optional URL to unit image (used to display a single item)"
                               }
                             },
-                            "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                            "description": "An in-game item included in a free catalog item",
                             "title": "Free Content Item",
                             "required": [
                               "quantity"
                             ]
                           },
-                          "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                          "description": "In-game items included in this free item as a bundle"
                         },
                         "attributes": {
                           "type": "object",
@@ -11099,73 +10692,13 @@
                               },
                               "description": "Optional per-card background styling",
                               "title": "Background"
-                            },
-                            "button": {
-                              "type": "object",
-                              "properties": {
-                                "text": {
-                                  "type": "object",
-                                  "properties": {
-                                    "defaultText": {
-                                      "type": "string",
-                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                    },
-                                    "localizationKey": {
-                                      "type": "string",
-                                      "description": "The unique key used to identify the localized text content for a specific language"
-                                    },
-                                    "localizedText": {
-                                      "type": "string",
-                                      "description": "Localized text content for the language specified by the code sent in the request filters"
-                                    }
-                                  },
-                                  "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                  "title": "Localizable Text"
-                                },
-                                "iconImageUrl": {
-                                  "type": "string",
-                                  "description": "Optional URL to button icon image"
-                                },
-                                "backgroundStyle": {
-                                  "type": "string",
-                                  "description": "Optional CSS-style background styling information for button"
-                                },
-                                "tooltip": {
-                                  "type": "object",
-                                  "properties": {
-                                    "text": {
-                                      "type": "object",
-                                      "properties": {
-                                        "defaultText": {
-                                          "type": "string",
-                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                        },
-                                        "localizationKey": {
-                                          "type": "string",
-                                          "description": "The unique key used to identify the localized text content for a specific language"
-                                        },
-                                        "localizedText": {
-                                          "type": "string",
-                                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                                        }
-                                      },
-                                      "description": "Tooltip text providing additional information",
-                                      "title": "Localizable Text"
-                                    }
-                                  },
-                                  "description": "Optional popup tooltip for additional information",
-                                  "title": "Tooltip"
-                                }
-                              },
-                              "description": "Optional action button; server sets text and style for the item's current status",
-                              "title": "Button"
                             }
                           },
                           "description": "Optional display attributes for the card",
                           "title": "Free Item Attributes"
                         }
                       },
-                      "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                      "description": "Free-to-claim catalog item",
                       "title": "Free Item",
                       "required": [
                         "itemId"
@@ -11175,7 +10708,7 @@
                   "description": "Represents any type of catalog item using oneof for polymorphism",
                   "title": "Catalog Item"
                 },
-                "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
+                "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
               },
               "displayType": {
                 "type": "string",
@@ -11186,7 +10719,7 @@
                 ],
                 "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                 "description": "How the section should be displayed on the screen",
-                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
+                "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
               },
               "groups": {
                 "type": "array",
@@ -12368,13 +11901,12 @@
                                   "FREE_ITEM_STATUS_LOCKED"
                                 ],
                                 "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                                "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                                "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                               },
                               "maxClaimable": {
                                 "type": "integer",
                                 "format": "int64",
-                                "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                               },
                               "refreshAt": {
                                 "type": "string",
@@ -12407,12 +11939,11 @@
                                         }
                                       },
                                       "description": "Item display name",
-                                      "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                      "title": "Localizable Text"
                                     },
                                     "image": {
                                       "type": "string",
-                                      "description": "URL to item image",
-                                      "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                      "description": "URL to item image"
                                     },
                                     "quantity": {
                                       "type": "string",
@@ -12420,16 +11951,16 @@
                                     },
                                     "unitImage": {
                                       "type": "string",
-                                      "description": "Optional URL to unit image (single-item display)"
+                                      "description": "Optional URL to unit image (used to display a single item)"
                                     }
                                   },
-                                  "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                  "description": "An in-game item included in a free catalog item",
                                   "title": "Free Content Item",
                                   "required": [
                                     "quantity"
                                   ]
                                 },
-                                "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                                "description": "In-game items included in this free item as a bundle"
                               },
                               "attributes": {
                                 "type": "object",
@@ -12448,73 +11979,13 @@
                                     },
                                     "description": "Optional per-card background styling",
                                     "title": "Background"
-                                  },
-                                  "button": {
-                                    "type": "object",
-                                    "properties": {
-                                      "text": {
-                                        "type": "object",
-                                        "properties": {
-                                          "defaultText": {
-                                            "type": "string",
-                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                          },
-                                          "localizationKey": {
-                                            "type": "string",
-                                            "description": "The unique key used to identify the localized text content for a specific language"
-                                          },
-                                          "localizedText": {
-                                            "type": "string",
-                                            "description": "Localized text content for the language specified by the code sent in the request filters"
-                                          }
-                                        },
-                                        "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                        "title": "Localizable Text"
-                                      },
-                                      "iconImageUrl": {
-                                        "type": "string",
-                                        "description": "Optional URL to button icon image"
-                                      },
-                                      "backgroundStyle": {
-                                        "type": "string",
-                                        "description": "Optional CSS-style background styling information for button"
-                                      },
-                                      "tooltip": {
-                                        "type": "object",
-                                        "properties": {
-                                          "text": {
-                                            "type": "object",
-                                            "properties": {
-                                              "defaultText": {
-                                                "type": "string",
-                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                              },
-                                              "localizationKey": {
-                                                "type": "string",
-                                                "description": "The unique key used to identify the localized text content for a specific language"
-                                              },
-                                              "localizedText": {
-                                                "type": "string",
-                                                "description": "Localized text content for the language specified by the code sent in the request filters"
-                                              }
-                                            },
-                                            "description": "Tooltip text providing additional information",
-                                            "title": "Localizable Text"
-                                          }
-                                        },
-                                        "description": "Optional popup tooltip for additional information",
-                                        "title": "Tooltip"
-                                      }
-                                    },
-                                    "description": "Optional action button; server sets text and style for the item's current status",
-                                    "title": "Button"
                                   }
                                 },
                                 "description": "Optional display attributes for the card",
                                 "title": "Free Item Attributes"
                               }
                             },
-                            "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                            "description": "Free-to-claim catalog item",
                             "title": "Free Item",
                             "required": [
                               "itemId"
@@ -12577,29 +12048,6 @@
                 "type": "string",
                 "format": "date-time",
                 "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
-              },
-              "guid": {
-                "type": "string",
-                "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
-              },
-              "subHeader": {
-                "type": "object",
-                "properties": {
-                  "defaultText": {
-                    "type": "string",
-                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                  },
-                  "localizationKey": {
-                    "type": "string",
-                    "description": "The unique key used to identify the localized text content for a specific language"
-                  },
-                  "localizedText": {
-                    "type": "string",
-                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                  }
-                },
-                "description": "Optional subtitle below the section header (e.g. streak popup description)",
-                "title": "Localizable Text"
               }
             },
             "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",
@@ -13798,13 +13246,12 @@
                 "FREE_ITEM_STATUS_LOCKED"
               ],
               "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-              "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-              "title": "fields 4 and 5: removed (replaced by contents = 9)"
+              "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
             },
             "maxClaimable": {
               "type": "integer",
               "format": "int64",
-              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
             },
             "refreshAt": {
               "type": "string",
@@ -13837,12 +13284,11 @@
                       }
                     },
                     "description": "Item display name",
-                    "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                    "title": "Localizable Text"
                   },
                   "image": {
                     "type": "string",
-                    "description": "URL to item image",
-                    "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                    "description": "URL to item image"
                   },
                   "quantity": {
                     "type": "string",
@@ -13850,16 +13296,16 @@
                   },
                   "unitImage": {
                     "type": "string",
-                    "description": "Optional URL to unit image (single-item display)"
+                    "description": "Optional URL to unit image (used to display a single item)"
                   }
                 },
-                "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                "description": "An in-game item included in a free catalog item",
                 "title": "Free Content Item",
                 "required": [
                   "quantity"
                 ]
               },
-              "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+              "description": "In-game items included in this free item as a bundle"
             },
             "attributes": {
               "type": "object",
@@ -13878,73 +13324,13 @@
                   },
                   "description": "Optional per-card background styling",
                   "title": "Background"
-                },
-                "button": {
-                  "type": "object",
-                  "properties": {
-                    "text": {
-                      "type": "object",
-                      "properties": {
-                        "defaultText": {
-                          "type": "string",
-                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                        },
-                        "localizationKey": {
-                          "type": "string",
-                          "description": "The unique key used to identify the localized text content for a specific language"
-                        },
-                        "localizedText": {
-                          "type": "string",
-                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                        }
-                      },
-                      "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                      "title": "Localizable Text"
-                    },
-                    "iconImageUrl": {
-                      "type": "string",
-                      "description": "Optional URL to button icon image"
-                    },
-                    "backgroundStyle": {
-                      "type": "string",
-                      "description": "Optional CSS-style background styling information for button"
-                    },
-                    "tooltip": {
-                      "type": "object",
-                      "properties": {
-                        "text": {
-                          "type": "object",
-                          "properties": {
-                            "defaultText": {
-                              "type": "string",
-                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                            },
-                            "localizationKey": {
-                              "type": "string",
-                              "description": "The unique key used to identify the localized text content for a specific language"
-                            },
-                            "localizedText": {
-                              "type": "string",
-                              "description": "Localized text content for the language specified by the code sent in the request filters"
-                            }
-                          },
-                          "description": "Tooltip text providing additional information",
-                          "title": "Localizable Text"
-                        }
-                      },
-                      "description": "Optional popup tooltip for additional information",
-                      "title": "Tooltip"
-                    }
-                  },
-                  "description": "Optional action button; server sets text and style for the item's current status",
-                  "title": "Button"
                 }
               },
               "description": "Optional display attributes for the card",
               "title": "Free Item Attributes"
             }
           },
-          "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+          "description": "Free-to-claim catalog item",
           "title": "Free Item",
           "required": [
             "itemId"
@@ -16140,13 +15526,12 @@
                       "FREE_ITEM_STATUS_LOCKED"
                     ],
                     "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                    "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                    "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                    "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                   },
                   "maxClaimable": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                   },
                   "refreshAt": {
                     "type": "string",
@@ -16179,12 +15564,11 @@
                             }
                           },
                           "description": "Item display name",
-                          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                          "title": "Localizable Text"
                         },
                         "image": {
                           "type": "string",
-                          "description": "URL to item image",
-                          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                          "description": "URL to item image"
                         },
                         "quantity": {
                           "type": "string",
@@ -16192,16 +15576,16 @@
                         },
                         "unitImage": {
                           "type": "string",
-                          "description": "Optional URL to unit image (single-item display)"
+                          "description": "Optional URL to unit image (used to display a single item)"
                         }
                       },
-                      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                      "description": "An in-game item included in a free catalog item",
                       "title": "Free Content Item",
                       "required": [
                         "quantity"
                       ]
                     },
-                    "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                    "description": "In-game items included in this free item as a bundle"
                   },
                   "attributes": {
                     "type": "object",
@@ -16220,73 +15604,13 @@
                         },
                         "description": "Optional per-card background styling",
                         "title": "Background"
-                      },
-                      "button": {
-                        "type": "object",
-                        "properties": {
-                          "text": {
-                            "type": "object",
-                            "properties": {
-                              "defaultText": {
-                                "type": "string",
-                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                              },
-                              "localizationKey": {
-                                "type": "string",
-                                "description": "The unique key used to identify the localized text content for a specific language"
-                              },
-                              "localizedText": {
-                                "type": "string",
-                                "description": "Localized text content for the language specified by the code sent in the request filters"
-                              }
-                            },
-                            "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                            "title": "Localizable Text"
-                          },
-                          "iconImageUrl": {
-                            "type": "string",
-                            "description": "Optional URL to button icon image"
-                          },
-                          "backgroundStyle": {
-                            "type": "string",
-                            "description": "Optional CSS-style background styling information for button"
-                          },
-                          "tooltip": {
-                            "type": "object",
-                            "properties": {
-                              "text": {
-                                "type": "object",
-                                "properties": {
-                                  "defaultText": {
-                                    "type": "string",
-                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                  },
-                                  "localizationKey": {
-                                    "type": "string",
-                                    "description": "The unique key used to identify the localized text content for a specific language"
-                                  },
-                                  "localizedText": {
-                                    "type": "string",
-                                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                                  }
-                                },
-                                "description": "Tooltip text providing additional information",
-                                "title": "Localizable Text"
-                              }
-                            },
-                            "description": "Optional popup tooltip for additional information",
-                            "title": "Tooltip"
-                          }
-                        },
-                        "description": "Optional action button; server sets text and style for the item's current status",
-                        "title": "Button"
                       }
                     },
                     "description": "Optional display attributes for the card",
                     "title": "Free Item Attributes"
                   }
                 },
-                "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                "description": "Free-to-claim catalog item",
                 "title": "Free Item",
                 "required": [
                   "itemId"
@@ -16641,7 +15965,7 @@
       ],
       "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
       "description": "Display type of a catalog section",
-      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
+      "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
     },
     "v1CatalogTriggerDisplayType": {
       "type": "string",
@@ -16703,7 +16027,7 @@
         "FREE_ITEM_STATUS_LOCKED"
       ],
       "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-      "description": "Claim status of a free catalog item. For streak sections, items in Section.items must appear in order: all CLAIMED entries first (past days), then at most one AVAILABLE entry (today), then all LOCKED entries (future preview days). The streak day number is inferred from array position (0-indexed: Day 1 = index 0). Responses that violate this ordering are considered invalid and the streak UI will be omitted."
+      "description": "Claim status of a free catalog item"
     },
     "v1GetCatalogResponse": {
       "type": "object",
@@ -16716,6 +16040,10 @@
               "items": {
                 "type": "object",
                 "properties": {
+                  "guid": {
+                    "type": "string",
+                    "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
+                  },
                   "header": {
                     "type": "object",
                     "properties": {
@@ -17891,13 +17219,12 @@
                                 "FREE_ITEM_STATUS_LOCKED"
                               ],
                               "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                              "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                              "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                              "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                             },
                             "maxClaimable": {
                               "type": "integer",
                               "format": "int64",
-                              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                              "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                             },
                             "refreshAt": {
                               "type": "string",
@@ -17930,12 +17257,11 @@
                                       }
                                     },
                                     "description": "Item display name",
-                                    "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                    "title": "Localizable Text"
                                   },
                                   "image": {
                                     "type": "string",
-                                    "description": "URL to item image",
-                                    "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                    "description": "URL to item image"
                                   },
                                   "quantity": {
                                     "type": "string",
@@ -17943,16 +17269,16 @@
                                   },
                                   "unitImage": {
                                     "type": "string",
-                                    "description": "Optional URL to unit image (single-item display)"
+                                    "description": "Optional URL to unit image (used to display a single item)"
                                   }
                                 },
-                                "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                "description": "An in-game item included in a free catalog item",
                                 "title": "Free Content Item",
                                 "required": [
                                   "quantity"
                                 ]
                               },
-                              "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                              "description": "In-game items included in this free item as a bundle"
                             },
                             "attributes": {
                               "type": "object",
@@ -17971,73 +17297,13 @@
                                   },
                                   "description": "Optional per-card background styling",
                                   "title": "Background"
-                                },
-                                "button": {
-                                  "type": "object",
-                                  "properties": {
-                                    "text": {
-                                      "type": "object",
-                                      "properties": {
-                                        "defaultText": {
-                                          "type": "string",
-                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                        },
-                                        "localizationKey": {
-                                          "type": "string",
-                                          "description": "The unique key used to identify the localized text content for a specific language"
-                                        },
-                                        "localizedText": {
-                                          "type": "string",
-                                          "description": "Localized text content for the language specified by the code sent in the request filters"
-                                        }
-                                      },
-                                      "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                      "title": "Localizable Text"
-                                    },
-                                    "iconImageUrl": {
-                                      "type": "string",
-                                      "description": "Optional URL to button icon image"
-                                    },
-                                    "backgroundStyle": {
-                                      "type": "string",
-                                      "description": "Optional CSS-style background styling information for button"
-                                    },
-                                    "tooltip": {
-                                      "type": "object",
-                                      "properties": {
-                                        "text": {
-                                          "type": "object",
-                                          "properties": {
-                                            "defaultText": {
-                                              "type": "string",
-                                              "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                            },
-                                            "localizationKey": {
-                                              "type": "string",
-                                              "description": "The unique key used to identify the localized text content for a specific language"
-                                            },
-                                            "localizedText": {
-                                              "type": "string",
-                                              "description": "Localized text content for the language specified by the code sent in the request filters"
-                                            }
-                                          },
-                                          "description": "Tooltip text providing additional information",
-                                          "title": "Localizable Text"
-                                        }
-                                      },
-                                      "description": "Optional popup tooltip for additional information",
-                                      "title": "Tooltip"
-                                    }
-                                  },
-                                  "description": "Optional action button; server sets text and style for the item's current status",
-                                  "title": "Button"
                                 }
                               },
                               "description": "Optional display attributes for the card",
                               "title": "Free Item Attributes"
                             }
                           },
-                          "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                          "description": "Free-to-claim catalog item",
                           "title": "Free Item",
                           "required": [
                             "itemId"
@@ -18047,7 +17313,7 @@
                       "description": "Represents any type of catalog item using oneof for polymorphism",
                       "title": "Catalog Item"
                     },
-                    "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups. When the section contains FreeItem entries (e.g. daily streak popup), items must appear in the order: CLAIMED → AVAILABLE → LOCKED. Streak day number is inferred from array position (0-indexed)."
+                    "description": "Catalog items for this section in display order. Used when groups is empty, and may also be populated alongside groups."
                   },
                   "displayType": {
                     "type": "string",
@@ -18058,7 +17324,7 @@
                     ],
                     "default": "CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED",
                     "description": "How the section should be displayed on the screen",
-                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay (e.g. daily streak)"
+                    "title": "- CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED: Default responsive grid layout\n - CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL: Carousel displays items in a horizontal scrollable area\n - CATALOG_SECTION_DISPLAY_TYPE_POPUP: Popup displays section content in an overlay"
                   },
                   "groups": {
                     "type": "array",
@@ -19240,13 +18506,12 @@
                                       "FREE_ITEM_STATUS_LOCKED"
                                     ],
                                     "default": "FREE_ITEM_STATUS_UNSPECIFIED",
-                                    "description": "Current claim status. See FreeItemStatus enum description for the required array ordering constraint when multiple FreeItem entries appear in a section.",
-                                    "title": "fields 4 and 5: removed (replaced by contents = 9)"
+                                    "description": "Current claim status. When multiple FreeItem entries appear in a section, items must be ordered CLAIMED → AVAILABLE → LOCKED; day number is inferred from 0-indexed array position. Responses that violate this ordering are considered invalid and the streak UI will be omitted."
                                   },
                                   "maxClaimable": {
                                     "type": "integer",
                                     "format": "int64",
-                                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed today); 1 = eligible to claim now. Absent when no explicit claim limit applies."
+                                    "description": "Claims allowed in the current reset period. 0 = no claims remaining (already claimed); 1 = eligible to claim now. Absent when no explicit claim limit applies."
                                   },
                                   "refreshAt": {
                                     "type": "string",
@@ -19279,12 +18544,11 @@
                                             }
                                           },
                                           "description": "Item display name",
-                                          "title": "field 2: intentionally absent (consistent with ObtainableItem field layout)"
+                                          "title": "Localizable Text"
                                         },
                                         "image": {
                                           "type": "string",
-                                          "description": "URL to item image",
-                                          "title": "field 4: intentionally absent (consistent with ObtainableItem field layout)"
+                                          "description": "URL to item image"
                                         },
                                         "quantity": {
                                           "type": "string",
@@ -19292,16 +18556,16 @@
                                         },
                                         "unitImage": {
                                           "type": "string",
-                                          "description": "Optional URL to unit image (single-item display)"
+                                          "description": "Optional URL to unit image (used to display a single item)"
                                         }
                                       },
-                                      "description": "An in-game item included in a free catalog item (e.g. one day's streak reward)",
+                                      "description": "An in-game item included in a free catalog item",
                                       "title": "Free Content Item",
                                       "required": [
                                         "quantity"
                                       ]
                                     },
-                                    "description": "In-game items included in this free day reward. Populate for all statuses (including LOCKED) to enable reward preview for future days. At least one item is expected."
+                                    "description": "In-game items included in this free item as a bundle"
                                   },
                                   "attributes": {
                                     "type": "object",
@@ -19320,73 +18584,13 @@
                                         },
                                         "description": "Optional per-card background styling",
                                         "title": "Background"
-                                      },
-                                      "button": {
-                                        "type": "object",
-                                        "properties": {
-                                          "text": {
-                                            "type": "object",
-                                            "properties": {
-                                              "defaultText": {
-                                                "type": "string",
-                                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                              },
-                                              "localizationKey": {
-                                                "type": "string",
-                                                "description": "The unique key used to identify the localized text content for a specific language"
-                                              },
-                                              "localizedText": {
-                                                "type": "string",
-                                                "description": "Localized text content for the language specified by the code sent in the request filters"
-                                              }
-                                            },
-                                            "description": "Button text for action (e.g., 'Buy Now', 'View Details')",
-                                            "title": "Localizable Text"
-                                          },
-                                          "iconImageUrl": {
-                                            "type": "string",
-                                            "description": "Optional URL to button icon image"
-                                          },
-                                          "backgroundStyle": {
-                                            "type": "string",
-                                            "description": "Optional CSS-style background styling information for button"
-                                          },
-                                          "tooltip": {
-                                            "type": "object",
-                                            "properties": {
-                                              "text": {
-                                                "type": "object",
-                                                "properties": {
-                                                  "defaultText": {
-                                                    "type": "string",
-                                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                                                  },
-                                                  "localizationKey": {
-                                                    "type": "string",
-                                                    "description": "The unique key used to identify the localized text content for a specific language"
-                                                  },
-                                                  "localizedText": {
-                                                    "type": "string",
-                                                    "description": "Localized text content for the language specified by the code sent in the request filters"
-                                                  }
-                                                },
-                                                "description": "Tooltip text providing additional information",
-                                                "title": "Localizable Text"
-                                              }
-                                            },
-                                            "description": "Optional popup tooltip for additional information",
-                                            "title": "Tooltip"
-                                          }
-                                        },
-                                        "description": "Optional action button; server sets text and style for the item's current status",
-                                        "title": "Button"
                                       }
                                     },
                                     "description": "Optional display attributes for the card",
                                     "title": "Free Item Attributes"
                                   }
                                 },
-                                "description": "Free-to-claim catalog item (e.g. daily streak day card)",
+                                "description": "Free-to-claim catalog item",
                                 "title": "Free Item",
                                 "required": [
                                   "itemId"
@@ -19449,29 +18653,6 @@
                     "type": "string",
                     "format": "date-time",
                     "description": "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."
-                  },
-                  "guid": {
-                    "type": "string",
-                    "description": "Optional section identifier (UUID); referenced by catalog triggers to open this section (e.g. popup)"
-                  },
-                  "subHeader": {
-                    "type": "object",
-                    "properties": {
-                      "defaultText": {
-                        "type": "string",
-                        "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
-                      },
-                      "localizationKey": {
-                        "type": "string",
-                        "description": "The unique key used to identify the localized text content for a specific language"
-                      },
-                      "localizedText": {
-                        "type": "string",
-                        "description": "Localized text content for the language specified by the code sent in the request filters"
-                      }
-                    },
-                    "description": "Optional subtitle below the section header (e.g. streak popup description)",
-                    "title": "Localizable Text"
                   }
                 },
                 "description": "Represents a section of catalog items with a header, display type, and optional groups. When groups is non-empty, clients typically render group content as the section body; when groups is empty, section-level items is used as today. Section-level items and groups may both be populated. Optional background and display_expiration may style the section and drive a section-level countdown UI (display-only; per-offer expiration is what purchase enforcement uses).",

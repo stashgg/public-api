@@ -21,7 +21,7 @@ enum CatalogSectionDisplayType {
   CATALOG_SECTION_DISPLAY_TYPE_UNSPECIFIED = 0;
   // Carousel displays items in a horizontal scrollable area
   CATALOG_SECTION_DISPLAY_TYPE_CAROUSEL = 1;
-  // Popup displays section content in an overlay (e.g. daily streak)
+  // Popup displays section content in an overlay
   CATALOG_SECTION_DISPLAY_TYPE_POPUP = 2;
 }
 
@@ -122,7 +122,7 @@ enum CatalogBorderType {
 }
 
 enum FreeItemStatus {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Claim status of a free catalog item. For streak sections, items in Section.items must appear in order: all CLAIMED entries first (past days), then at most one AVAILABLE entry (today), then all LOCKED entries (future preview days). The streak day number is inferred from array position (0-indexed: Day 1 = index 0). Responses that violate this ordering are considered invalid and the streak UI will be omitted."};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Claim status of a free catalog item"};
   FREE_ITEM_STATUS_UNSPECIFIED = 0;
   FREE_ITEM_STATUS_AVAILABLE = 1;
   FREE_ITEM_STATUS_CLAIMED = 2;
