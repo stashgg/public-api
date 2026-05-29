@@ -3779,7 +3779,7 @@
                 "decimalPlaces": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units)."
+                  "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units). Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."
                 },
                 "items": {
                   "type": "array",
@@ -3950,7 +3950,7 @@
                 "decimalPlaces": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code."
+                  "description": "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."
                 },
                 "tax": {
                   "type": "integer",
@@ -4246,7 +4246,7 @@
                 "decimalPlaces": {
                   "type": "integer",
                   "format": "int64",
-                  "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                  "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."
                 },
                 "registrations": {
                   "type": "array",
@@ -20331,7 +20331,7 @@
         "decimalPlaces": {
           "type": "integer",
           "format": "int64",
-          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units)."
+          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units). Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."
         },
         "items": {
           "type": "array",
@@ -20442,7 +20442,7 @@
         "decimalPlaces": {
           "type": "integer",
           "format": "int64",
-          "description": "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code."
+          "description": "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."
         },
         "tax": {
           "type": "integer",
@@ -20726,7 +20726,7 @@
         "decimalPlaces": {
           "type": "integer",
           "format": "int64",
-          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."
         },
         "registrations": {
           "type": "array",

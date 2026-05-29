@@ -100,9 +100,9 @@ message RegisterPaymentRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
   ];
-  uint32 decimal_places = 13 [
+  optional uint32 decimal_places = 13 [
     (validate.rules).uint32 = {lte: 18},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
 
   message PurchaseRegistration {
@@ -237,9 +237,9 @@ message CancelPaymentRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
   ];
-  uint32 decimal_places = 7 [
+  optional uint32 decimal_places = 7 [
     (validate.rules).uint32 = {lte: 18},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units)."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units). Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
 
   message CanceledItem {
@@ -333,9 +333,9 @@ message ConfirmPaymentRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Currency code (ISO-4217 code, e.g., 'USD', 'EUR')"}
   ];
-  uint32 decimal_places = 23 [
+  optional uint32 decimal_places = 23 [
     (validate.rules).uint32 = {lte: 18},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
   uint32 tax = 5 [
     (google.api.field_behavior) = REQUIRED,

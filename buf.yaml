@@ -11,3 +11,11 @@ lint:
 breaking:
   use:
     - FILE
+  ignore_only:
+    # decimal_places moved from implicit to explicit presence (optional) so that
+    # protojson emits the literal 0 for zero-decimal currencies (JPY, KRW, IDR)
+    # instead of omitting the field, which game backends reject as "missing".
+    # Same field number/type/JSON name -> wire- and JSON-compatible; only the
+    # generated presence API changes. See STORE-386.
+    FIELD_SAME_CARDINALITY:
+      - server/egress/shop/purchase/v1/service.proto
