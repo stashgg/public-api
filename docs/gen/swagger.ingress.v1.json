@@ -21,7 +21,7 @@
   ],
   "tags": [
     {
-      "name": "ManagedCatalog",
+      "name": "Managed Catalog",
       "description": "Read-only endpoints for querying the managed product catalog"
     }
   ],
@@ -29,7 +29,7 @@
     "/api/v1/studio/{shopId}/products": {
       "get": {
         "summary": "List published products",
-        "description": "Retrieves a paginated list of published products for a shop. Results are ordered by creation date (most recent first). Only published products are returned; drafts and deleted products are excluded.",
+        "description": "Retrieves a paginated list of published products with active offers for a shop. Results are ordered by creation date (most recent first). Only published products whose offer window contains the current time are returned; drafts, deleted products, and offers outside their schedule are excluded.",
         "operationId": "ManagedCatalogService_ListProducts",
         "responses": {
           "200": {
@@ -42,10 +42,6 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "guid": {
-                        "type": "string",
-                        "description": "Stash-internal unique product identifier (UUID)"
-                      },
                       "name": {
                         "type": "object",
                         "properties": {
@@ -67,7 +63,7 @@
                       },
                       "productId": {
                         "type": "string",
-                        "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                        "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
                       },
                       "description": {
                         "type": "object",
@@ -250,10 +246,23 @@
                           "title": "Item"
                         },
                         "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                      },
+                      "offerStartTime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+                      },
+                      "offerEndTime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
                       }
                     },
                     "description": "A published product from the managed catalog",
-                    "title": "Product"
+                    "title": "Product",
+                    "required": [
+                      "productId"
+                    ]
                   },
                   "description": "List of published products"
                 },
@@ -321,7 +330,7 @@
           }
         ],
         "tags": [
-          "ManagedCatalog"
+          "Managed Catalog"
         ],
         "security": [
           {
@@ -330,10 +339,10 @@
         ]
       }
     },
-    "/api/v1/studio/{shopId}/products/{guid}": {
+    "/api/v1/studio/{shopId}/products/{productId}": {
       "get": {
         "summary": "Get a single published product",
-        "description": "Retrieves a single published product by its GUID. Returns NOT_FOUND if the product does not exist or is not published.",
+        "description": "Retrieves a single published product with an active offer by its partner-defined product ID (e.g., SKU). Returns NOT_FOUND if the product does not exist, is not published, or its offer is outside the current schedule.",
         "operationId": "ManagedCatalogService_GetProduct",
         "responses": {
           "200": {
@@ -344,10 +353,6 @@
                 "product": {
                   "type": "object",
                   "properties": {
-                    "guid": {
-                      "type": "string",
-                      "description": "Stash-internal unique product identifier (UUID)"
-                    },
                     "name": {
                       "type": "object",
                       "properties": {
@@ -369,7 +374,7 @@
                     },
                     "productId": {
                       "type": "string",
-                      "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                      "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
                     },
                     "description": {
                       "type": "object",
@@ -552,10 +557,23 @@
                         "title": "Item"
                       },
                       "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                    },
+                    "offerStartTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+                    },
+                    "offerEndTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
                     }
                   },
                   "description": "The requested product",
-                  "title": "Product"
+                  "title": "Product",
+                  "required": [
+                    "productId"
+                  ]
                 }
               },
               "description": "Response containing a single published product",
@@ -602,15 +620,15 @@
             "type": "string"
           },
           {
-            "name": "guid",
-            "description": "Stash-internal unique product identifier (UUID)",
+            "name": "productId",
+            "description": "Partner-defined product identifier (e.g., SKU)",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "ManagedCatalog"
+          "Managed Catalog"
         ],
         "security": [
           {
@@ -660,10 +678,6 @@
         "product": {
           "type": "object",
           "properties": {
-            "guid": {
-              "type": "string",
-              "description": "Stash-internal unique product identifier (UUID)"
-            },
             "name": {
               "type": "object",
               "properties": {
@@ -685,7 +699,7 @@
             },
             "productId": {
               "type": "string",
-              "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+              "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
             },
             "description": {
               "type": "object",
@@ -868,10 +882,23 @@
                 "title": "Item"
               },
               "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+            },
+            "offerStartTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+            },
+            "offerEndTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
             }
           },
           "description": "The requested product",
-          "title": "Product"
+          "title": "Product",
+          "required": [
+            "productId"
+          ]
         }
       },
       "description": "Response containing a single published product",
@@ -937,10 +964,6 @@
           "items": {
             "type": "object",
             "properties": {
-              "guid": {
-                "type": "string",
-                "description": "Stash-internal unique product identifier (UUID)"
-              },
               "name": {
                 "type": "object",
                 "properties": {
@@ -962,7 +985,7 @@
               },
               "productId": {
                 "type": "string",
-                "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
               },
               "description": {
                 "type": "object",
@@ -1145,10 +1168,23 @@
                   "title": "Item"
                 },
                 "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+              },
+              "offerStartTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+              },
+              "offerEndTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
               }
             },
             "description": "A published product from the managed catalog",
-            "title": "Product"
+            "title": "Product",
+            "required": [
+              "productId"
+            ]
           },
           "description": "List of published products"
         },
@@ -1231,10 +1267,6 @@
     "v1Product": {
       "type": "object",
       "properties": {
-        "guid": {
-          "type": "string",
-          "description": "Stash-internal unique product identifier (UUID)"
-        },
         "name": {
           "type": "object",
           "properties": {
@@ -1256,7 +1288,7 @@
         },
         "productId": {
           "type": "string",
-          "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+          "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
         },
         "description": {
           "type": "object",
@@ -1439,10 +1471,23 @@
             "title": "Item"
           },
           "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+        },
+        "offerStartTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+        },
+        "offerEndTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
         }
       },
       "description": "A published product from the managed catalog",
-      "title": "Product"
+      "title": "Product",
+      "required": [
+        "productId"
+      ]
     },
     "v1ProductPricePlatform": {
       "type": "string",

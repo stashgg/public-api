@@ -15,7 +15,7 @@
   "produces": ["application/json"],
   "tags": [
     {
-      "name": "ManagedCatalog",
+      "name": "Managed Catalog",
       "description": "Read-only endpoints for querying the managed product catalog"
     }
   ],

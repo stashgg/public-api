@@ -102,6 +102,19 @@ gen/
 
 Merged Swagger and Redoc HTML are written to `docs/gen/`.
 
+### Managed Catalog API
+
+The Managed Catalog read API is a partner-facing ingress API: `GET /api/v1/studio/{shop_id}/products` and `GET /api/v1/studio/{shop_id}/products/{product_id}`, authenticated with an HMAC-SHA256 signature in the `stash-hmac-signature` header. Products are addressed by the partner-defined product ID (SKU). It is defined by `server/ingress/studio/v1/service.proto` and `server/ingress/server.proto` in this repo.
+
+Documentation is generated from the `server/ingress` protos:
+
+| Output | Location | How it is produced |
+|--------|----------|--------------------|
+| **Redoc (standalone)** | `docs/gen/redoc.ingress.v1.html` | Built from `docs/gen/swagger.ingress.v1.json` |
+| **OpenAPI JSON** | `docs/gen/swagger.ingress.v1.json` | Merged from the generated `server/ingress/studio/v1` and `server/ingress/server` OpenAPI specs per `docs/config/swagger-merger-ingress-config.json` |
+
+When the Managed Catalog endpoints or schemas change, edit the `server/ingress` protos and run `./gen.sh` to regenerate the merged `docs/gen/` outputs.
+
 ### About Swagger Files
 
 - **Service files** (`service.swagger.json`) are rich with API endpoints and full documentation
