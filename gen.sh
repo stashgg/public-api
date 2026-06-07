@@ -34,6 +34,11 @@ rm -rf docs/gen/
 echo "Generating Go code and OpenAPI specs..."
 buf generate
 
+if [ -f "../scripts/extract-sdk-catalogue-swagger.mjs" ] && [ -f "../go_workspace/servers/api/cmd/sdk-rest/gen/pie_sdk.swagger.json" ]; then
+  echo "Extracting Managed Catalog OpenAPI spec from pie_sdk.swagger.json..."
+  (cd .. && node scripts/extract-sdk-catalogue-swagger.mjs)
+fi
+
 echo "Merging Swagger files..."
 mkdir -p docs/gen
 npx --yes swagger-merger@1.5.4 -i ./docs/config/swagger-merger-config.json -o ./docs/gen/swagger.v1.json

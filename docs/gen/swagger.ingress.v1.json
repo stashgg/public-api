@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Stash Managed Catalog API",
-    "description": "Read-only API for querying the Stash managed product catalog. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/api/v1/studio/{shop_id}/products\n```\n\n## Authentication\n\nAll requests must include an HMAC-SHA256 signature in the `stash-hmac-signature` header.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Keys created through this portal are Ingress keys by default and work with this API (this is the same key used for `/sdk/` API authentication)\n4. Store the secret securely — you will need it to sign every request\n\n### Signing a Request\n\n1. For GET requests (no body), sign an **empty string** using HMAC-SHA256 with your API secret\n2. Base64-encode the resulting signature\n3. Send it in the `stash-hmac-signature` HTTP header\n\n### Example (curl)\n\n```bash\nSIGNATURE=$(echo -n \"\" | openssl dgst -sha256 -hmac \"YOUR_API_SECRET\" -binary | base64)\ncurl -H \"stash-hmac-signature: $SIGNATURE\" \\\n  \"https://test-api.stash.gg/api/v1/studio/{shop_id}/products\"\n```",
+    "description": "Read-only API for querying the Stash managed product catalog. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/sdk/server/catalogue/products\n```\n\n## Authentication\n\nAll requests must include your API key in the `X-Stash-Api-Key` header. The shop is inferred from the key — no shop ID is required in the path.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Use the generated key as the value for the `X-Stash-Api-Key` header on every request\n4. Store the key securely — treat it like a password\n\n### Example (curl)\n\n```bash\ncurl -H \"X-Stash-Api-Key: YOUR_API_KEY\" \\\n  \"https://test-api.stash.gg/sdk/server/catalogue/products\"\n```",
     "version": "1.0.0",
     "contact": {
       "name": "API Support",
@@ -21,16 +21,16 @@
   ],
   "tags": [
     {
-      "name": "ManagedCatalog",
+      "name": "Managed Catalog",
       "description": "Read-only endpoints for querying the managed product catalog"
     }
   ],
   "paths": {
-    "/api/v1/studio/{shopId}/products": {
+    "/sdk/server/catalogue/products": {
       "get": {
         "summary": "List published products",
-        "description": "Retrieves a paginated list of published products for a shop. Results are ordered by creation date (most recent first). Only published products are returned; drafts and deleted products are excluded.",
-        "operationId": "ManagedCatalogService_ListProducts",
+        "description": "Retrieves a paginated list of published products with active offers for the shop associated with the API key. Results are ordered by creation date (most recent first). Only published products whose offer window contains the current time are returned; drafts, deleted products, and offers outside their schedule are excluded.",
+        "operationId": "ListProducts",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -42,10 +42,6 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "guid": {
-                        "type": "string",
-                        "description": "Stash-internal unique product identifier (UUID)"
-                      },
                       "name": {
                         "type": "object",
                         "properties": {
@@ -67,7 +63,7 @@
                       },
                       "productId": {
                         "type": "string",
-                        "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                        "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
                       },
                       "description": {
                         "type": "object",
@@ -110,8 +106,8 @@
                           "PRODUCT_STATUS_PUBLISHED"
                         ],
                         "default": "PRODUCT_STATUS_PUBLISHED",
-                        "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
-                        "example": "PRODUCT_STATUS_PUBLISHED"
+                        "example": "PRODUCT_STATUS_PUBLISHED",
+                        "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
                       },
                       "createdAt": {
                         "type": "string",
@@ -144,16 +140,6 @@
                       },
                       "prices": {
                         "type": "array",
-                        "example": [
-                          {
-                            "currency": "USD",
-                            "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                            "region": "US",
-                            "cents": 499,
-                            "decimalPlaces": 2,
-                            "updatedAt": "2026-01-15T10:30:00Z"
-                          }
-                        ],
                         "items": {
                           "type": "object",
                           "properties": {
@@ -168,8 +154,8 @@
                                 "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                               ],
                               "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                              "description": "Platform (e.g., UNIVERSAL)",
-                              "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                              "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                              "description": "Platform (e.g., UNIVERSAL)"
                             },
                             "region": {
                               "type": "string",
@@ -183,7 +169,7 @@
                             "decimalPlaces": {
                               "type": "integer",
                               "format": "int64",
-                              "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                              "description": "CLDR fraction-digit count for this ISO 4217 currency"
                             },
                             "updatedAt": {
                               "type": "string",
@@ -206,15 +192,6 @@
                       },
                       "items": {
                         "type": "array",
-                        "example": [
-                          {
-                            "image": "https://example.com/coin.png",
-                            "quantity": "100",
-                            "displayName": {
-                              "defaultText": "Gold Coin"
-                            }
-                          }
-                        ],
                         "items": {
                           "type": "object",
                           "properties": {
@@ -249,11 +226,24 @@
                           "description": "An item contained in a product",
                           "title": "Item"
                         },
-                        "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                        "description": "Items contained in this product. May be empty if no items configured."
+                      },
+                      "offerStartTime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+                      },
+                      "offerEndTime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
                       }
                     },
-                    "description": "A published product from the managed catalog",
-                    "title": "Product"
+                    "description": "A published product from the managed catalogue",
+                    "title": "Product",
+                    "required": [
+                      "productId"
+                    ]
                   },
                   "description": "List of published products"
                 },
@@ -297,13 +287,6 @@
         },
         "parameters": [
           {
-            "name": "shopId",
-            "description": "Shop identifier from Stash Studio",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "limit",
             "description": "Maximum results per page. Defaults to 50. Maximum allowed value is 100.",
             "in": "query",
@@ -321,20 +304,20 @@
           }
         ],
         "tags": [
-          "ManagedCatalog"
+          "Managed Catalog"
         ],
         "security": [
           {
-            "hmac": []
+            "apiKey": []
           }
         ]
       }
     },
-    "/api/v1/studio/{shopId}/products/{guid}": {
+    "/sdk/server/catalogue/products/{productId}": {
       "get": {
         "summary": "Get a single published product",
-        "description": "Retrieves a single published product by its GUID. Returns NOT_FOUND if the product does not exist or is not published.",
-        "operationId": "ManagedCatalogService_GetProduct",
+        "description": "Retrieves a single published product with an active offer by its partner-defined product ID (e.g., SKU) for the shop associated with the API key. Returns NOT_FOUND if the product does not exist, is not published, or its offer is outside the current schedule.",
+        "operationId": "GetProduct",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -344,10 +327,6 @@
                 "product": {
                   "type": "object",
                   "properties": {
-                    "guid": {
-                      "type": "string",
-                      "description": "Stash-internal unique product identifier (UUID)"
-                    },
                     "name": {
                       "type": "object",
                       "properties": {
@@ -369,7 +348,7 @@
                     },
                     "productId": {
                       "type": "string",
-                      "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                      "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
                     },
                     "description": {
                       "type": "object",
@@ -412,8 +391,8 @@
                         "PRODUCT_STATUS_PUBLISHED"
                       ],
                       "default": "PRODUCT_STATUS_PUBLISHED",
-                      "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
-                      "example": "PRODUCT_STATUS_PUBLISHED"
+                      "example": "PRODUCT_STATUS_PUBLISHED",
+                      "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
                     },
                     "createdAt": {
                       "type": "string",
@@ -446,16 +425,6 @@
                     },
                     "prices": {
                       "type": "array",
-                      "example": [
-                        {
-                          "currency": "USD",
-                          "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                          "region": "US",
-                          "cents": 499,
-                          "decimalPlaces": 2,
-                          "updatedAt": "2026-01-15T10:30:00Z"
-                        }
-                      ],
                       "items": {
                         "type": "object",
                         "properties": {
@@ -470,8 +439,8 @@
                               "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                             ],
                             "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                            "description": "Platform (e.g., UNIVERSAL)",
-                            "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                            "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                            "description": "Platform (e.g., UNIVERSAL)"
                           },
                           "region": {
                             "type": "string",
@@ -485,7 +454,7 @@
                           "decimalPlaces": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                            "description": "CLDR fraction-digit count for this ISO 4217 currency"
                           },
                           "updatedAt": {
                             "type": "string",
@@ -508,15 +477,6 @@
                     },
                     "items": {
                       "type": "array",
-                      "example": [
-                        {
-                          "image": "https://example.com/coin.png",
-                          "quantity": "100",
-                          "displayName": {
-                            "defaultText": "Gold Coin"
-                          }
-                        }
-                      ],
                       "items": {
                         "type": "object",
                         "properties": {
@@ -551,11 +511,24 @@
                         "description": "An item contained in a product",
                         "title": "Item"
                       },
-                      "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                      "description": "Items contained in this product. May be empty if no items configured."
+                    },
+                    "offerStartTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+                    },
+                    "offerEndTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
                     }
                   },
                   "description": "The requested product",
-                  "title": "Product"
+                  "title": "Product",
+                  "required": [
+                    "productId"
+                  ]
                 }
               },
               "description": "Response containing a single published product",
@@ -595,33 +568,26 @@
         },
         "parameters": [
           {
-            "name": "shopId",
-            "description": "Shop identifier from Stash Studio",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "guid",
-            "description": "Stash-internal unique product identifier (UUID)",
+            "name": "productId",
+            "description": "Partner-defined product identifier (e.g., SKU)",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "ManagedCatalog"
+          "Managed Catalog"
         ],
         "security": [
           {
-            "hmac": []
+            "apiKey": []
           }
         ]
       }
     }
   },
   "definitions": {
-    "protobufAny": {
+    "google.protobuf.Any": {
       "type": "object",
       "properties": {
         "@type": {
@@ -630,7 +596,7 @@
       },
       "additionalProperties": {}
     },
-    "rpcStatus": {
+    "google.rpc.Status": {
       "type": "object",
       "properties": {
         "code": {
@@ -654,16 +620,12 @@
         }
       }
     },
-    "v1GetProductResponse": {
+    "pie.sdk.catalogue.GetProductResponse": {
       "type": "object",
       "properties": {
         "product": {
           "type": "object",
           "properties": {
-            "guid": {
-              "type": "string",
-              "description": "Stash-internal unique product identifier (UUID)"
-            },
             "name": {
               "type": "object",
               "properties": {
@@ -685,7 +647,7 @@
             },
             "productId": {
               "type": "string",
-              "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+              "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
             },
             "description": {
               "type": "object",
@@ -728,8 +690,8 @@
                 "PRODUCT_STATUS_PUBLISHED"
               ],
               "default": "PRODUCT_STATUS_PUBLISHED",
-              "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
-              "example": "PRODUCT_STATUS_PUBLISHED"
+              "example": "PRODUCT_STATUS_PUBLISHED",
+              "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
             },
             "createdAt": {
               "type": "string",
@@ -762,16 +724,6 @@
             },
             "prices": {
               "type": "array",
-              "example": [
-                {
-                  "currency": "USD",
-                  "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                  "region": "US",
-                  "cents": 499,
-                  "decimalPlaces": 2,
-                  "updatedAt": "2026-01-15T10:30:00Z"
-                }
-              ],
               "items": {
                 "type": "object",
                 "properties": {
@@ -786,8 +738,8 @@
                       "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                     ],
                     "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                    "description": "Platform (e.g., UNIVERSAL)",
-                    "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                    "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                    "description": "Platform (e.g., UNIVERSAL)"
                   },
                   "region": {
                     "type": "string",
@@ -801,7 +753,7 @@
                   "decimalPlaces": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                    "description": "CLDR fraction-digit count for this ISO 4217 currency"
                   },
                   "updatedAt": {
                     "type": "string",
@@ -824,15 +776,6 @@
             },
             "items": {
               "type": "array",
-              "example": [
-                {
-                  "image": "https://example.com/coin.png",
-                  "quantity": "100",
-                  "displayName": {
-                    "defaultText": "Gold Coin"
-                  }
-                }
-              ],
               "items": {
                 "type": "object",
                 "properties": {
@@ -867,11 +810,24 @@
                 "description": "An item contained in a product",
                 "title": "Item"
               },
-              "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+              "description": "Items contained in this product. May be empty if no items configured."
+            },
+            "offerStartTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+            },
+            "offerEndTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
             }
           },
           "description": "The requested product",
-          "title": "Product"
+          "title": "Product",
+          "required": [
+            "productId"
+          ]
         }
       },
       "description": "Response containing a single published product",
@@ -880,7 +836,7 @@
         "product"
       ]
     },
-    "v1Images": {
+    "pie.sdk.catalogue.Images": {
       "type": "object",
       "properties": {
         "mainImage": {
@@ -895,7 +851,7 @@
       "description": "Product images",
       "title": "Images"
     },
-    "v1Item": {
+    "pie.sdk.catalogue.Item": {
       "type": "object",
       "properties": {
         "image": {
@@ -929,7 +885,7 @@
       "description": "An item contained in a product",
       "title": "Item"
     },
-    "v1ListProductsResponse": {
+    "pie.sdk.catalogue.ListProductsResponse": {
       "type": "object",
       "properties": {
         "products": {
@@ -937,10 +893,6 @@
           "items": {
             "type": "object",
             "properties": {
-              "guid": {
-                "type": "string",
-                "description": "Stash-internal unique product identifier (UUID)"
-              },
               "name": {
                 "type": "object",
                 "properties": {
@@ -962,7 +914,7 @@
               },
               "productId": {
                 "type": "string",
-                "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+                "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
               },
               "description": {
                 "type": "object",
@@ -1005,8 +957,8 @@
                   "PRODUCT_STATUS_PUBLISHED"
                 ],
                 "default": "PRODUCT_STATUS_PUBLISHED",
-                "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
-                "example": "PRODUCT_STATUS_PUBLISHED"
+                "example": "PRODUCT_STATUS_PUBLISHED",
+                "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
               },
               "createdAt": {
                 "type": "string",
@@ -1039,16 +991,6 @@
               },
               "prices": {
                 "type": "array",
-                "example": [
-                  {
-                    "currency": "USD",
-                    "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                    "region": "US",
-                    "cents": 499,
-                    "decimalPlaces": 2,
-                    "updatedAt": "2026-01-15T10:30:00Z"
-                  }
-                ],
                 "items": {
                   "type": "object",
                   "properties": {
@@ -1063,8 +1005,8 @@
                         "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                       ],
                       "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                      "description": "Platform (e.g., UNIVERSAL)",
-                      "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                      "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                      "description": "Platform (e.g., UNIVERSAL)"
                     },
                     "region": {
                       "type": "string",
@@ -1078,7 +1020,7 @@
                     "decimalPlaces": {
                       "type": "integer",
                       "format": "int64",
-                      "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                      "description": "CLDR fraction-digit count for this ISO 4217 currency"
                     },
                     "updatedAt": {
                       "type": "string",
@@ -1101,15 +1043,6 @@
               },
               "items": {
                 "type": "array",
-                "example": [
-                  {
-                    "image": "https://example.com/coin.png",
-                    "quantity": "100",
-                    "displayName": {
-                      "defaultText": "Gold Coin"
-                    }
-                  }
-                ],
                 "items": {
                   "type": "object",
                   "properties": {
@@ -1144,11 +1077,24 @@
                   "description": "An item contained in a product",
                   "title": "Item"
                 },
-                "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+                "description": "Items contained in this product. May be empty if no items configured."
+              },
+              "offerStartTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+              },
+              "offerEndTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
               }
             },
-            "description": "A published product from the managed catalog",
-            "title": "Product"
+            "description": "A published product from the managed catalogue",
+            "title": "Product",
+            "required": [
+              "productId"
+            ]
           },
           "description": "List of published products"
         },
@@ -1161,7 +1107,7 @@
       "description": "Paginated list of published products",
       "title": "List Products Response"
     },
-    "v1LocalizableText": {
+    "pie.sdk.catalogue.LocalizableText": {
       "type": "object",
       "properties": {
         "defaultText": {
@@ -1180,7 +1126,7 @@
       "description": "Text content that can be localized for a specific language",
       "title": "Localizable Text"
     },
-    "v1Price": {
+    "pie.sdk.catalogue.Price": {
       "type": "object",
       "properties": {
         "currency": {
@@ -1194,8 +1140,8 @@
             "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
           ],
           "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-          "description": "Platform (e.g., UNIVERSAL)",
-          "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+          "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+          "description": "Platform (e.g., UNIVERSAL)"
         },
         "region": {
           "type": "string",
@@ -1209,7 +1155,7 @@
         "decimalPlaces": {
           "type": "integer",
           "format": "int64",
-          "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+          "description": "CLDR fraction-digit count for this ISO 4217 currency"
         },
         "updatedAt": {
           "type": "string",
@@ -1228,13 +1174,9 @@
         "updatedAt"
       ]
     },
-    "v1Product": {
+    "pie.sdk.catalogue.Product": {
       "type": "object",
       "properties": {
-        "guid": {
-          "type": "string",
-          "description": "Stash-internal unique product identifier (UUID)"
-        },
         "name": {
           "type": "object",
           "properties": {
@@ -1256,7 +1198,7 @@
         },
         "productId": {
           "type": "string",
-          "description": "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"
+          "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
         },
         "description": {
           "type": "object",
@@ -1299,8 +1241,8 @@
             "PRODUCT_STATUS_PUBLISHED"
           ],
           "default": "PRODUCT_STATUS_PUBLISHED",
-          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API",
-          "example": "PRODUCT_STATUS_PUBLISHED"
+          "example": "PRODUCT_STATUS_PUBLISHED",
+          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
         },
         "createdAt": {
           "type": "string",
@@ -1333,16 +1275,6 @@
         },
         "prices": {
           "type": "array",
-          "example": [
-            {
-              "currency": "USD",
-              "platform": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-              "region": "US",
-              "cents": 499,
-              "decimalPlaces": 2,
-              "updatedAt": "2026-01-15T10:30:00Z"
-            }
-          ],
           "items": {
             "type": "object",
             "properties": {
@@ -1357,8 +1289,8 @@
                   "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
                 ],
                 "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
-                "description": "Platform (e.g., UNIVERSAL)",
-                "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+                "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+                "description": "Platform (e.g., UNIVERSAL)"
               },
               "region": {
                 "type": "string",
@@ -1372,7 +1304,7 @@
               "decimalPlaces": {
                 "type": "integer",
                 "format": "int64",
-                "description": "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code."
+                "description": "CLDR fraction-digit count for this ISO 4217 currency"
               },
               "updatedAt": {
                 "type": "string",
@@ -1395,15 +1327,6 @@
         },
         "items": {
           "type": "array",
-          "example": [
-            {
-              "image": "https://example.com/coin.png",
-              "quantity": "100",
-              "displayName": {
-                "defaultText": "Gold Coin"
-              }
-            }
-          ],
           "items": {
             "type": "object",
             "properties": {
@@ -1438,36 +1361,47 @@
             "description": "An item contained in a product",
             "title": "Item"
           },
-          "description": "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
+          "description": "Items contained in this product. May be empty if no items configured."
+        },
+        "offerStartTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+        },
+        "offerEndTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
         }
       },
-      "description": "A published product from the managed catalog",
-      "title": "Product"
+      "description": "A published product from the managed catalogue",
+      "title": "Product",
+      "required": [
+        "productId"
+      ]
     },
-    "v1ProductPricePlatform": {
+    "pie.sdk.catalogue.ProductPricePlatform": {
       "type": "string",
       "enum": [
         "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
         "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
       ],
-      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
-      "description": "Platform for a price entry"
+      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED"
     },
-    "v1ProductStatus": {
+    "pie.sdk.catalogue.ProductStatus": {
       "type": "string",
       "enum": [
         "PRODUCT_STATUS_UNSPECIFIED",
         "PRODUCT_STATUS_PUBLISHED"
       ],
-      "default": "PRODUCT_STATUS_UNSPECIFIED",
-      "description": "Product publication status. This API only returns published products."
+      "default": "PRODUCT_STATUS_UNSPECIFIED"
     }
   },
   "securityDefinitions": {
-    "hmac": {
+    "apiKey": {
       "type": "apiKey",
-      "description": "HMAC-SHA256 signature generated by signing the request body (empty string for GET requests) with the Ingress API key from Stash Studio. Base64-encoded.",
-      "name": "stash-hmac-signature",
+      "description": "API key authentication for server-side SDK operations. Pass your Stash Studio API secret in the X-Stash-Api-Key header.",
+      "name": "X-Stash-Api-Key",
       "in": "header"
     }
   }

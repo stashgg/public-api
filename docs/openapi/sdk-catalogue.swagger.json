@@ -1,0 +1,355 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Stash Managed Catalog API",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "Managed Catalog",
+      "description": "Server-side endpoints for querying the Stash managed product catalog"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/sdk/server/catalogue/products": {
+      "get": {
+        "summary": "List published products",
+        "description": "Retrieves a paginated list of published products with active offers for the shop associated with the API key. Results are ordered by creation date (most recent first). Only published products whose offer window contains the current time are returned; drafts, deleted products, and offers outside their schedule are excluded.",
+        "operationId": "ListProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pie.sdk.catalogue.ListProductsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "description": "Maximum results per page. Defaults to 50. Maximum allowed value is 100.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "description": "Pagination offset. Use next_offset from the previous response to fetch the next page. Defaults to 0.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Managed Catalog"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/sdk/server/catalogue/products/{productId}": {
+      "get": {
+        "summary": "Get a single published product",
+        "description": "Retrieves a single published product with an active offer by its partner-defined product ID (e.g., SKU) for the shop associated with the API key. Returns NOT_FOUND if the product does not exist, is not published, or its offer is outside the current schedule.",
+        "operationId": "GetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pie.sdk.catalogue.GetProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "description": "Partner-defined product identifier (e.g., SKU)",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Managed Catalog"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "google.rpc.Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "pie.sdk.catalogue.GetProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/pie.sdk.catalogue.Product",
+          "description": "The requested product"
+        }
+      },
+      "description": "Response containing a single published product",
+      "title": "Get Product Response",
+      "required": [
+        "product"
+      ]
+    },
+    "pie.sdk.catalogue.Images": {
+      "type": "object",
+      "properties": {
+        "mainImage": {
+          "type": "string",
+          "description": "Primary product image URL. Always non-empty for published products"
+        },
+        "backgroundImage": {
+          "type": "string",
+          "description": "Background image URL"
+        }
+      },
+      "description": "Product images",
+      "title": "Images"
+    },
+    "pie.sdk.catalogue.Item": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "URL to the item image. Always non-empty for published products"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"
+        },
+        "displayName": {
+          "$ref": "#/definitions/pie.sdk.catalogue.LocalizableText",
+          "description": "Optional display name for the item (max 50 characters)"
+        }
+      },
+      "description": "An item contained in a product",
+      "title": "Item"
+    },
+    "pie.sdk.catalogue.ListProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pie.sdk.catalogue.Product"
+          },
+          "description": "List of published products"
+        },
+        "nextOffset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Offset for the next page. Omitted if there are no more results."
+        }
+      },
+      "description": "Paginated list of published products",
+      "title": "List Products Response"
+    },
+    "pie.sdk.catalogue.LocalizableText": {
+      "type": "object",
+      "properties": {
+        "defaultText": {
+          "type": "string",
+          "description": "Default text content, usually in English"
+        },
+        "localizationKey": {
+          "type": "string",
+          "description": "Key for client-side localization lookup"
+        },
+        "localizedText": {
+          "type": "string",
+          "description": "Server-resolved localized text"
+        }
+      },
+      "description": "Text content that can be localized for a specific language",
+      "title": "Localizable Text"
+    },
+    "pie.sdk.catalogue.Price": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "description": "ISO 4217 currency code (e.g., \"USD\", \"EUR\")"
+        },
+        "platform": {
+          "$ref": "#/definitions/pie.sdk.catalogue.ProductPricePlatform",
+          "example": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+          "default": "PRODUCT_PRICE_PLATFORM_UNIVERSAL",
+          "description": "Platform (e.g., UNIVERSAL)"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region code (ISO-3166-1 alpha-2, e.g., \"US\", \"EU\")"
+        },
+        "cents": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g., 499 for $4.99 in USD)"
+        },
+        "decimalPlaces": {
+          "type": "integer",
+          "format": "int64",
+          "description": "CLDR fraction-digit count for this ISO 4217 currency"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this price was last updated (RFC 3339)"
+        }
+      },
+      "description": "A price entry for a product",
+      "title": "Price",
+      "required": [
+        "currency",
+        "platform",
+        "region",
+        "cents",
+        "decimalPlaces",
+        "updatedAt"
+      ]
+    },
+    "pie.sdk.catalogue.Product": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/pie.sdk.catalogue.LocalizableText",
+          "description": "Product name"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Partner-defined product identifier (e.g., SKU). Unique within the shop."
+        },
+        "description": {
+          "$ref": "#/definitions/pie.sdk.catalogue.LocalizableText",
+          "description": "Product description. Always non-empty for published products"
+        },
+        "images": {
+          "$ref": "#/definitions/pie.sdk.catalogue.Images",
+          "description": "Product images"
+        },
+        "status": {
+          "$ref": "#/definitions/pie.sdk.catalogue.ProductStatus",
+          "example": "PRODUCT_STATUS_PUBLISHED",
+          "default": "PRODUCT_STATUS_PUBLISHED",
+          "description": "Product status. Always PRODUCT_STATUS_PUBLISHED for this API"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the product was created (RFC 3339)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the product was last updated (RFC 3339)"
+        },
+        "displayName": {
+          "$ref": "#/definitions/pie.sdk.catalogue.LocalizableText",
+          "description": "Human-readable display name. Always non-empty for published products"
+        },
+        "prices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pie.sdk.catalogue.Price"
+          },
+          "description": "Array of price entries. At least one entry (USD/UNIVERSAL/US) is guaranteed for paid products. Free gift products have an empty array."
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pie.sdk.catalogue.Item"
+          },
+          "description": "Items contained in this product. May be empty if no items configured."
+        },
+        "offerStartTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the offer becomes available. Omitted if no start time is configured."
+        },
+        "offerEndTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
+        }
+      },
+      "description": "A published product from the managed catalogue",
+      "title": "Product",
+      "required": [
+        "productId"
+      ]
+    },
+    "pie.sdk.catalogue.ProductPricePlatform": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_PRICE_PLATFORM_UNSPECIFIED",
+        "PRODUCT_PRICE_PLATFORM_UNIVERSAL"
+      ],
+      "default": "PRODUCT_PRICE_PLATFORM_UNSPECIFIED"
+    },
+    "pie.sdk.catalogue.ProductStatus": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_STATUS_UNSPECIFIED",
+        "PRODUCT_STATUS_PUBLISHED"
+      ],
+      "default": "PRODUCT_STATUS_UNSPECIFIED"
+    }
+  }
+}

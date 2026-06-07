@@ -12,9 +12,11 @@ import "validate/validate.proto";
 
 option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/studio/v1";
 
+// Legacy ingress HMAC service. Partner-facing Managed Catalog docs and clients
+// are generated from pie.sdk.catalogue (SDK paths under /sdk/server/catalogue/*).
 service ManagedCatalogService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "ManagedCatalog"
+    name: "Managed Catalog"
     description: "Read-only endpoints for querying the managed product catalog"
   };
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {

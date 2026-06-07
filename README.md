@@ -102,6 +102,21 @@ gen/
 
 Merged Swagger and Redoc HTML are written to `docs/gen/`.
 
+### Managed Catalog API
+
+The Managed Catalog read API is defined in pie-mono at `proto/sdk/catalogue/catalogue.proto` and exposed as part of the SDK API (`/sdk/server/catalogue/*`, `X-Stash-Api-Key` auth).
+
+Documentation is kept consistent across:
+
+| Output | Location | How it is produced |
+|--------|----------|--------------------|
+| **docs.stash.gg/api** | `Managed Catalog` section | stash-docs generates MDX from live `https://api.stash.gg/sdk/swagger.json` after deploy |
+| **Redoc (standalone)** | `docs/gen/redoc.ingress.v1.html` | Extracted from `pie_sdk.swagger.json` via `scripts/extract-sdk-catalogue-swagger.mjs`, merged in `docs/config/swagger-merger-ingress-config.json` |
+| **OpenAPI JSON** | `docs/gen/swagger.ingress.v1.json` | Same merge as Redoc |
+| **SDK swagger source** | `go_workspace/servers/api/cmd/sdk-rest/gen/pie_sdk.swagger.json` | Generated from `proto/sdk/catalogue/catalogue.proto` |
+
+When changing Managed Catalog endpoints or schemas, update `catalogue.proto`, run pie-mono `./gen.sh`, commit `pie_sdk.swagger.json` and `proto/public/docs/openapi/sdk-catalogue.swagger.json`, then merge and deploy before re-running the stash-docs **Generate API Docs** workflow.
+
 ### About Swagger Files
 
 - **Service files** (`service.swagger.json`) are rich with API endpoints and full documentation
