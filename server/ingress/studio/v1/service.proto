@@ -12,16 +12,19 @@ import "validate/validate.proto";
 
 option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/studio/v1";
 
+// Partner-facing Managed Catalog read API, authenticated with HMAC over the
+// ingress surface (/api/v1/studio/{shop_id}/...). Products are addressed by the
+// partner-defined product ID (SKU), not the Stash-internal GUID.
 service ManagedCatalogService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "ManagedCatalog"
+    name: "Managed Catalog"
     description: "Read-only endpoints for querying the managed product catalog"
   };
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {
     option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List published products"
-      description: "Retrieves a paginated list of published products for a shop. Results are ordered by creation date (most recent first). Only published products are returned; drafts and deleted products are excluded."
+      description: "Retrieves a paginated list of published products with active offers for a shop. Results are ordered by creation date (most recent first). Only published products whose offer window contains the current time are returned; drafts, deleted products, and offers outside their schedule are excluded."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -30,10 +33,10 @@ service ManagedCatalogService {
     };
   }
   rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
-    option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products/{guid}"};
+    option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products/{product_id}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get a single published product"
-      description: "Retrieves a single published product by its GUID. Returns NOT_FOUND if the product does not exist or is not published."
+      description: "Retrieves a single published product with an active offer by its partner-defined product ID (e.g., SKU). Returns NOT_FOUND if the product does not exist, is not published, or its offer is outside the current schedule."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -48,11 +51,17 @@ message Product {
     json_schema: {
       title: "Product"
       description: "A published product from the managed catalog"
+      required: ["productId"]
     }
   };
-  string guid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Stash-internal unique product identifier (UUID)"}];
+  reserved 1;
+  reserved "guid";
   LocalizableText name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product name"}];
-  optional string product_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-defined product identifier (e.g., SKU). Always non-empty for published products"}];
+  string product_id = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-defined product identifier (e.g., SKU). Unique within the shop."}
+  ];
   optional LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product description. Always non-empty for published products"}];
   optional Images images = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Product images"}];
   ProductStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
@@ -71,6 +80,8 @@ message Product {
     description: "Items contained in this product. May be empty if no items configured. If present, each item has a non-empty image and quantity > 0."
     example: "[{\"image\": \"https://example.com/coin.png\", \"quantity\": \"100\", \"displayName\": {\"defaultText\": \"Gold Coin\"}}]"
   }];
+  optional google.protobuf.Timestamp offer_start_time = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "UTC timestamp when the offer becomes available. Omitted if no start time is configured."}];
+  optional google.protobuf.Timestamp offer_end_time = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "UTC timestamp when the offer expires. Omitted if no end time is configured."}];
 }
 
 message Images {
@@ -201,19 +212,21 @@ message GetProductRequest {
       description: "Request to get a single published product"
       required: [
         "shop_id",
-        "guid"
+        "product_id"
       ]
     }
   };
+  reserved 2;
+  reserved "guid";
   string shop_id = 1 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).string.uuid = true,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio"}
   ];
-  string guid = 2 [
+  string product_id = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string.uuid = true,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Stash-internal unique product identifier (UUID)"}
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-defined product identifier (e.g., SKU)"}
   ];
 }
 
