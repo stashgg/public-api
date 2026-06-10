@@ -90,6 +90,9 @@ message RegisterPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unique transaction identifier for this purchase session"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
+  // The originating Stash shop, mirroring the shopId already sent in webhooks,
+  // so the game backend can attribute the request to a specific shop.
+  string shop_id = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 
   string currency = 4 [
@@ -229,6 +232,9 @@ message CancelPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to cancel"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
+  // The originating Stash shop, mirroring the shopId already sent in webhooks,
+  // so the game backend can attribute the request to a specific shop.
+  string shop_id = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
   string currency = 6 [
     (validate.rules).string = {
@@ -323,6 +329,9 @@ message ConfirmPaymentRequest {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Transaction identifier to confirm"}
   ];
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
+  // The originating Stash shop, mirroring the shopId already sent in webhooks,
+  // so the game backend can attribute the request to a specific shop.
+  string shop_id = 24 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 21 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 
   string currency = 4 [

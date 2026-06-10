@@ -42,6 +42,9 @@ message GetPlayerRequest {
     (validate.rules).string.min_len = 1,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player ID to retrieve"}
   ];
+  // The originating Stash shop, mirroring the shopId already sent in webhooks,
+  // so the game backend can attribute the request to a specific shop.
+  string shop_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 }
 
