@@ -100,6 +100,9 @@ message GetCatalogRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional player ID filter to get player-specific catalog items"}
   ];
+  // The originating Stash shop, mirroring the shopId already sent in webhooks,
+  // so the game backend can attribute the request to a specific shop.
+  string shop_id = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 }
 
@@ -847,6 +850,9 @@ message GetOfferDetailsRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional player ID filter to get player-specific catalog items"}
   ];
+  // The originating Stash shop, mirroring the shopId already sent in webhooks,
+  // so the game backend can attribute the request to a specific shop.
+  string shop_id = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
 }
 
