@@ -13,7 +13,7 @@ import "validate/validate.proto";
 option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/studio/v1";
 
 // Partner-facing Managed Catalog read API, authenticated with HMAC over the
-// ingress surface (/api/v1/studio/{shop_id}/...). Products are addressed by the
+// SDK surface (/sdk/studio/{shop_id}/...). Products are addressed by the
 // partner-defined product ID (SKU), not the Stash-internal GUID.
 service ManagedCatalogService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
@@ -21,7 +21,7 @@ service ManagedCatalogService {
     description: "Read-only endpoints for querying the managed product catalog"
   };
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {
-    option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products"};
+    option (google.api.http) = {get: "/sdk/studio/{shop_id}/products"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List published products"
       description: "Retrieves a paginated list of published products with active offers for a shop. Results are ordered by creation date (most recent first). Only published products whose offer window contains the current time are returned; drafts, deleted products, and offers outside their schedule are excluded."
@@ -33,7 +33,7 @@ service ManagedCatalogService {
     };
   }
   rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
-    option (google.api.http) = {get: "/api/v1/studio/{shop_id}/products/{product_id}"};
+    option (google.api.http) = {get: "/sdk/studio/{shop_id}/products/{product_id}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get a single published product"
       description: "Retrieves a single published product with an active offer by its partner-defined product ID (e.g., SKU). Returns NOT_FOUND if the product does not exist, is not published, or its offer is outside the current schedule."
