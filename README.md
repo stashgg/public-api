@@ -104,7 +104,7 @@ Merged Swagger and Redoc HTML are written to `docs/gen/`.
 
 ### Managed Catalog API
 
-The Managed Catalog read API is a partner-facing ingress API: `GET /api/v1/studio/{shop_id}/products` and `GET /api/v1/studio/{shop_id}/products/{product_id}`, authenticated with an HMAC-SHA256 signature in the `stash-hmac-signature` header. Products are addressed by the partner-defined product ID (SKU). It is defined by `server/ingress/studio/v1/service.proto` and `server/ingress/server.proto` in this repo.
+The Managed Catalog read API is a partner-facing ingress API: `GET /sdk/studio/{shop_id}/products` and `GET /sdk/studio/{shop_id}/products/{product_id}`, authenticated with an HMAC-SHA256 signature in the `stash-hmac-signature` header. Products are addressed by the partner-defined product ID (SKU). It is defined by `server/ingress/studio/v1/service.proto` and `server/ingress/server.proto` in this repo.
 
 Documentation is generated from the `server/ingress` protos:
 
