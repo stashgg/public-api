@@ -1315,6 +1315,10 @@
                                       },
                                       "description": "Optional display attributes for the card",
                                       "title": "Free Item Attributes"
+                                    },
+                                    "targetTierId": {
+                                      "type": "string",
+                                      "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                                     }
                                   },
                                   "description": "Free-to-claim catalog item",
@@ -2602,6 +2606,10 @@
                                             },
                                             "description": "Optional display attributes for the card",
                                             "title": "Free Item Attributes"
+                                          },
+                                          "targetTierId": {
+                                            "type": "string",
+                                            "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                                           }
                                         },
                                         "description": "Free-to-claim catalog item",
@@ -2802,6 +2810,20 @@
               "PAYMENT_ENVIRONMENT_PRODUCTION"
             ],
             "default": "PAYMENT_ENVIRONMENT_UNSPECIFIED"
+          },
+          {
+            "name": "currentTierId",
+            "description": "Optional identifier of the player's current loyalty tier, resolved by Stash when a loyalty program is enabled. Use it to select the reward bundle for the player's current tier.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nextTierId",
+            "description": "Optional identifier of the loyalty tier directly above the player's current tier (absent at the top tier), resolved by Stash when a loyalty program is enabled. Use it to return a locked preview of the next tier's reward.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -4539,6 +4561,10 @@
           },
           "description": "Optional display attributes for the card",
           "title": "Free Item Attributes"
+        },
+        "targetTierId": {
+          "type": "string",
+          "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
         }
       },
       "description": "Represents a claimable free catalog item",
@@ -7233,6 +7259,10 @@
                     },
                     "description": "Optional display attributes for the card",
                     "title": "Free Item Attributes"
+                  },
+                  "targetTierId": {
+                    "type": "string",
+                    "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -8520,6 +8550,10 @@
                           },
                           "description": "Optional display attributes for the card",
                           "title": "Free Item Attributes"
+                        },
+                        "targetTierId": {
+                          "type": "string",
+                          "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -10731,6 +10765,10 @@
                           },
                           "description": "Optional display attributes for the card",
                           "title": "Free Item Attributes"
+                        },
+                        "targetTierId": {
+                          "type": "string",
+                          "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -12018,6 +12056,10 @@
                                 },
                                 "description": "Optional display attributes for the card",
                                 "title": "Free Item Attributes"
+                              },
+                              "targetTierId": {
+                                "type": "string",
+                                "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                               }
                             },
                             "description": "Free-to-claim catalog item",
@@ -13363,6 +13405,10 @@
               },
               "description": "Optional display attributes for the card",
               "title": "Free Item Attributes"
+            },
+            "targetTierId": {
+              "type": "string",
+              "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
             }
           },
           "description": "Free-to-claim catalog item",
@@ -15643,6 +15689,10 @@
                     },
                     "description": "Optional display attributes for the card",
                     "title": "Free Item Attributes"
+                  },
+                  "targetTierId": {
+                    "type": "string",
+                    "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -17336,6 +17386,10 @@
                               },
                               "description": "Optional display attributes for the card",
                               "title": "Free Item Attributes"
+                            },
+                            "targetTierId": {
+                              "type": "string",
+                              "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                             }
                           },
                           "description": "Free-to-claim catalog item",
@@ -18623,6 +18677,10 @@
                                     },
                                     "description": "Optional display attributes for the card",
                                     "title": "Free Item Attributes"
+                                  },
+                                  "targetTierId": {
+                                    "type": "string",
+                                    "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
                                   }
                                 },
                                 "description": "Free-to-claim catalog item",
