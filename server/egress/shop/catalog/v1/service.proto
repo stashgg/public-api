@@ -104,6 +104,23 @@ message GetCatalogRequest {
   // so the game backend can attribute the request to a specific shop.
   string shop_id = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The originating Stash shop identifier (mirrors the shopId sent in webhooks)"}];
   server.egress.shop.v1.PaymentEnvironment environment = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Payment environment for the request"}];
+  // Resolved by Stash when a loyalty program is enabled; lets the game backend
+  // return the catalog (e.g. a tier-based daily gift) for the player's tier
+  // without resolving the tier itself.
+  optional string current_tier_id = 7 [
+    (validate.rules).string = {
+      min_len: 1
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the player's current loyalty tier, resolved by Stash when a loyalty program is enabled. Use it to select the reward bundle for the player's current tier."}
+  ];
+  optional string next_tier_id = 8 [
+    (validate.rules).string = {
+      min_len: 1
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the loyalty tier directly above the player's current tier (absent at the top tier), resolved by Stash when a loyalty program is enabled. Use it to return a locked preview of the next tier's reward."}
+  ];
 }
 
 message GetCatalogResponse {
@@ -709,6 +726,7 @@ message GetCatalogResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items included in this free item as a bundle"}
       ];
       optional FreeItemAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display attributes for the card"}];
+      optional string target_tier_id = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."}];
     }
 
     oneof item {
