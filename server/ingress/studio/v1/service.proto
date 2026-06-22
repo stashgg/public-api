@@ -82,6 +82,7 @@ message Product {
   }];
   optional google.protobuf.Timestamp offer_start_time = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "UTC timestamp when the offer becomes available. Omitted if no start time is configured."}];
   optional google.protobuf.Timestamp offer_end_time = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "UTC timestamp when the offer expires. Omitted if no end time is configured."}];
+  repeated BonusItem bonuses = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Bonuses granted when this product is purchased. May be empty."}];
 }
 
 message Images {
@@ -165,6 +166,31 @@ message Item {
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed). Always > 0 for published products"}
   ];
   optional LocalizableText display_name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display name for the item (max 50 characters)"}];
+}
+
+message BonusItem {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Bonus Item"
+      description: "A bonus granted when the product is purchased"
+    }
+  };
+  string bonus_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the bonus configured for the shop."}];
+  LocalizableText name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the bonus."}];
+  string quantity = 3 [
+    (validate.rules).string = {
+      min_len: 1
+      pattern: "^[0-9]+$"
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."}
+  ];
+  optional string icon_image_url = 4 [
+    (validate.rules).string = {
+      uri: true
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to the bonus icon image. May be empty if no icon is configured."}
+  ];
 }
 
 message ListProductsRequest {
