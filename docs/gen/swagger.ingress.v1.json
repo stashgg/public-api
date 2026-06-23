@@ -264,7 +264,7 @@
                           "properties": {
                             "bonusId": {
                               "type": "string",
-                              "description": "Identifier of the bonus configured for the shop."
+                              "description": "Identifier of the bonus configured for the shop. Always non-empty."
                             },
                             "name": {
                               "type": "object",
@@ -617,7 +617,7 @@
                         "properties": {
                           "bonusId": {
                             "type": "string",
-                            "description": "Identifier of the bonus configured for the shop."
+                            "description": "Identifier of the bonus configured for the shop. Always non-empty."
                           },
                           "name": {
                             "type": "object",
@@ -761,7 +761,7 @@
       "properties": {
         "bonusId": {
           "type": "string",
-          "description": "Identifier of the bonus configured for the shop."
+          "description": "Identifier of the bonus configured for the shop. Always non-empty."
         },
         "name": {
           "type": "object",
@@ -1022,7 +1022,7 @@
                 "properties": {
                   "bonusId": {
                     "type": "string",
-                    "description": "Identifier of the bonus configured for the shop."
+                    "description": "Identifier of the bonus configured for the shop. Always non-empty."
                   },
                   "name": {
                     "type": "object",
@@ -1350,7 +1350,7 @@
                   "properties": {
                     "bonusId": {
                       "type": "string",
-                      "description": "Identifier of the bonus configured for the shop."
+                      "description": "Identifier of the bonus configured for the shop. Always non-empty."
                     },
                     "name": {
                       "type": "object",
@@ -1695,7 +1695,7 @@
             "properties": {
               "bonusId": {
                 "type": "string",
-                "description": "Identifier of the bonus configured for the shop."
+                "description": "Identifier of the bonus configured for the shop. Always non-empty."
               },
               "name": {
                 "type": "object",

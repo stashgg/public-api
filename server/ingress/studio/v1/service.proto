@@ -175,12 +175,15 @@ message BonusItem {
       description: "A bonus granted when the product is purchased"
     }
   };
-  string bonus_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the bonus configured for the shop."}];
+  string bonus_id = 1 [
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the bonus configured for the shop. Always non-empty."}
+  ];
   LocalizableText name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the bonus."}];
   string quantity = 3 [
     (validate.rules).string = {
       min_len: 1
-      pattern: "^[0-9]+$"
+      pattern: "^[1-9][0-9]*$"
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."}
   ];
