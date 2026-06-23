@@ -256,6 +256,48 @@
                         "type": "string",
                         "format": "date-time",
                         "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
+                      },
+                      "bonuses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "bonusId": {
+                              "type": "string",
+                              "description": "Identifier of the bonus configured for the shop. Always non-empty."
+                            },
+                            "name": {
+                              "type": "object",
+                              "properties": {
+                                "defaultText": {
+                                  "type": "string",
+                                  "description": "Default text content, usually in English"
+                                },
+                                "localizationKey": {
+                                  "type": "string",
+                                  "description": "Key for client-side localization lookup"
+                                },
+                                "localizedText": {
+                                  "type": "string",
+                                  "description": "Server-resolved localized text"
+                                }
+                              },
+                              "description": "Display name of the bonus.",
+                              "title": "Localizable Text"
+                            },
+                            "quantity": {
+                              "type": "string",
+                              "description": "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."
+                            },
+                            "iconImageUrl": {
+                              "type": "string",
+                              "description": "URL to the bonus icon image. May be empty if no icon is configured."
+                            }
+                          },
+                          "description": "A bonus granted when the product is purchased",
+                          "title": "Bonus Item"
+                        },
+                        "description": "Bonuses granted when this product is purchased. May be empty."
                       }
                     },
                     "description": "A published product from the managed catalog",
@@ -567,6 +609,48 @@
                       "type": "string",
                       "format": "date-time",
                       "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
+                    },
+                    "bonuses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "bonusId": {
+                            "type": "string",
+                            "description": "Identifier of the bonus configured for the shop. Always non-empty."
+                          },
+                          "name": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "Key for client-side localization lookup"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Server-resolved localized text"
+                              }
+                            },
+                            "description": "Display name of the bonus.",
+                            "title": "Localizable Text"
+                          },
+                          "quantity": {
+                            "type": "string",
+                            "description": "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."
+                          },
+                          "iconImageUrl": {
+                            "type": "string",
+                            "description": "URL to the bonus icon image. May be empty if no icon is configured."
+                          }
+                        },
+                        "description": "A bonus granted when the product is purchased",
+                        "title": "Bonus Item"
+                      },
+                      "description": "Bonuses granted when this product is purchased. May be empty."
                     }
                   },
                   "description": "The requested product",
@@ -671,6 +755,44 @@
           }
         }
       }
+    },
+    "v1BonusItem": {
+      "type": "object",
+      "properties": {
+        "bonusId": {
+          "type": "string",
+          "description": "Identifier of the bonus configured for the shop. Always non-empty."
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "defaultText": {
+              "type": "string",
+              "description": "Default text content, usually in English"
+            },
+            "localizationKey": {
+              "type": "string",
+              "description": "Key for client-side localization lookup"
+            },
+            "localizedText": {
+              "type": "string",
+              "description": "Server-resolved localized text"
+            }
+          },
+          "description": "Display name of the bonus.",
+          "title": "Localizable Text"
+        },
+        "quantity": {
+          "type": "string",
+          "description": "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "URL to the bonus icon image. May be empty if no icon is configured."
+        }
+      },
+      "description": "A bonus granted when the product is purchased",
+      "title": "Bonus Item"
     },
     "v1GetProductResponse": {
       "type": "object",
@@ -892,6 +1014,48 @@
               "type": "string",
               "format": "date-time",
               "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
+            },
+            "bonuses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "bonusId": {
+                    "type": "string",
+                    "description": "Identifier of the bonus configured for the shop. Always non-empty."
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "defaultText": {
+                        "type": "string",
+                        "description": "Default text content, usually in English"
+                      },
+                      "localizationKey": {
+                        "type": "string",
+                        "description": "Key for client-side localization lookup"
+                      },
+                      "localizedText": {
+                        "type": "string",
+                        "description": "Server-resolved localized text"
+                      }
+                    },
+                    "description": "Display name of the bonus.",
+                    "title": "Localizable Text"
+                  },
+                  "quantity": {
+                    "type": "string",
+                    "description": "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."
+                  },
+                  "iconImageUrl": {
+                    "type": "string",
+                    "description": "URL to the bonus icon image. May be empty if no icon is configured."
+                  }
+                },
+                "description": "A bonus granted when the product is purchased",
+                "title": "Bonus Item"
+              },
+              "description": "Bonuses granted when this product is purchased. May be empty."
             }
           },
           "description": "The requested product",
@@ -1178,6 +1342,48 @@
                 "type": "string",
                 "format": "date-time",
                 "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
+              },
+              "bonuses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "bonusId": {
+                      "type": "string",
+                      "description": "Identifier of the bonus configured for the shop. Always non-empty."
+                    },
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "Key for client-side localization lookup"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Server-resolved localized text"
+                        }
+                      },
+                      "description": "Display name of the bonus.",
+                      "title": "Localizable Text"
+                    },
+                    "quantity": {
+                      "type": "string",
+                      "description": "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."
+                    },
+                    "iconImageUrl": {
+                      "type": "string",
+                      "description": "URL to the bonus icon image. May be empty if no icon is configured."
+                    }
+                  },
+                  "description": "A bonus granted when the product is purchased",
+                  "title": "Bonus Item"
+                },
+                "description": "Bonuses granted when this product is purchased. May be empty."
               }
             },
             "description": "A published product from the managed catalog",
@@ -1481,6 +1687,48 @@
           "type": "string",
           "format": "date-time",
           "description": "UTC timestamp when the offer expires. Omitted if no end time is configured."
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "bonusId": {
+                "type": "string",
+                "description": "Identifier of the bonus configured for the shop. Always non-empty."
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "Key for client-side localization lookup"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Server-resolved localized text"
+                  }
+                },
+                "description": "Display name of the bonus.",
+                "title": "Localizable Text"
+              },
+              "quantity": {
+                "type": "string",
+                "description": "Amount granted on purchase, as a string for big-integer support (no decimals). Always > 0."
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "URL to the bonus icon image. May be empty if no icon is configured."
+              }
+            },
+            "description": "A bonus granted when the product is purchased",
+            "title": "Bonus Item"
+          },
+          "description": "Bonuses granted when this product is purchased. May be empty."
         }
       },
       "description": "A published product from the managed catalog",
