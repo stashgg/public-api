@@ -346,10 +346,7 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
       ];
-      optional uint32 max_purchasable = 6 [
-        (validate.rules).uint32.gt = 0,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this item can be purchased"}
-      ];
+      optional uint32 max_purchasable = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this item can be purchased"}];
       optional LocalizableText max_purchasable_description = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the maximum number of times this item can be purchased"}];
       PriceAmountOrId price = 7 [
         (google.api.field_behavior) = REQUIRED,
@@ -474,10 +471,7 @@ message GetCatalogResponse {
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier"}
         ];
         optional PriceAmountOrId price = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price for this link (if not provided, the price is free)"}];
-        optional uint32 max_purchasable = 4 [
-          (validate.rules).uint32.gt = 0,
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this link can be purchased"}
-        ];
+        optional uint32 max_purchasable = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Maximum number of times this link can be purchased"}];
 
         message ObtainableItem {
           option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
