@@ -55,6 +55,8 @@ enum PurchaseSource {
   PURCHASE_SOURCE_CART = 1;
   // Purchase initiated from direct StashPay checkout link
   PURCHASE_SOURCE_DIRECT = 2;
+  // Purchase initiated from webshop, skipping the Cart and going directly to Checkout
+  PURCHASE_SOURCE_BUY_NOW = 3;
 }
 
 enum PaymentMethodType {

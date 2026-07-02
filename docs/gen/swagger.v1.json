@@ -4077,11 +4077,12 @@
                   "enum": [
                     "PURCHASE_SOURCE_UNSPECIFIED",
                     "PURCHASE_SOURCE_CART",
-                    "PURCHASE_SOURCE_DIRECT"
+                    "PURCHASE_SOURCE_DIRECT",
+                    "PURCHASE_SOURCE_BUY_NOW"
                   ],
                   "default": "PURCHASE_SOURCE_UNSPECIFIED",
                   "description": "Source of the purchase for analytics",
-                  "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+                  "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link\n - PURCHASE_SOURCE_BUY_NOW: Purchase initiated from webshop, skipping the Cart and going directly to Checkout"
                 },
                 "ipAddress": {
                   "type": "string",
@@ -4348,11 +4349,12 @@
                   "enum": [
                     "PURCHASE_SOURCE_UNSPECIFIED",
                     "PURCHASE_SOURCE_CART",
-                    "PURCHASE_SOURCE_DIRECT"
+                    "PURCHASE_SOURCE_DIRECT",
+                    "PURCHASE_SOURCE_BUY_NOW"
                   ],
                   "default": "PURCHASE_SOURCE_UNSPECIFIED",
                   "description": "Source of the purchase for analytics",
-                  "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+                  "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link\n - PURCHASE_SOURCE_BUY_NOW: Purchase initiated from webshop, skipping the Cart and going directly to Checkout"
                 },
                 "ipAddress": {
                   "type": "string",
@@ -20581,11 +20583,12 @@
           "enum": [
             "PURCHASE_SOURCE_UNSPECIFIED",
             "PURCHASE_SOURCE_CART",
-            "PURCHASE_SOURCE_DIRECT"
+            "PURCHASE_SOURCE_DIRECT",
+            "PURCHASE_SOURCE_BUY_NOW"
           ],
           "default": "PURCHASE_SOURCE_UNSPECIFIED",
           "description": "Source of the purchase for analytics",
-          "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+          "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link\n - PURCHASE_SOURCE_BUY_NOW: Purchase initiated from webshop, skipping the Cart and going directly to Checkout"
         },
         "ipAddress": {
           "type": "string",
@@ -20729,11 +20732,12 @@
       "enum": [
         "PURCHASE_SOURCE_UNSPECIFIED",
         "PURCHASE_SOURCE_CART",
-        "PURCHASE_SOURCE_DIRECT"
+        "PURCHASE_SOURCE_DIRECT",
+        "PURCHASE_SOURCE_BUY_NOW"
       ],
       "default": "PURCHASE_SOURCE_UNSPECIFIED",
       "description": "Represents the source of the purchase for analytics",
-      "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+      "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link\n - PURCHASE_SOURCE_BUY_NOW: Purchase initiated from webshop, skipping the Cart and going directly to Checkout"
     },
     "v1RegisterPaymentRequest": {
       "type": "object",
@@ -20840,11 +20844,12 @@
           "enum": [
             "PURCHASE_SOURCE_UNSPECIFIED",
             "PURCHASE_SOURCE_CART",
-            "PURCHASE_SOURCE_DIRECT"
+            "PURCHASE_SOURCE_DIRECT",
+            "PURCHASE_SOURCE_BUY_NOW"
           ],
           "default": "PURCHASE_SOURCE_UNSPECIFIED",
           "description": "Source of the purchase for analytics",
-          "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link"
+          "title": "- PURCHASE_SOURCE_UNSPECIFIED: Default unknown source\n - PURCHASE_SOURCE_CART: Purchase initiated from cart in webstore\n - PURCHASE_SOURCE_DIRECT: Purchase initiated from direct StashPay checkout link\n - PURCHASE_SOURCE_BUY_NOW: Purchase initiated from webshop, skipping the Cart and going directly to Checkout"
         },
         "ipAddress": {
           "type": "string",
