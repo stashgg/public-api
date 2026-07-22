@@ -1319,6 +1319,46 @@
                                     "targetTierId": {
                                       "type": "string",
                                       "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                                    },
+                                    "bonusItems": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                              "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                            ],
+                                            "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                            "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                                          },
+                                          "id": {
+                                            "type": "string",
+                                            "description": "Identifier of the bonus/currency to grant"
+                                          },
+                                          "amount": {
+                                            "type": "string",
+                                            "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                                          }
+                                        },
+                                        "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                                        "title": "Free Bonus Item",
+                                        "required": [
+                                          "type",
+                                          "id",
+                                          "amount"
+                                        ]
+                                      },
+                                      "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                                    },
+                                    "metadata": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      },
+                                      "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                                     }
                                   },
                                   "description": "Free-to-claim catalog item",
@@ -2610,6 +2650,46 @@
                                           "targetTierId": {
                                             "type": "string",
                                             "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                                          },
+                                          "bonusItems": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                                    "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                                  ],
+                                                  "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                                  "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                                                },
+                                                "id": {
+                                                  "type": "string",
+                                                  "description": "Identifier of the bonus/currency to grant"
+                                                },
+                                                "amount": {
+                                                  "type": "string",
+                                                  "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                                                }
+                                              },
+                                              "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                                              "title": "Free Bonus Item",
+                                              "required": [
+                                                "type",
+                                                "id",
+                                                "amount"
+                                              ]
+                                            },
+                                            "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                                          },
+                                          "metadata": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                              "type": "string"
+                                            },
+                                            "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                                           }
                                         },
                                         "description": "Free-to-claim catalog item",
@@ -4565,6 +4645,46 @@
         "targetTierId": {
           "type": "string",
           "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+        },
+        "bonusItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                  "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                ],
+                "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+              },
+              "id": {
+                "type": "string",
+                "description": "Identifier of the bonus/currency to grant"
+              },
+              "amount": {
+                "type": "string",
+                "description": "Amount to grant as string for big integer support (no decimals allowed)"
+              }
+            },
+            "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+            "title": "Free Bonus Item",
+            "required": [
+              "type",
+              "id",
+              "amount"
+            ]
+          },
+          "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
         }
       },
       "description": "Represents a claimable free catalog item",
@@ -7263,6 +7383,46 @@
                   "targetTierId": {
                     "type": "string",
                     "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                  },
+                  "bonusItems": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                            "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                          ],
+                          "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                          "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier of the bonus/currency to grant"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                        }
+                      },
+                      "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                      "title": "Free Bonus Item",
+                      "required": [
+                        "type",
+                        "id",
+                        "amount"
+                      ]
+                    },
+                    "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -8554,6 +8714,46 @@
                         "targetTierId": {
                           "type": "string",
                           "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                        },
+                        "bonusItems": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                  "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                ],
+                                "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                              },
+                              "id": {
+                                "type": "string",
+                                "description": "Identifier of the bonus/currency to grant"
+                              },
+                              "amount": {
+                                "type": "string",
+                                "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                              }
+                            },
+                            "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                            "title": "Free Bonus Item",
+                            "required": [
+                              "type",
+                              "id",
+                              "amount"
+                            ]
+                          },
+                          "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -9256,6 +9456,35 @@
       "required": [
         "headers",
         "rows"
+      ]
+    },
+    "FreeItemFreeBonusItem": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+            "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+          ],
+          "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+          "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+        },
+        "id": {
+          "type": "string",
+          "description": "Identifier of the bonus/currency to grant"
+        },
+        "amount": {
+          "type": "string",
+          "description": "Amount to grant as string for big integer support (no decimals allowed)"
+        }
+      },
+      "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+      "title": "Free Bonus Item",
+      "required": [
+        "type",
+        "id",
+        "amount"
       ]
     },
     "FreeItemFreeContentItem": {
@@ -10769,6 +10998,46 @@
                         "targetTierId": {
                           "type": "string",
                           "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                        },
+                        "bonusItems": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                  "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                ],
+                                "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                              },
+                              "id": {
+                                "type": "string",
+                                "description": "Identifier of the bonus/currency to grant"
+                              },
+                              "amount": {
+                                "type": "string",
+                                "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                              }
+                            },
+                            "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                            "title": "Free Bonus Item",
+                            "required": [
+                              "type",
+                              "id",
+                              "amount"
+                            ]
+                          },
+                          "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -12060,6 +12329,46 @@
                               "targetTierId": {
                                 "type": "string",
                                 "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                              },
+                              "bonusItems": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "enum": [
+                                        "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                        "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                      ],
+                                      "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                      "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                                    },
+                                    "id": {
+                                      "type": "string",
+                                      "description": "Identifier of the bonus/currency to grant"
+                                    },
+                                    "amount": {
+                                      "type": "string",
+                                      "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                                    }
+                                  },
+                                  "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                                  "title": "Free Bonus Item",
+                                  "required": [
+                                    "type",
+                                    "id",
+                                    "amount"
+                                  ]
+                                },
+                                "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                },
+                                "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                               }
                             },
                             "description": "Free-to-claim catalog item",
@@ -13409,6 +13718,46 @@
             "targetTierId": {
               "type": "string",
               "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+            },
+            "bonusItems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                      "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                    ],
+                    "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                    "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "Identifier of the bonus/currency to grant"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                  }
+                },
+                "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                "title": "Free Bonus Item",
+                "required": [
+                  "type",
+                  "id",
+                  "amount"
+                ]
+              },
+              "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
             }
           },
           "description": "Free-to-claim catalog item",
@@ -15693,6 +16042,46 @@
                   "targetTierId": {
                     "type": "string",
                     "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                  },
+                  "bonusItems": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                            "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                          ],
+                          "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                          "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier of the bonus/currency to grant"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                        }
+                      },
+                      "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                      "title": "Free Bonus Item",
+                      "required": [
+                        "type",
+                        "id",
+                        "amount"
+                      ]
+                    },
+                    "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -16102,6 +16491,15 @@
       "default": "CONTENT_ITEM_TYPE_UNSPECIFIED",
       "description": "Represents the type of content item",
       "title": "- CONTENT_ITEM_TYPE_UNSPECIFIED: Default content item type\n - CONTENT_ITEM_TYPE_WEB_STORE_BONUS: Web store bonus content item type"
+    },
+    "v1FreeBonusItemType": {
+      "type": "string",
+      "enum": [
+        "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+        "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+      ],
+      "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+      "description": "Kind of bonus reward granted when a free catalog item is claimed. Only LOYALTY_POINTS is granted today; consumers ignore other/unspecified values."
     },
     "v1FreeItemStatus": {
       "type": "string",
@@ -17390,6 +17788,46 @@
                             "targetTierId": {
                               "type": "string",
                               "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                            },
+                            "bonusItems": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                      "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                    ],
+                                    "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                    "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Identifier of the bonus/currency to grant"
+                                  },
+                                  "amount": {
+                                    "type": "string",
+                                    "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                                  }
+                                },
+                                "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                                "title": "Free Bonus Item",
+                                "required": [
+                                  "type",
+                                  "id",
+                                  "amount"
+                                ]
+                              },
+                              "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                            },
+                            "metadata": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              },
+                              "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                             }
                           },
                           "description": "Free-to-claim catalog item",
@@ -18681,6 +19119,46 @@
                                   "targetTierId": {
                                     "type": "string",
                                     "description": "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."
+                                  },
+                                  "bonusItems": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                            "FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS"
+                                          ],
+                                          "default": "FREE_BONUS_ITEM_TYPE_UNSPECIFIED",
+                                          "description": "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."
+                                        },
+                                        "id": {
+                                          "type": "string",
+                                          "description": "Identifier of the bonus/currency to grant"
+                                        },
+                                        "amount": {
+                                          "type": "string",
+                                          "description": "Amount to grant as string for big integer support (no decimals allowed)"
+                                        }
+                                      },
+                                      "description": "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount.",
+                                      "title": "Free Bonus Item",
+                                      "required": [
+                                        "type",
+                                        "id",
+                                        "amount"
+                                      ]
+                                    },
+                                    "description": "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."
+                                  },
+                                  "metadata": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    },
+                                    "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
                                   }
                                 },
                                 "description": "Free-to-claim catalog item",
