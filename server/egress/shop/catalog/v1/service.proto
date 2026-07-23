@@ -699,6 +699,34 @@ message GetCatalogResponse {
         optional Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-card background styling"}];
       }
 
+      message FreeBonusItem {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Free Bonus Item"
+            description: "A bonus reward granted when a free item is claimed (e.g. loyalty points). A type, an id, and an amount."
+            required: [
+              "type",
+              "id",
+              "amount"
+            ]
+          }
+        };
+        FreeBonusItemType type = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Kind of bonus reward. Only LOYALTY_POINTS is granted today; other values are ignored by consumers."}];
+        string id = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string.min_len = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the bonus/currency to grant"}
+        ];
+        string amount = 3 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount to grant as string for big integer support (no decimals allowed)"}
+        ];
+      }
+
       optional string guid = 1 [
         (validate.rules).string = {
           uuid: true
@@ -727,6 +755,8 @@ message GetCatalogResponse {
       ];
       optional FreeItemAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display attributes for the card"}];
       optional string target_tier_id = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."}];
+      repeated FreeBonusItem bonus_items = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."}];
+      map<string, string> metadata = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."}];
     }
 
     oneof item {

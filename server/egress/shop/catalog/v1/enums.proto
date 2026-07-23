@@ -129,6 +129,12 @@ enum FreeItemStatus {
   FREE_ITEM_STATUS_LOCKED = 3;
 }
 
+enum FreeBonusItemType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Kind of bonus reward granted when a free catalog item is claimed. Only LOYALTY_POINTS is granted today; consumers ignore other/unspecified values."};
+  FREE_BONUS_ITEM_TYPE_UNSPECIFIED = 0;
+  FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS = 1;
+}
+
 enum CatalogTriggerDisplayType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Display placement for a catalog UI trigger"};
   CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED = 0;
