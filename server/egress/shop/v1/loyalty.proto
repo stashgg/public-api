@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package server.egress.shop.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "server/egress/shop/v1/enums.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/egress/shop/v1";
+
+// PlayerLoyaltyState is the loyalty program sub-payload describing a player's
+// standing in a shop's active loyalty campaign at a point in time, embedded on
+// purchase requests to report the standing that applied to a purchase. It is a
+// snapshot: every value is scoped to the live campaign identified by campaign_id.
+// Its Milestone and MilestoneRewardItem messages are nested so this egress
+// payload is self-contained and shares nothing with other APIs.
+message PlayerLoyaltyState {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Player Loyalty State"
+      description: "A player's standing in a shop's active loyalty campaign at a point in time."
+    }
+  };
+  string campaign_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the live loyalty campaign (season) this snapshot is scoped to."}];
+  uint32 total_points = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's loyalty points balance for this campaign."}];
+  int32 points_delta = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Signed change in the loyalty points balance caused by the associated event (for example, a purchase); negative on a refund reversal, zero when the balance did not change."}];
+  optional string current_tier_id = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's current tier, as the partner-facing tier identifier. Omitted when no tier matches the balance."}];
+  optional string previous_tier_id = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's prior tier, set only when the associated event changed the tier. Omitted when the tier did not change."}];
+  optional uint32 points_to_next_tier = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Loyalty points still needed to reach the next tier. Omitted when the player is already at the top tier."}];
+  optional uint32 points_to_next_milestone = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Loyalty points still needed to reach the next unreached milestone. Omitted when there is no further milestone."}];
+  Milestone next_milestone = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The next milestone the player is progressing toward, including every reward it grants. Omitted when there is no further milestone."}];
+  // points_multiplier_permille is a fixed-point ratio expressed in permille
+  // (thousandths) so partners can compute in-game bonuses with exact,
+  // deterministic integer arithmetic across platforms. Divide by 1000 to get the
+  // multiplier: 1000 = 1.0x, 1500 = 1.5x, 3000 = 3.0x.
+  uint32 points_multiplier_permille = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."}];
+
+  // MilestoneRewardItem describes a single reward granted at a loyalty milestone.
+  message MilestoneRewardItem {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Milestone Reward Item"
+        description: "A single reward granted when a loyalty milestone is reached."
+      }
+    };
+    string item_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."}];
+    uint32 quantity = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount of the reward granted."}];
+    LoyaltyRewardType type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."}];
+  }
+
+  // Milestone identifies the next loyalty milestone a player is progressing toward
+  // and lists every reward it grants. Kept intentionally minimal (an identifier
+  // plus the reward list) and extensible; full milestone configuration is served
+  // by the loyalty read API.
+  message Milestone {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Milestone"
+        description: "The next loyalty milestone a player is progressing toward and the rewards it grants."
+      }
+    };
+    string milestone_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."}];
+    repeated MilestoneRewardItem rewards = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "All rewards granted when this milestone is reached."}];
+  }
+}
