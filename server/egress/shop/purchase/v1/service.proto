@@ -7,6 +7,7 @@ import "google/api/field_behavior.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "server/egress/shop/purchase/v1/enums.proto";
 import "server/egress/shop/v1/enums.proto";
+import "server/egress/shop/v1/loyalty.proto";
 import "validate/validate.proto";
 
 option go_package = "github.com/stashgg/public-api/gen/proto/server/egress/shop/purchase/v1";
@@ -162,6 +163,9 @@ message RegisterPaymentRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"}
   ];
+  // Additive, optional. Present only for shops with an active loyalty campaign;
+  // absent otherwise, so the request is byte-identical to before for non-loyalty shops.
+  server.egress.shop.v1.PlayerLoyaltyState loyalty = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign."}];
 }
 
 message RegisterPaymentResponse {
@@ -443,6 +447,10 @@ message ConfirmPaymentRequest {
     ];
   }
   repeated BonusItem bonus_items = 19 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional list of bonus items to be granted with the purchase"}];
+
+  // Additive, optional. Present only for shops with an active loyalty campaign;
+  // absent otherwise, so the request is byte-identical to before for non-loyalty shops.
+  server.egress.shop.v1.PlayerLoyaltyState loyalty = 25 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign."}];
 }
 
 message ConfirmPaymentResponse {

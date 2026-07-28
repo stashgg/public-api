@@ -4225,6 +4225,93 @@
                     ]
                   },
                   "description": "Optional list of bonus items to be granted with the purchase"
+                },
+                "loyalty": {
+                  "type": "object",
+                  "properties": {
+                    "campaignId": {
+                      "type": "string",
+                      "description": "Identifier of the live loyalty campaign (season) this snapshot is scoped to."
+                    },
+                    "totalPoints": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "The player's loyalty points balance for this campaign."
+                    },
+                    "pointsDelta": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Signed change in the loyalty points balance caused by the associated event (for example, a purchase); negative on a refund reversal, zero when the balance did not change."
+                    },
+                    "currentTierId": {
+                      "type": "string",
+                      "description": "The player's current tier, as the partner-facing tier identifier. Omitted when no tier matches the balance."
+                    },
+                    "previousTierId": {
+                      "type": "string",
+                      "description": "The player's prior tier, set only when the associated event changed the tier. Omitted when the tier did not change."
+                    },
+                    "pointsToNextTier": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Loyalty points still needed to reach the next tier. Omitted when the player is already at the top tier."
+                    },
+                    "pointsToNextMilestone": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Loyalty points still needed to reach the next unreached milestone. Omitted when there is no further milestone."
+                    },
+                    "nextMilestone": {
+                      "type": "object",
+                      "properties": {
+                        "milestoneId": {
+                          "type": "string",
+                          "description": "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."
+                        },
+                        "rewards": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "itemId": {
+                                "type": "string",
+                                "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Amount of the reward granted."
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                                  "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+                                  "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+                                  "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+                                  "LOYALTY_REWARD_TYPE_SKU_ITEM"
+                                ],
+                                "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                                "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+                              }
+                            },
+                            "description": "A single reward granted when a loyalty milestone is reached.",
+                            "title": "Milestone Reward Item"
+                          },
+                          "description": "All rewards granted when this milestone is reached."
+                        }
+                      },
+                      "description": "The next milestone the player is progressing toward, including every reward it grants. Omitted when there is no further milestone.",
+                      "title": "Milestone"
+                    },
+                    "pointsMultiplierPermille": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."
+                    }
+                  },
+                  "description": "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign.",
+                  "title": "Player Loyalty State"
                 }
               },
               "description": "Request to confirm and complete a pending purchase that was previously registered.",
@@ -4465,6 +4552,93 @@
                 "region": {
                   "type": "string",
                   "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
+                },
+                "loyalty": {
+                  "type": "object",
+                  "properties": {
+                    "campaignId": {
+                      "type": "string",
+                      "description": "Identifier of the live loyalty campaign (season) this snapshot is scoped to."
+                    },
+                    "totalPoints": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "The player's loyalty points balance for this campaign."
+                    },
+                    "pointsDelta": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Signed change in the loyalty points balance caused by the associated event (for example, a purchase); negative on a refund reversal, zero when the balance did not change."
+                    },
+                    "currentTierId": {
+                      "type": "string",
+                      "description": "The player's current tier, as the partner-facing tier identifier. Omitted when no tier matches the balance."
+                    },
+                    "previousTierId": {
+                      "type": "string",
+                      "description": "The player's prior tier, set only when the associated event changed the tier. Omitted when the tier did not change."
+                    },
+                    "pointsToNextTier": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Loyalty points still needed to reach the next tier. Omitted when the player is already at the top tier."
+                    },
+                    "pointsToNextMilestone": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Loyalty points still needed to reach the next unreached milestone. Omitted when there is no further milestone."
+                    },
+                    "nextMilestone": {
+                      "type": "object",
+                      "properties": {
+                        "milestoneId": {
+                          "type": "string",
+                          "description": "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."
+                        },
+                        "rewards": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "itemId": {
+                                "type": "string",
+                                "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Amount of the reward granted."
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                                  "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+                                  "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+                                  "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+                                  "LOYALTY_REWARD_TYPE_SKU_ITEM"
+                                ],
+                                "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                                "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+                              }
+                            },
+                            "description": "A single reward granted when a loyalty milestone is reached.",
+                            "title": "Milestone Reward Item"
+                          },
+                          "description": "All rewards granted when this milestone is reached."
+                        }
+                      },
+                      "description": "The next milestone the player is progressing toward, including every reward it grants. Omitted when there is no further milestone.",
+                      "title": "Milestone"
+                    },
+                    "pointsMultiplierPermille": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."
+                    }
+                  },
+                  "description": "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign.",
+                  "title": "Player Loyalty State"
                 }
               },
               "description": "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase.",
@@ -20795,6 +20969,77 @@
       "description": "Represents the result of a confirmed purchase",
       "title": "Confirm Payment Result"
     },
+    "PlayerLoyaltyStateMilestone": {
+      "type": "object",
+      "properties": {
+        "milestoneId": {
+          "type": "string",
+          "description": "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."
+        },
+        "rewards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "itemId": {
+                "type": "string",
+                "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+              },
+              "quantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Amount of the reward granted."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                  "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+                  "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+                  "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+                  "LOYALTY_REWARD_TYPE_SKU_ITEM"
+                ],
+                "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+              }
+            },
+            "description": "A single reward granted when a loyalty milestone is reached.",
+            "title": "Milestone Reward Item"
+          },
+          "description": "All rewards granted when this milestone is reached."
+        }
+      },
+      "description": "The next loyalty milestone a player is progressing toward and the rewards it grants.",
+      "title": "Milestone"
+    },
+    "PlayerLoyaltyStateMilestoneRewardItem": {
+      "type": "object",
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Amount of the reward granted."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+            "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+            "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+            "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+            "LOYALTY_REWARD_TYPE_SKU_ITEM"
+          ],
+          "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+          "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+        }
+      },
+      "description": "A single reward granted when a loyalty milestone is reached.",
+      "title": "Milestone Reward Item"
+    },
     "RegisterPaymentRequestPurchaseRegistration": {
       "type": "object",
       "properties": {
@@ -21165,6 +21410,93 @@
             ]
           },
           "description": "Optional list of bonus items to be granted with the purchase"
+        },
+        "loyalty": {
+          "type": "object",
+          "properties": {
+            "campaignId": {
+              "type": "string",
+              "description": "Identifier of the live loyalty campaign (season) this snapshot is scoped to."
+            },
+            "totalPoints": {
+              "type": "integer",
+              "format": "int64",
+              "description": "The player's loyalty points balance for this campaign."
+            },
+            "pointsDelta": {
+              "type": "integer",
+              "format": "int32",
+              "description": "Signed change in the loyalty points balance caused by the associated event (for example, a purchase); negative on a refund reversal, zero when the balance did not change."
+            },
+            "currentTierId": {
+              "type": "string",
+              "description": "The player's current tier, as the partner-facing tier identifier. Omitted when no tier matches the balance."
+            },
+            "previousTierId": {
+              "type": "string",
+              "description": "The player's prior tier, set only when the associated event changed the tier. Omitted when the tier did not change."
+            },
+            "pointsToNextTier": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Loyalty points still needed to reach the next tier. Omitted when the player is already at the top tier."
+            },
+            "pointsToNextMilestone": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Loyalty points still needed to reach the next unreached milestone. Omitted when there is no further milestone."
+            },
+            "nextMilestone": {
+              "type": "object",
+              "properties": {
+                "milestoneId": {
+                  "type": "string",
+                  "description": "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."
+                },
+                "rewards": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "itemId": {
+                        "type": "string",
+                        "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Amount of the reward granted."
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                          "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+                          "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+                          "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+                          "LOYALTY_REWARD_TYPE_SKU_ITEM"
+                        ],
+                        "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                        "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+                      }
+                    },
+                    "description": "A single reward granted when a loyalty milestone is reached.",
+                    "title": "Milestone Reward Item"
+                  },
+                  "description": "All rewards granted when this milestone is reached."
+                }
+              },
+              "description": "The next milestone the player is progressing toward, including every reward it grants. Omitted when there is no further milestone.",
+              "title": "Milestone"
+            },
+            "pointsMultiplierPermille": {
+              "type": "integer",
+              "format": "int64",
+              "description": "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."
+            }
+          },
+          "description": "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign.",
+          "title": "Player Loyalty State"
         }
       },
       "description": "Request to confirm and complete a pending purchase that was previously registered.",
@@ -21209,6 +21541,18 @@
         "results"
       ]
     },
+    "v1LoyaltyRewardType": {
+      "type": "string",
+      "enum": [
+        "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+        "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+        "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+        "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+        "LOYALTY_REWARD_TYPE_SKU_ITEM"
+      ],
+      "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+      "description": "The kind of reward granted at a loyalty milestone."
+    },
     "v1PaymentMethodType": {
       "type": "string",
       "enum": [
@@ -21222,6 +21566,93 @@
       "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
       "description": "Represents the payment method used for the purchase",
       "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
+    },
+    "v1PlayerLoyaltyState": {
+      "type": "object",
+      "properties": {
+        "campaignId": {
+          "type": "string",
+          "description": "Identifier of the live loyalty campaign (season) this snapshot is scoped to."
+        },
+        "totalPoints": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The player's loyalty points balance for this campaign."
+        },
+        "pointsDelta": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Signed change in the loyalty points balance caused by the associated event (for example, a purchase); negative on a refund reversal, zero when the balance did not change."
+        },
+        "currentTierId": {
+          "type": "string",
+          "description": "The player's current tier, as the partner-facing tier identifier. Omitted when no tier matches the balance."
+        },
+        "previousTierId": {
+          "type": "string",
+          "description": "The player's prior tier, set only when the associated event changed the tier. Omitted when the tier did not change."
+        },
+        "pointsToNextTier": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Loyalty points still needed to reach the next tier. Omitted when the player is already at the top tier."
+        },
+        "pointsToNextMilestone": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Loyalty points still needed to reach the next unreached milestone. Omitted when there is no further milestone."
+        },
+        "nextMilestone": {
+          "type": "object",
+          "properties": {
+            "milestoneId": {
+              "type": "string",
+              "description": "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."
+            },
+            "rewards": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "itemId": {
+                    "type": "string",
+                    "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Amount of the reward granted."
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                      "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+                      "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+                      "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+                      "LOYALTY_REWARD_TYPE_SKU_ITEM"
+                    ],
+                    "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                    "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+                  }
+                },
+                "description": "A single reward granted when a loyalty milestone is reached.",
+                "title": "Milestone Reward Item"
+              },
+              "description": "All rewards granted when this milestone is reached."
+            }
+          },
+          "description": "The next milestone the player is progressing toward, including every reward it grants. Omitted when there is no further milestone.",
+          "title": "Milestone"
+        },
+        "pointsMultiplierPermille": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."
+        }
+      },
+      "description": "A player's standing in a shop's active loyalty campaign at a point in time.",
+      "title": "Player Loyalty State"
     },
     "v1PurchaseCancellationStatus": {
       "type": "string",
@@ -21394,6 +21825,93 @@
         "region": {
           "type": "string",
           "description": "Region/country code using ISO-3166-1 alpha-2 code (e.g., 'US', 'CA', 'GB')"
+        },
+        "loyalty": {
+          "type": "object",
+          "properties": {
+            "campaignId": {
+              "type": "string",
+              "description": "Identifier of the live loyalty campaign (season) this snapshot is scoped to."
+            },
+            "totalPoints": {
+              "type": "integer",
+              "format": "int64",
+              "description": "The player's loyalty points balance for this campaign."
+            },
+            "pointsDelta": {
+              "type": "integer",
+              "format": "int32",
+              "description": "Signed change in the loyalty points balance caused by the associated event (for example, a purchase); negative on a refund reversal, zero when the balance did not change."
+            },
+            "currentTierId": {
+              "type": "string",
+              "description": "The player's current tier, as the partner-facing tier identifier. Omitted when no tier matches the balance."
+            },
+            "previousTierId": {
+              "type": "string",
+              "description": "The player's prior tier, set only when the associated event changed the tier. Omitted when the tier did not change."
+            },
+            "pointsToNextTier": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Loyalty points still needed to reach the next tier. Omitted when the player is already at the top tier."
+            },
+            "pointsToNextMilestone": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Loyalty points still needed to reach the next unreached milestone. Omitted when there is no further milestone."
+            },
+            "nextMilestone": {
+              "type": "object",
+              "properties": {
+                "milestoneId": {
+                  "type": "string",
+                  "description": "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."
+                },
+                "rewards": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "itemId": {
+                        "type": "string",
+                        "description": "Identifier of the reward: a shop bonus identifier for currency/points rewards, or the product's external identifier (SKU) for product rewards."
+                      },
+                      "quantity": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Amount of the reward granted."
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                          "LOYALTY_REWARD_TYPE_IN_GAME_CURRENCY",
+                          "LOYALTY_REWARD_TYPE_LOYALTY_CURRENCY",
+                          "LOYALTY_REWARD_TYPE_LOYALTY_POINTS",
+                          "LOYALTY_REWARD_TYPE_SKU_ITEM"
+                        ],
+                        "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
+                        "description": "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."
+                      }
+                    },
+                    "description": "A single reward granted when a loyalty milestone is reached.",
+                    "title": "Milestone Reward Item"
+                  },
+                  "description": "All rewards granted when this milestone is reached."
+                }
+              },
+              "description": "The next milestone the player is progressing toward, including every reward it grants. Omitted when there is no further milestone.",
+              "title": "Milestone"
+            },
+            "pointsMultiplierPermille": {
+              "type": "integer",
+              "format": "int64",
+              "description": "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."
+            }
+          },
+          "description": "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign.",
+          "title": "Player Loyalty State"
         }
       },
       "description": "Request to register a purchase intent with the game backend, at which point the game backend is expected to reserve the inventory for the purchase.",
