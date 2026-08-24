@@ -33,6 +33,14 @@ message PlayerLoyaltyState {
   // deterministic integer arithmetic across platforms. Divide by 1000 to get the
   // multiplier: 1000 = 1.0x, 1500 = 1.5x, 3000 = 3.0x.
   uint32 points_multiplier_permille = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The effective (applied) points-earning multiplier for the player's current loyalty tier, relative to the base (lowest) tier, expressed in permille; divide by 1000 (1500 = 1.5x; base tier = 1000). Exact per-tier rates are available in the tier configuration."}];
+  // unlocked_milestones reports the milestones this event's points gain crossed,
+  // rather than the milestones the player can currently claim. Milestones are
+  // claimed at any time rather than granted automatically when reached, so the
+  // moment one becomes available is otherwise not observable from this payload. A
+  // single event can cross more than one threshold, which is why it is repeated,
+  // and it is disjoint from next_milestone by construction: next_milestone is
+  // strictly above the reported balance while these are at or below it.
+  repeated Milestone unlocked_milestones = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The loyalty milestones this event's points gain crossed, each including every reward it grants, ordered by ascending threshold. Omitted when the event crossed no threshold; never present when the balance did not increase. May contain more than one entry, and never overlaps next_milestone."}];
 
   // MilestoneRewardItem describes a single reward granted at a loyalty milestone.
   message MilestoneRewardItem {
@@ -47,15 +55,15 @@ message PlayerLoyaltyState {
     LoyaltyRewardType type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The kind of reward granted (in-game currency, loyalty currency, loyalty points, or a SKU item)."}];
   }
 
-  // Milestone identifies the next loyalty milestone a player is progressing toward
-  // and lists every reward it grants. Kept intentionally minimal (an identifier
-  // plus the reward list) and extensible; full milestone configuration is served
-  // by the loyalty read API.
+  // Milestone identifies a loyalty milestone — the one a player is progressing
+  // toward, or one this event unlocked — and lists every reward it grants. Kept
+  // intentionally minimal (an identifier plus the reward list) and extensible;
+  // full milestone configuration is served by the loyalty read API.
   message Milestone {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
         title: "Milestone"
-        description: "The next loyalty milestone a player is progressing toward and the rewards it grants."
+        description: "A loyalty milestone and the rewards it grants."
       }
     };
     string milestone_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the milestone; the same identifier reported as milestoneId on the loyalty milestone claimed event and by the loyalty read API."}];
