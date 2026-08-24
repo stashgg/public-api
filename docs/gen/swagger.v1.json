@@ -1205,6 +1205,10 @@
                                       "type": "string",
                                       "description": "Required unique identifier for the free item"
                                     },
+                                    "claimId": {
+                                      "type": "string",
+                                      "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
+                                    },
                                     "name": {
                                       "type": "object",
                                       "properties": {
@@ -2535,6 +2539,10 @@
                                           "itemId": {
                                             "type": "string",
                                             "description": "Required unique identifier for the free item"
+                                          },
+                                          "claimId": {
+                                            "type": "string",
+                                            "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
                                           },
                                           "name": {
                                             "type": "object",
@@ -4798,6 +4806,10 @@
         "itemId": {
           "type": "string",
           "description": "Required unique identifier for the free item"
+        },
+        "claimId": {
+          "type": "string",
+          "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
         },
         "name": {
           "type": "object",
@@ -7537,6 +7549,10 @@
                     "type": "string",
                     "description": "Required unique identifier for the free item"
                   },
+                  "claimId": {
+                    "type": "string",
+                    "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
+                  },
                   "name": {
                     "type": "object",
                     "properties": {
@@ -8867,6 +8883,10 @@
                         "itemId": {
                           "type": "string",
                           "description": "Required unique identifier for the free item"
+                        },
+                        "claimId": {
+                          "type": "string",
+                          "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
                         },
                         "name": {
                           "type": "object",
@@ -11152,6 +11172,10 @@
                           "type": "string",
                           "description": "Required unique identifier for the free item"
                         },
+                        "claimId": {
+                          "type": "string",
+                          "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
+                        },
                         "name": {
                           "type": "object",
                           "properties": {
@@ -12482,6 +12506,10 @@
                               "itemId": {
                                 "type": "string",
                                 "description": "Required unique identifier for the free item"
+                              },
+                              "claimId": {
+                                "type": "string",
+                                "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
                               },
                               "name": {
                                 "type": "object",
@@ -13871,6 +13899,10 @@
             "itemId": {
               "type": "string",
               "description": "Required unique identifier for the free item"
+            },
+            "claimId": {
+              "type": "string",
+              "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
             },
             "name": {
               "type": "object",
@@ -16196,6 +16228,10 @@
                     "type": "string",
                     "description": "Required unique identifier for the free item"
                   },
+                  "claimId": {
+                    "type": "string",
+                    "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
+                  },
                   "name": {
                     "type": "object",
                     "properties": {
@@ -17942,6 +17978,10 @@
                               "type": "string",
                               "description": "Required unique identifier for the free item"
                             },
+                            "claimId": {
+                              "type": "string",
+                              "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
+                            },
                             "name": {
                               "type": "object",
                               "properties": {
@@ -19272,6 +19312,10 @@
                                   "itemId": {
                                     "type": "string",
                                     "description": "Required unique identifier for the free item"
+                                  },
+                                  "claimId": {
+                                    "type": "string",
+                                    "description": "Optional stable claim identity for this free item. Free items sharing a claim_id are the same claim for a claim period, so claiming any one of them consumes the claim for all of them. When absent, the item_id is used. Return at most one item per claim_id per response; additional items sharing a claim_id may be discarded. A locked preview of a later reward must therefore carry a distinct claim_id, or none at all."
                                   },
                                   "name": {
                                     "type": "object",
