@@ -79,4 +79,8 @@ enum PaymentMethodType {
   PAYMENT_METHOD_TYPE_PAYPAL = 4;
   // Klarna buy-now-pay-later payment
   PAYMENT_METHOD_TYPE_KLARNA = 5;
+  // Cash App Pay payment
+  PAYMENT_METHOD_TYPE_CASH_APP = 6;
+  // Amazon Pay wallet payment
+  PAYMENT_METHOD_TYPE_AMAZON_PAY = 7;
 }
