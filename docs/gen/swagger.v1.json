@@ -5447,6 +5447,10 @@
                         "format": "int64",
                         "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
                       },
+                      "purchasePackId": {
+                        "type": "string",
+                        "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
+                      },
                       "metadata": {
                         "type": "object",
                         "additionalProperties": {
@@ -5650,6 +5654,10 @@
                         "type": "integer",
                         "format": "int64",
                         "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
+                      },
+                      "purchasePackId": {
+                        "type": "string",
+                        "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
                       },
                       "metadata": {
                         "type": "object",
@@ -5935,11 +5943,12 @@
                           "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
                           "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
                           "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
-                          "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
+                          "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED",
+                          "PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
                         ],
                         "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
                         "description": "Status of the offer registration",
-                        "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
+                        "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app\n - PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Registration failed because the purchase allowance shared by every item of\nthis item's purchase pack is exhausted, rather than the item's own limit.\nThe pack is the purchase pack catalog item whose id was echoed as\npurchase_pack_id on the registration. Use\nPURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
                       },
                       "message": {
                         "type": "string",
@@ -6056,6 +6065,10 @@
                         "type": "integer",
                         "format": "int64",
                         "description": "Quantity being purchased (must be positive, no bigint support)"
+                      },
+                      "purchasePackId": {
+                        "type": "string",
+                        "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
                       },
                       "metadata": {
                         "type": "object",
@@ -30568,6 +30581,10 @@
           "format": "int64",
           "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
         },
+        "purchasePackId": {
+          "type": "string",
+          "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
+        },
         "metadata": {
           "type": "object",
           "additionalProperties": {
@@ -30625,6 +30642,10 @@
           "type": "integer",
           "format": "int64",
           "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
+        },
+        "purchasePackId": {
+          "type": "string",
+          "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
         },
         "metadata": {
           "type": "object",
@@ -30750,6 +30771,10 @@
           "format": "int64",
           "description": "Quantity being purchased (must be positive, no bigint support)"
         },
+        "purchasePackId": {
+          "type": "string",
+          "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
+        },
         "metadata": {
           "type": "object",
           "additionalProperties": {
@@ -30787,11 +30812,12 @@
             "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
             "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
             "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
-            "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
+            "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED",
+            "PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
           ],
           "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
           "description": "Status of the offer registration",
-          "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
+          "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app\n - PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Registration failed because the purchase allowance shared by every item of\nthis item's purchase pack is exhausted, rather than the item's own limit.\nThe pack is the purchase pack catalog item whose id was echoed as\npurchase_pack_id on the registration. Use\nPURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
         },
         "message": {
           "type": "string",
@@ -30864,6 +30890,10 @@
                 "type": "integer",
                 "format": "int64",
                 "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
+              },
+              "purchasePackId": {
+                "type": "string",
+                "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
               },
               "metadata": {
                 "type": "object",
@@ -31008,6 +31038,10 @@
                 "type": "integer",
                 "format": "int64",
                 "description": "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"
+              },
+              "purchasePackId": {
+                "type": "string",
+                "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
               },
               "metadata": {
                 "type": "object",
@@ -31471,11 +31505,12 @@
         "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
         "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
         "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
-        "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
+        "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED",
+        "PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
       ],
       "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
       "description": "Represents the status of a purchase registration",
-      "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
+      "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app\n - PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Registration failed because the purchase allowance shared by every item of\nthis item's purchase pack is exhausted, rather than the item's own limit.\nThe pack is the purchase pack catalog item whose id was echoed as\npurchase_pack_id on the registration. Use\nPURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
     },
     "v1PurchaseSource": {
       "type": "string",
@@ -31549,6 +31584,10 @@
                 "type": "integer",
                 "format": "int64",
                 "description": "Quantity being purchased (must be positive, no bigint support)"
+              },
+              "purchasePackId": {
+                "type": "string",
+                "description": "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."
               },
               "metadata": {
                 "type": "object",
@@ -31779,11 +31818,12 @@
                   "PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
                   "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
                   "PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE",
-                  "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED"
+                  "PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED",
+                  "PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
                 ],
                 "default": "PURCHASE_REGISTRATION_STATUS_UNSPECIFIED",
                 "description": "Status of the offer registration",
-                "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app"
+                "title": "- PURCHASE_REGISTRATION_STATUS_UNSPECIFIED: Default unknown registration error status\n - PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED: Registration was successful\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER: Registration failed due to invalid offer\n - PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Registration failed due to insufficient inventory\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Registration failed due to purchase limit exceeded\n - PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE: Registration failed due to invalid pricing\n - PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED: Registration failed due to purchase being locked, e.g. in-app\n - PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Registration failed because the purchase allowance shared by every item of\nthis item's purchase pack is exhausted, rather than the item's own limit.\nThe pack is the purchase pack catalog item whose id was echoed as\npurchase_pack_id on the registration. Use\nPURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
               },
               "message": {
                 "type": "string",
