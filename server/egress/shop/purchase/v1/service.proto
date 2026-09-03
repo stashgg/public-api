@@ -142,6 +142,13 @@ message RegisterPaymentRequest {
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity being purchased (must be positive, no bigint support)"}
     ];
+    optional string purchase_pack_id = 6 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the purchase pack this item belongs to, echoed from the catalog response the purchase was made from, so the purchase can be attributed to the offer as it was displayed without a reverse lookup. product_id still identifies which price point was bought. Absent when the item carried none."}
+    ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
   repeated PurchaseRegistration registrations = 5 [
@@ -285,6 +292,13 @@ message CancelPaymentRequest {
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"}
     ];
+    optional string purchase_pack_id = 6 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the purchase pack this item belongs to, echoed from the catalog response the purchase was made from, so the purchase can be attributed to the offer as it was displayed without a reverse lookup. product_id still identifies which price point was bought. Absent when the item carried none."}
+    ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
   repeated CanceledItem items = 4 [
@@ -399,6 +413,13 @@ message ConfirmPaymentRequest {
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"}
+    ];
+    optional string purchase_pack_id = 6 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the purchase pack this item belongs to, echoed from the catalog response the purchase was made from, so the purchase can be attributed to the offer as it was displayed without a reverse lookup. product_id still identifies which price point was bought. Absent when the item carried none."}
     ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
