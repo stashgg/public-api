@@ -716,6 +716,15 @@
                                             },
                                             "description": "Optional badge to display text next to the quantity",
                                             "title": "Simple Badge"
+                                          },
+                                          "bonusClassification": {
+                                            "type": "string",
+                                            "enum": [
+                                              "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                              "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                            ],
+                                            "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                            "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                                           }
                                         },
                                         "description": "Represents an in-game item obtainable as part of this bundle",
@@ -2051,6 +2060,15 @@
                                                   },
                                                   "description": "Optional badge to display text next to the quantity",
                                                   "title": "Simple Badge"
+                                                },
+                                                "bonusClassification": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                                    "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                                  ],
+                                                  "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                                  "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                                                 }
                                               },
                                               "description": "Represents an in-game item obtainable as part of this bundle",
@@ -6067,6 +6085,15 @@
                 },
                 "description": "Optional badge to display text next to the quantity",
                 "title": "Simple Badge"
+              },
+              "bonusClassification": {
+                "type": "string",
+                "enum": [
+                  "BONUS_CLASSIFICATION_UNSPECIFIED",
+                  "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                ],
+                "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
               }
             },
             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -6387,6 +6414,15 @@
           },
           "description": "Optional badge to display text next to the quantity",
           "title": "Simple Badge"
+        },
+        "bonusClassification": {
+          "type": "string",
+          "enum": [
+            "BONUS_CLASSIFICATION_UNSPECIFIED",
+            "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+          ],
+          "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+          "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
         }
       },
       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -7060,6 +7096,15 @@
                           },
                           "description": "Optional badge to display text next to the quantity",
                           "title": "Simple Badge"
+                        },
+                        "bonusClassification": {
+                          "type": "string",
+                          "enum": [
+                            "BONUS_CLASSIFICATION_UNSPECIFIED",
+                            "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                          ],
+                          "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                          "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -8395,6 +8440,15 @@
                                 },
                                 "description": "Optional badge to display text next to the quantity",
                                 "title": "Simple Badge"
+                              },
+                              "bonusClassification": {
+                                "type": "string",
+                                "enum": [
+                                  "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                  "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                ],
+                                "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -10683,6 +10737,15 @@
                                 },
                                 "description": "Optional badge to display text next to the quantity",
                                 "title": "Simple Badge"
+                              },
+                              "bonusClassification": {
+                                "type": "string",
+                                "enum": [
+                                  "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                  "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                ],
+                                "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -12018,6 +12081,15 @@
                                       },
                                       "description": "Optional badge to display text next to the quantity",
                                       "title": "Simple Badge"
+                                    },
+                                    "bonusClassification": {
+                                      "type": "string",
+                                      "enum": [
+                                        "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                        "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                      ],
+                                      "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                      "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                                     }
                                   },
                                   "description": "Represents an in-game item obtainable as part of this bundle",
@@ -13411,6 +13483,15 @@
                     },
                     "description": "Optional badge to display text next to the quantity",
                     "title": "Simple Badge"
+                  },
+                  "bonusClassification": {
+                    "type": "string",
+                    "enum": [
+                      "BONUS_CLASSIFICATION_UNSPECIFIED",
+                      "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                    ],
+                    "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                    "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                   }
                 },
                 "description": "Represents an in-game item obtainable as part of this bundle",
@@ -15739,6 +15820,15 @@
                           },
                           "description": "Optional badge to display text next to the quantity",
                           "title": "Simple Badge"
+                        },
+                        "bonusClassification": {
+                          "type": "string",
+                          "enum": [
+                            "BONUS_CLASSIFICATION_UNSPECIFIED",
+                            "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                          ],
+                          "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                          "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -16689,6 +16779,15 @@
       "description": "Represents the action associated with a badge",
       "title": "- BADGE_ACTION_UNSPECIFIED: Default badge action (no action)\n - BADGE_ACTION_SHOW_OFFER_DETAILS: Show the details of the offer contents, e.g. loot boxes with drop rates"
     },
+    "v1BonusClassification": {
+      "type": "string",
+      "enum": [
+        "BONUS_CLASSIFICATION_UNSPECIFIED",
+        "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+      ],
+      "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+      "description": "Classifies a bonus content item so consumers can present it differently. Display semantics only: it never affects eligibility, granting, or the reward's identifier and quantity."
+    },
     "v1CatalogBorderType": {
       "type": "string",
       "enum": [
@@ -17489,6 +17588,15 @@
                                     },
                                     "description": "Optional badge to display text next to the quantity",
                                     "title": "Simple Badge"
+                                  },
+                                  "bonusClassification": {
+                                    "type": "string",
+                                    "enum": [
+                                      "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                      "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                    ],
+                                    "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                    "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                                   }
                                 },
                                 "description": "Represents an in-game item obtainable as part of this bundle",
@@ -18824,6 +18932,15 @@
                                           },
                                           "description": "Optional badge to display text next to the quantity",
                                           "title": "Simple Badge"
+                                        },
+                                        "bonusClassification": {
+                                          "type": "string",
+                                          "enum": [
+                                            "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                            "BONUS_CLASSIFICATION_ONE_TIME_BONUS"
+                                          ],
+                                          "default": "BONUS_CLASSIFICATION_UNSPECIFIED",
+                                          "description": "Optional classification for this bonus, used only to choose its presentation. Meaningful only when type is CONTENT_ITEM_TYPE_WEB_STORE_BONUS and guid is set; ignored otherwise. Absent or unrecognized values are treated as an ordinary purchase bonus."
                                         }
                                       },
                                       "description": "Represents an in-game item obtainable as part of this bundle",
