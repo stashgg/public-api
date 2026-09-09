@@ -76,6 +76,14 @@ enum ContentItemType {
   CONTENT_ITEM_TYPE_WEB_STORE_BONUS = 1;
 }
 
+enum BonusClassification {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Classifies a bonus content item so consumers can present it differently. Display semantics only: it never affects eligibility, granting, or the reward's identifier and quantity."};
+  // Ordinary bonus granted with the purchase; the default treatment
+  BONUS_CLASSIFICATION_UNSPECIFIED = 0;
+  // Bonus granted only once rather than on every qualifying purchase. The reason it is one-time is the partner's concern, not Stash's.
+  BONUS_CLASSIFICATION_ONE_TIME_BONUS = 1;
+}
+
 enum BadgeAction {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the action associated with a badge"};
   // Default badge action (no action)
