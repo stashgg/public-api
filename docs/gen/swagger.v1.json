@@ -5696,11 +5696,13 @@
                     "PAYMENT_METHOD_TYPE_APPLE_PAY",
                     "PAYMENT_METHOD_TYPE_GOOGLE_PAY",
                     "PAYMENT_METHOD_TYPE_PAYPAL",
-                    "PAYMENT_METHOD_TYPE_KLARNA"
+                    "PAYMENT_METHOD_TYPE_KLARNA",
+                    "PAYMENT_METHOD_TYPE_CASH_APP",
+                    "PAYMENT_METHOD_TYPE_AMAZON_PAY"
                   ],
                   "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
                   "description": "Payment method used for this purchase (e.g., card, Apple Pay, Google Pay)",
-                  "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
+                  "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment\n - PAYMENT_METHOD_TYPE_CASH_APP: Cash App Pay payment\n - PAYMENT_METHOD_TYPE_AMAZON_PAY: Amazon Pay wallet payment"
                 },
                 "items": {
                   "type": "array",
@@ -30183,11 +30185,13 @@
             "PAYMENT_METHOD_TYPE_APPLE_PAY",
             "PAYMENT_METHOD_TYPE_GOOGLE_PAY",
             "PAYMENT_METHOD_TYPE_PAYPAL",
-            "PAYMENT_METHOD_TYPE_KLARNA"
+            "PAYMENT_METHOD_TYPE_KLARNA",
+            "PAYMENT_METHOD_TYPE_CASH_APP",
+            "PAYMENT_METHOD_TYPE_AMAZON_PAY"
           ],
           "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
           "description": "Payment method used for this purchase (e.g., card, Apple Pay, Google Pay)",
-          "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
+          "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment\n - PAYMENT_METHOD_TYPE_CASH_APP: Cash App Pay payment\n - PAYMENT_METHOD_TYPE_AMAZON_PAY: Amazon Pay wallet payment"
         },
         "items": {
           "type": "array",
@@ -30504,11 +30508,13 @@
         "PAYMENT_METHOD_TYPE_APPLE_PAY",
         "PAYMENT_METHOD_TYPE_GOOGLE_PAY",
         "PAYMENT_METHOD_TYPE_PAYPAL",
-        "PAYMENT_METHOD_TYPE_KLARNA"
+        "PAYMENT_METHOD_TYPE_KLARNA",
+        "PAYMENT_METHOD_TYPE_CASH_APP",
+        "PAYMENT_METHOD_TYPE_AMAZON_PAY"
       ],
       "default": "PAYMENT_METHOD_TYPE_UNSPECIFIED",
       "description": "Represents the payment method used for the purchase",
-      "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment"
+      "title": "- PAYMENT_METHOD_TYPE_UNSPECIFIED: Default unknown payment method\n - PAYMENT_METHOD_TYPE_CARD: Standard credit/debit card payment\n - PAYMENT_METHOD_TYPE_APPLE_PAY: Apple Pay wallet payment\n - PAYMENT_METHOD_TYPE_GOOGLE_PAY: Google Pay wallet payment\n - PAYMENT_METHOD_TYPE_PAYPAL: PayPal payment\n - PAYMENT_METHOD_TYPE_KLARNA: Klarna buy-now-pay-later payment\n - PAYMENT_METHOD_TYPE_CASH_APP: Cash App Pay payment\n - PAYMENT_METHOD_TYPE_AMAZON_PAY: Amazon Pay wallet payment"
     },
     "v1PlayerLoyaltyState": {
       "type": "object",
