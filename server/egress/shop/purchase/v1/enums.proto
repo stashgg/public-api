@@ -22,6 +22,12 @@ enum PurchaseRegistrationStatus {
   PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE = 5;
   // Registration failed due to purchase being locked, e.g. in-app
   PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED = 6;
+  // Registration failed because the purchase allowance shared by every item of
+  // this item's purchase pack is exhausted, rather than the item's own limit.
+  // See purchase_pack_id on a purchasable catalog item. Use
+  // PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the
+  // item's own limit is exceeded
+  PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED = 7;
 }
 
 enum PurchaseCancellationStatus {
