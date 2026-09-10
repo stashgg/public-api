@@ -39,8 +39,16 @@ enum PurchasableItemType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of purchasable item"};
   // Default purchasable item type
   PURCHASABLE_ITEM_TYPE_UNSPECIFIED = 0;
+  // A single purchasable offer, whose contents are one in-game item
   PURCHASABLE_ITEM_TYPE_STANDARD_OFFER = 1;
+  // A purchasable offer whose contents are several in-game items
   PURCHASABLE_ITEM_TYPE_BUNDLE_OFFER = 2;
+  // The item that purchases an entire purchase pack in a single transaction. Meaningful
+  // only on an item nested in a pack catalog item, and at most one item per offer
+  // should be this type. The shop renders it in the offer's whole-set placement instead of
+  // as another item in the offer; its availability follows max_purchasable like any other
+  // item. Its contents, when present, list the combined rewards the purchase grants
+  PURCHASABLE_ITEM_TYPE_WHOLE_PURCHASE_PACK = 3;
 }
 
 enum NonPurchasableItemType {
@@ -133,6 +141,18 @@ enum FreeBonusItemType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Kind of bonus reward granted when a free catalog item is claimed. Only LOYALTY_POINTS is granted today; consumers ignore other/unspecified values."};
   FREE_BONUS_ITEM_TYPE_UNSPECIFIED = 0;
   FREE_BONUS_ITEM_TYPE_LOYALTY_POINTS = 1;
+}
+
+enum PurchasableBonusItemType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Kind of bonus granted alongside a purchasable catalog item's contents. Sibling of FreeBonusItemType, which stays restricted to the free-claim surface; a purchase may grant any of the values below."};
+  // Default bonus type when none is specified
+  PURCHASABLE_BONUS_ITEM_TYPE_UNSPECIFIED = 0;
+  // Spendable in-game currency, e.g. gems, coins or gold
+  PURCHASABLE_BONUS_ITEM_TYPE_IN_GAME_CURRENCY = 1;
+  // Loyalty currency the player can spend
+  PURCHASABLE_BONUS_ITEM_TYPE_LOYALTY_CURRENCY = 2;
+  // Non-spendable loyalty points that contribute to tier progression, e.g. XP
+  PURCHASABLE_BONUS_ITEM_TYPE_LOYALTY_POINTS = 3;
 }
 
 enum CatalogTriggerDisplayType {
