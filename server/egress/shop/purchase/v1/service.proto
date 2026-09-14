@@ -40,7 +40,7 @@ service PurchaseService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Confirm payment completion"
-      description: "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases."
+      description: "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. A declined purchase should also carry a decline in the response body so the player can be shown the specific reason."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -469,8 +469,7 @@ message ConfirmPaymentResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       title: "Confirm Payment Response"
-      description: "Expected response format for the ConfirmPayment endpoint from the game backend (presence of results in response body indicates success)."
-      required: ["results"]
+      description: "Expected response format for the ConfirmPayment endpoint from the game backend. Return exactly one of results or decline: results present and decline absent indicates success; decline present indicates the purchase was not fulfilled and takes precedence over anything in results. Return a decline together with an HTTP 4xx status."
     }
   };
   message ConfirmPaymentResult {
@@ -495,9 +494,34 @@ message ConfirmPaymentResponse {
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
     ];
   }
-  repeated ConfirmPaymentResult results = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (validate.rules).repeated.min_items = 1,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Results of the confirmed purchases"}
-  ];
+  message ConfirmPaymentDecline {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Confirm Payment Decline"
+        description: "Structured reason a purchase confirmation was declined. When present, no item of the purchase may have been granted and the payment is not completed."
+        required: ["status"]
+      }
+    };
+    string guid = 1 [
+      (validate.rules).string = {
+        uuid: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer/product GUID the decline applies to, when a single item caused it"}
+    ];
+    string product_id = 2 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer/product SKU the decline applies to, when a single item caused it"}
+    ];
+    PurchaseConfirmationStatus status = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Why the confirmation was declined"}
+    ];
+    optional string message = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional human-readable status message for debugging"}];
+  }
+  repeated ConfirmPaymentResult results = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Results of the confirmed purchases. Present with at least one entry on success; omit when declining"}];
+  optional ConfirmPaymentDecline decline = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Present when the purchase was declined. Takes precedence over results. Return it together with an HTTP 4xx status so the purchase is marked as failed even by a reader that does not understand this field"}];
 }
