@@ -5496,7 +5496,7 @@
     "/api/v1/purchase/confirm": {
       "post": {
         "summary": "Confirm payment completion",
-        "description": "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases.",
+        "description": "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. A declined purchase should also carry a decline in the response body so the player can be shown the specific reason.",
         "operationId": "PurchaseService_ConfirmPayment",
         "responses": {
           "200": {
@@ -5521,14 +5521,48 @@
                     "description": "Represents the result of a confirmed purchase",
                     "title": "Confirm Payment Result"
                   },
-                  "description": "Results of the confirmed purchases"
+                  "description": "Results of the confirmed purchases. Present with at least one entry on success; omit when declining"
+                },
+                "decline": {
+                  "type": "object",
+                  "properties": {
+                    "guid": {
+                      "type": "string",
+                      "description": "Optional offer/product GUID the decline applies to, when a single item caused it"
+                    },
+                    "productId": {
+                      "type": "string",
+                      "description": "Optional offer/product SKU the decline applies to, when a single item caused it"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+                        "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER",
+                        "PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
+                        "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
+                        "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE",
+                        "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED",
+                        "PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
+                      ],
+                      "default": "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+                      "description": "Why the confirmation was declined",
+                      "title": "- PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED: Default unknown confirmation decline status\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER: Confirmation was declined because the offer is invalid or no longer exists\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Confirmation was declined due to insufficient inventory\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Confirmation was declined because the item's own purchase limit is exceeded\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE: Confirmation was declined due to invalid pricing\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED: Confirmation was declined because the purchase is locked, e.g. in-app only\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Confirmation was declined because the purchase allowance shared by every\nitem of the purchase pack this item belongs to is exhausted, rather than\nthe item's own limit. The pack is the purchase pack catalog item whose id\nwas echoed as purchase_pack_id on the purchased item. Use\nPURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Optional human-readable status message for debugging"
+                    }
+                  },
+                  "description": "Present when the purchase was declined. Takes precedence over results. Return it together with an HTTP 4xx status so the purchase is marked as failed even by a reader that does not understand this field",
+                  "title": "Confirm Payment Decline",
+                  "required": [
+                    "status"
+                  ]
                 }
               },
-              "description": "Expected response format for the ConfirmPayment endpoint from the game backend (presence of results in response body indicates success).",
-              "title": "Confirm Payment Response",
-              "required": [
-                "results"
-              ]
+              "description": "Expected response format for the ConfirmPayment endpoint from the game backend. Return exactly one of results or decline: results present and decline absent indicates success; decline present indicates the purchase was not fulfilled and takes precedence over anything in results. Return a decline together with an HTTP 4xx status.",
+              "title": "Confirm Payment Response"
             }
           },
           "default": {
@@ -30664,6 +30698,43 @@
         "cents"
       ]
     },
+    "ConfirmPaymentResponseConfirmPaymentDecline": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Optional offer/product GUID the decline applies to, when a single item caused it"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Optional offer/product SKU the decline applies to, when a single item caused it"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+            "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER",
+            "PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
+            "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
+            "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE",
+            "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED",
+            "PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
+          ],
+          "default": "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+          "description": "Why the confirmation was declined",
+          "title": "- PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED: Default unknown confirmation decline status\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER: Confirmation was declined because the offer is invalid or no longer exists\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Confirmation was declined due to insufficient inventory\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Confirmation was declined because the item's own purchase limit is exceeded\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE: Confirmation was declined due to invalid pricing\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED: Confirmation was declined because the purchase is locked, e.g. in-app only\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Confirmation was declined because the purchase allowance shared by every\nitem of the purchase pack this item belongs to is exhausted, rather than\nthe item's own limit. The pack is the purchase pack catalog item whose id\nwas echoed as purchase_pack_id on the purchased item. Use\nPURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
+        },
+        "message": {
+          "type": "string",
+          "description": "Optional human-readable status message for debugging"
+        }
+      },
+      "description": "Structured reason a purchase confirmation was declined. When present, no item of the purchase may have been granted and the payment is not completed.",
+      "title": "Confirm Payment Decline",
+      "required": [
+        "status"
+      ]
+    },
     "ConfirmPaymentResponseConfirmPaymentResult": {
       "type": "object",
       "properties": {
@@ -31302,14 +31373,48 @@
             "description": "Represents the result of a confirmed purchase",
             "title": "Confirm Payment Result"
           },
-          "description": "Results of the confirmed purchases"
+          "description": "Results of the confirmed purchases. Present with at least one entry on success; omit when declining"
+        },
+        "decline": {
+          "type": "object",
+          "properties": {
+            "guid": {
+              "type": "string",
+              "description": "Optional offer/product GUID the decline applies to, when a single item caused it"
+            },
+            "productId": {
+              "type": "string",
+              "description": "Optional offer/product SKU the decline applies to, when a single item caused it"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+                "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER",
+                "PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
+                "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
+                "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE",
+                "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED",
+                "PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
+              ],
+              "default": "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+              "description": "Why the confirmation was declined",
+              "title": "- PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED: Default unknown confirmation decline status\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER: Confirmation was declined because the offer is invalid or no longer exists\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Confirmation was declined due to insufficient inventory\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Confirmation was declined because the item's own purchase limit is exceeded\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE: Confirmation was declined due to invalid pricing\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED: Confirmation was declined because the purchase is locked, e.g. in-app only\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Confirmation was declined because the purchase allowance shared by every\nitem of the purchase pack this item belongs to is exhausted, rather than\nthe item's own limit. The pack is the purchase pack catalog item whose id\nwas echoed as purchase_pack_id on the purchased item. Use\nPURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
+            },
+            "message": {
+              "type": "string",
+              "description": "Optional human-readable status message for debugging"
+            }
+          },
+          "description": "Present when the purchase was declined. Takes precedence over results. Return it together with an HTTP 4xx status so the purchase is marked as failed even by a reader that does not understand this field",
+          "title": "Confirm Payment Decline",
+          "required": [
+            "status"
+          ]
         }
       },
-      "description": "Expected response format for the ConfirmPayment endpoint from the game backend (presence of results in response body indicates success).",
-      "title": "Confirm Payment Response",
-      "required": [
-        "results"
-      ]
+      "description": "Expected response format for the ConfirmPayment endpoint from the game backend. Return exactly one of results or decline: results present and decline absent indicates success; decline present indicates the purchase was not fulfilled and takes precedence over anything in results. Return a decline together with an HTTP 4xx status.",
+      "title": "Confirm Payment Response"
     },
     "v1LoyaltyRewardType": {
       "type": "string",
@@ -31483,6 +31588,21 @@
       "default": "PURCHASE_CANCELLATION_STATUS_UNSPECIFIED",
       "description": "Represents the status of a purchase cancellation",
       "title": "- PURCHASE_CANCELLATION_STATUS_UNSPECIFIED: Default unknown cancellation error status\n - PURCHASE_CANCELLATION_STATUS_SUCCESS_CANCELLED: Cancellation was successful\n - PURCHASE_CANCELLATION_STATUS_FAILED_TRANSACTION_NOT_FOUND: Cancellation failed because transaction was not found\n - PURCHASE_CANCELLATION_STATUS_FAILED_ALREADY_COMPLETED: Cancellation failed because transaction was already completed\n - PURCHASE_CANCELLATION_STATUS_FAILED_ALREADY_CANCELLED: Cancellation failed because transaction was already cancelled"
+    },
+    "v1PurchaseConfirmationStatus": {
+      "type": "string",
+      "enum": [
+        "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+        "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER",
+        "PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY",
+        "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED",
+        "PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE",
+        "PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED",
+        "PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED"
+      ],
+      "default": "PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED",
+      "description": "Represents why a purchase confirmation was declined",
+      "title": "- PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED: Default unknown confirmation decline status\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER: Confirmation was declined because the offer is invalid or no longer exists\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY: Confirmation was declined due to insufficient inventory\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED: Confirmation was declined because the item's own purchase limit is exceeded\n - PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE: Confirmation was declined due to invalid pricing\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED: Confirmation was declined because the purchase is locked, e.g. in-app only\n - PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED: Confirmation was declined because the purchase allowance shared by every\nitem of the purchase pack this item belongs to is exhausted, rather than\nthe item's own limit. The pack is the purchase pack catalog item whose id\nwas echoed as purchase_pack_id on the purchased item. Use\nPURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the\nitem's own limit is exceeded"
     },
     "v1PurchasePlatform": {
       "type": "string",
