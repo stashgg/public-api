@@ -40,7 +40,43 @@ service PurchaseService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Confirm payment completion"
-      description: "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases."
+      description: "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. A declined purchase should also carry a decline in the response body so the player can be shown the specific reason."
+      responses: {
+        key: "400"
+        value: {
+          description: "The purchase was declined and nothing was granted. The body is a Confirm Payment Response whose decline names the reason. A decline is read on any 4xx, and its status field is the only thing that carries the reason, so this status is the one to return when no more specific code applies."
+          schema: {
+            json_schema: {ref: ".server.egress.shop.purchase.v1.ConfirmPaymentResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "404"
+        value: {
+          description: "The offer or item no longer exists. Same body as 400; send a decline with it whenever one can be named."
+          schema: {
+            json_schema: {ref: ".server.egress.shop.purchase.v1.ConfirmPaymentResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "409"
+        value: {
+          description: "The purchase conflicts with the current state, such as an exhausted allowance or an already fulfilled transaction. Same body as 400; send a decline with it whenever one can be named."
+          schema: {
+            json_schema: {ref: ".server.egress.shop.purchase.v1.ConfirmPaymentResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "410"
+        value: {
+          description: "The offer or item is permanently gone. Same body as 400; send a decline with it whenever one can be named."
+          schema: {
+            json_schema: {ref: ".server.egress.shop.purchase.v1.ConfirmPaymentResponse"}
+          }
+        }
+      }
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -141,6 +177,10 @@ message RegisterPaymentRequest {
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Quantity being purchased (must be positive, no bigint support)"}
+    ];
+    optional string purchase_pack_id = 6 [
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."}
     ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
@@ -285,6 +325,10 @@ message CancelPaymentRequest {
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"}
     ];
+    optional string purchase_pack_id = 6 [
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."}
+    ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
   repeated CanceledItem items = 4 [
@@ -400,6 +444,10 @@ message ConfirmPaymentRequest {
       (validate.rules).uint32.gt = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits"}
     ];
+    optional string purchase_pack_id = 6 [
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the purchase pack the item was selected from: the pack's id in the catalog response the purchase was made from, echoed so the purchase can be attributed to the offer as it was displayed without a reverse lookup. Required when the selected item came from a purchase pack, omitted otherwise; a present but empty value is rejected. product_id still identifies which price point was bought."}
+    ];
     map<string, string> metadata = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs for additional item metadata"}];
   }
   repeated PurchasedItem items = 8 [
@@ -457,8 +505,7 @@ message ConfirmPaymentResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       title: "Confirm Payment Response"
-      description: "Expected response format for the ConfirmPayment endpoint from the game backend (presence of results in response body indicates success)."
-      required: ["results"]
+      description: "Expected response format for the ConfirmPayment endpoint from the game backend. Return exactly one of results or decline: results present and decline absent indicates success; decline present indicates the purchase was not fulfilled and takes precedence over anything in results. Return a decline together with an HTTP 4xx status."
     }
   };
   message ConfirmPaymentResult {
@@ -483,9 +530,34 @@ message ConfirmPaymentResponse {
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer/product SKU that was registered (providing this OR guid is required)"}
     ];
   }
-  repeated ConfirmPaymentResult results = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (validate.rules).repeated.min_items = 1,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Results of the confirmed purchases"}
-  ];
+  message ConfirmPaymentDecline {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Confirm Payment Decline"
+        description: "Structured reason a purchase confirmation was declined. When present, no item of the purchase may have been granted and the payment is not completed."
+        required: ["status"]
+      }
+    };
+    string guid = 1 [
+      (validate.rules).string = {
+        uuid: true
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer/product GUID the decline applies to, when a single item caused it"}
+    ];
+    string product_id = 2 [
+      (validate.rules).string = {
+        min_len: 1
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer/product SKU the decline applies to, when a single item caused it"}
+    ];
+    PurchaseConfirmationStatus status = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Why the confirmation was declined"}
+    ];
+    optional string message = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional human-readable status message for debugging"}];
+  }
+  repeated ConfirmPaymentResult results = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Results of the confirmed purchases. Present with at least one entry on success; omit when declining"}];
+  optional ConfirmPaymentDecline decline = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Present when the purchase was declined. Takes precedence over results. Return it together with an HTTP 4xx status so the purchase is marked as failed even by a reader that does not understand this field"}];
 }

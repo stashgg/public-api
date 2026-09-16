@@ -22,6 +22,13 @@ enum PurchaseRegistrationStatus {
   PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE = 5;
   // Registration failed due to purchase being locked, e.g. in-app
   PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED = 6;
+  // Registration failed because the purchase allowance shared by every item of
+  // this item's purchase pack is exhausted, rather than the item's own limit.
+  // The pack is the purchase pack catalog item whose id was echoed as
+  // purchase_pack_id on the registration. Use
+  // PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the
+  // item's own limit is exceeded
+  PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED = 7;
 }
 
 enum PurchaseCancellationStatus {
@@ -36,6 +43,29 @@ enum PurchaseCancellationStatus {
   PURCHASE_CANCELLATION_STATUS_FAILED_ALREADY_COMPLETED = 3;
   // Cancellation failed because transaction was already cancelled
   PURCHASE_CANCELLATION_STATUS_FAILED_ALREADY_CANCELLED = 4;
+}
+
+enum PurchaseConfirmationStatus {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents why a purchase confirmation was declined"};
+  // Default unknown confirmation decline status
+  PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED = 0;
+  // Confirmation was declined because the offer is invalid or no longer exists
+  PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER = 1;
+  // Confirmation was declined due to insufficient inventory
+  PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY = 2;
+  // Confirmation was declined because the item's own purchase limit is exceeded
+  PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED = 3;
+  // Confirmation was declined due to invalid pricing
+  PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE = 4;
+  // Confirmation was declined because the purchase is locked, e.g. in-app only
+  PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED = 5;
+  // Confirmation was declined because the purchase allowance shared by every
+  // item of the purchase pack this item belongs to is exhausted, rather than
+  // the item's own limit. The pack is the purchase pack catalog item whose id
+  // was echoed as purchase_pack_id on the purchased item. Use
+  // PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the
+  // item's own limit is exceeded
+  PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED = 6;
 }
 
 enum PurchasePlatform {
