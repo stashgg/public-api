@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Stash Studio Read API",
-    "description": "Read-only APIs for querying a shop's managed product catalog and loyalty program. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/sdk/studio/{shop_id}/products\n```\n\n## Authentication\n\nAll requests must include an HMAC-SHA256 signature in the `stash-hmac-signature` header.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Keys created through this portal are Ingress keys by default and work with this API (this is the same key used for `/sdk/` API authentication)\n4. Store the secret securely; you will need it to sign every request\n\n### Signing a Request\n\n1. For GET requests (no body), sign an **empty string** using HMAC-SHA256 with your API secret\n2. Base64-encode the resulting signature\n3. Send it in the `stash-hmac-signature` HTTP header\n\n### Example (curl)\n\n```bash\nSIGNATURE=$(echo -n \"\" | openssl dgst -sha256 -hmac \"YOUR_API_SECRET\" -binary | base64)\ncurl -H \"stash-hmac-signature: $SIGNATURE\" \\\n  \"https://test-api.stash.gg/sdk/studio/{shop_id}/products\"\n```",
+    "title": "Stash Studio API",
+    "description": "APIs for querying a shop's managed product catalog and loyalty program, and for configuring the loyalty program from a partner's own tools. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/sdk/studio/{shop_id}/products\n```\n\n## Authentication\n\nEvery request is signed with your Ingress API key (HMAC-SHA256). Send the signature in the versioned `x-stash-hmac-signature` header.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Keys created through this portal are Ingress keys by default and work with this API (this is the same key used for `/sdk/` API authentication)\n4. Store the secret securely; you will need it to sign every request\n\n### Signing a Request\n\n1. Take the current time as a Unix timestamp in **milliseconds**, for example `1790000000000`\n2. Build the string to sign as `{timestamp}.{body}`. For GET requests `{body}` is empty. For PUT requests it is the **request body exactly as you send it** (the same bytes; do not re-serialize the JSON after signing)\n3. Compute HMAC-SHA256 of that string with your API secret and Base64-encode the result\n4. Send the header `x-stash-hmac-signature: v1;{shopId};{timestamp};{base64Signature}`. The timestamp must be within 5 minutes of Stash server time\n\n### Example (bash and python)\n\nKeep the key in a file with owner-only permissions or in a secret store, and read it inside the signing process. Never pass it as a command-line argument: process listings and shell history can capture it.\n\n```bash\nTS=$(($(date +%s) * 1000))\nBODY=\"\"   # for PUT, the exact JSON you will send, e.g. BODY='{\"activate\":true}'\nSIGNATURE=$(TS=\"$TS\" BODY=\"$BODY\" python3 - <<'PY'\nimport base64, hashlib, hmac, os\nkey = open(os.path.expanduser('~/.stash/ingress-key'), 'rb').read().strip()\nmsg = (os.environ['TS'] + '.' + os.environ['BODY']).encode()\nprint(base64.b64encode(hmac.new(key, msg, hashlib.sha256).digest()).decode())\nPY\n)\ncurl -H \"x-stash-hmac-signature: v1;{shop_id};${TS};${SIGNATURE}\" \\\n  \"https://test-api.stash.gg/sdk/studio/{shop_id}/products\"\n```\n\n### Legacy header (deprecated)\n\n`stash-hmac-signature` carries an untimestamped Base64 HMAC-SHA256 of the body alone (empty string for GET). It is still accepted but is replayable; use the versioned header for new integrations and for every configuration write.",
     "version": "1.0.0",
     "contact": {
       "name": "API Support",
@@ -26,7 +26,7 @@
     },
     {
       "name": "Loyalty",
-      "description": "Read-only endpoints for querying a shop's loyalty program"
+      "description": "Endpoints for reading a shop's loyalty program and, for enabled shops, configuring it"
     }
   ],
   "paths": {
@@ -893,6 +893,1276 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "tags": [
+          "Loyalty"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      }
+    },
+    "/sdk/studio/{shopId}/loyalty/config": {
+      "get": {
+        "summary": "Get loyalty configuration",
+        "description": "Retrieves the shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts: display settings, bonus definitions, reward products with their status, and every campaign (season) with its status. Product rewards are returned by SKU. Use it to verify a sync. Returns NOT_FOUND when the shop has no loyalty program.",
+        "operationId": "LoyaltyService_GetLoyaltyConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "displayConfig": {
+                  "type": "object",
+                  "properties": {
+                    "programName": {
+                      "type": "string",
+                      "description": "Name of the loyalty program as shown to players."
+                    },
+                    "vipStoreName": {
+                      "type": "string",
+                      "description": "Name of the VIP store as shown to players. Omitted when not configured."
+                    }
+                  },
+                  "description": "Shop-level display settings.",
+                  "title": "Loyalty Display Config",
+                  "required": [
+                    "programName"
+                  ]
+                },
+                "bonuses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "BONUS_TYPE_UNSPECIFIED",
+                          "BONUS_TYPE_LOYALTY_POINTS",
+                          "BONUS_TYPE_IN_GAME_CURRENCY",
+                          "BONUS_TYPE_LOYALTY_CURRENCY"
+                        ],
+                        "default": "BONUS_TYPE_UNSPECIFIED",
+                        "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Singular display name, for example Gem."
+                      },
+                      "pluralName": {
+                        "type": "string",
+                        "description": "Plural display name, for example Gems."
+                      },
+                      "abbreviatedName": {
+                        "type": "string",
+                        "description": "Short display name, for example LP."
+                      },
+                      "iconImageUrl": {
+                        "type": "string",
+                        "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      }
+                    },
+                    "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+                    "title": "Loyalty Bonus Definition",
+                    "required": [
+                      "id",
+                      "type",
+                      "name"
+                    ]
+                  },
+                  "description": "Every bonus defined for the shop."
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sku": {
+                        "type": "string",
+                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name shown on the reward."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description shown on the reward."
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      },
+                      "backgroundImageUrl": {
+                        "type": "string",
+                        "description": "Background image URL, same rules as imageUrl."
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                          "REWARD_PRODUCT_STATUS_DRAFT",
+                          "REWARD_PRODUCT_STATUS_PUBLISHED"
+                        ],
+                        "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                        "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+                        "readOnly": true
+                      }
+                    },
+                    "description": "A reward-only product that a milestone can grant by SKU.",
+                    "title": "Loyalty Reward Product",
+                    "required": [
+                      "sku",
+                      "name",
+                      "imageUrl"
+                    ]
+                  },
+                  "description": "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Sellable catalog products are not listed. Resending a draft in UpdateLoyaltyConfig publishes it."
+                },
+                "campaigns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Display name of the season."
+                      },
+                      "startAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+                      },
+                      "endAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+                      },
+                      "reset": {
+                        "type": "object",
+                        "properties": {
+                          "points": {
+                            "type": "string",
+                            "enum": [
+                              "POINTS_UNSPECIFIED",
+                              "POINTS_CARRY",
+                              "POINTS_RESET_TO_TIER_START"
+                            ],
+                            "default": "POINTS_UNSPECIFIED",
+                            "description": "What happens to the loyalty points balance."
+                          },
+                          "milestoneClaims": {
+                            "type": "string",
+                            "enum": [
+                              "MILESTONE_CLAIMS_UNSPECIFIED",
+                              "MILESTONE_CLAIMS_RESET",
+                              "MILESTONE_CLAIMS_CARRY"
+                            ],
+                            "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+                            "description": "What happens to milestone claims."
+                          },
+                          "currency": {
+                            "type": "string",
+                            "enum": [
+                              "CURRENCY_UNSPECIFIED",
+                              "CURRENCY_CARRY",
+                              "CURRENCY_RESET"
+                            ],
+                            "default": "CURRENCY_UNSPECIFIED",
+                            "description": "What happens to loyalty currency balances."
+                          }
+                        },
+                        "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                        "title": "Loyalty Reset Rules",
+                        "required": [
+                          "points",
+                          "milestoneClaims",
+                          "currency"
+                        ]
+                      },
+                      "tiers": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Display name of the tier."
+                            },
+                            "startPoints": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+                            },
+                            "iconUrl": {
+                              "type": "string",
+                              "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                            },
+                            "backgroundImageUrl": {
+                              "type": "string",
+                              "description": "Tier background image URL, same rules as iconUrl."
+                            },
+                            "color": {
+                              "type": "string",
+                              "description": "Accent colour as a CSS hex value, for example #c65d00."
+                            },
+                            "benefits": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "text": {
+                                    "type": "string",
+                                    "description": "Benefit text as shown to players."
+                                  }
+                                },
+                                "description": "One perk listed on a tier.",
+                                "title": "Loyalty Tier Benefit",
+                                "required": [
+                                  "text"
+                                ]
+                              },
+                              "description": "Perks listed on the tier, shown to players in order."
+                            },
+                            "earnRates": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "bonusId": {
+                                    "type": "string",
+                                    "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                                  },
+                                  "rewardPerDollar": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                                  }
+                                },
+                                "description": "How much of one bonus a tier earns per US dollar spent.",
+                                "title": "Loyalty Earn Rate",
+                                "required": [
+                                  "bonusId",
+                                  "rewardPerDollar"
+                                ]
+                              },
+                              "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+                            },
+                            "milestones": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "Display name of the milestone."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "description": "Description shown on the milestone."
+                                  },
+                                  "pointsNeeded": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                                  },
+                                  "rewardName": {
+                                    "type": "string",
+                                    "description": "Name of the reward as shown on the milestone."
+                                  },
+                                  "rewardImageUrl": {
+                                    "type": "string",
+                                    "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                                  },
+                                  "backgroundImageUrl": {
+                                    "type": "string",
+                                    "description": "Milestone background image URL, same rules as rewardImageUrl."
+                                  },
+                                  "bonusRewards": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "bonusId": {
+                                          "type": "string",
+                                          "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                                        },
+                                        "amount": {
+                                          "type": "integer",
+                                          "format": "int64",
+                                          "description": "Amount of the bonus granted."
+                                        }
+                                      },
+                                      "description": "An amount of one bonus granted at a milestone.",
+                                      "title": "Loyalty Bonus Reward",
+                                      "required": [
+                                        "bonusId",
+                                        "amount"
+                                      ]
+                                    },
+                                    "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                                  },
+                                  "productRewards": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sku": {
+                                          "type": "string",
+                                          "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                        },
+                                        "quantity": {
+                                          "type": "integer",
+                                          "format": "int64",
+                                          "description": "Quantity of the product granted."
+                                        }
+                                      },
+                                      "description": "A quantity of one product granted at a milestone.",
+                                      "title": "Loyalty Product Reward",
+                                      "required": [
+                                        "sku",
+                                        "quantity"
+                                      ]
+                                    },
+                                    "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                                  }
+                                },
+                                "description": "A points threshold within a tier that grants rewards when claimed.",
+                                "title": "Loyalty Milestone Config",
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "pointsNeeded"
+                                ]
+                              },
+                              "description": "The tier's milestones."
+                            }
+                          },
+                          "description": "One tier of a season with its earn rates and milestones.",
+                          "title": "Loyalty Tier Config",
+                          "required": [
+                            "id",
+                            "name",
+                            "startPoints"
+                          ]
+                        },
+                        "description": "The season's tiers with their milestones. Start points must be unique within the season."
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "CAMPAIGN_STATUS_UNSPECIFIED",
+                          "CAMPAIGN_STATUS_DRAFT",
+                          "CAMPAIGN_STATUS_SCHEDULED",
+                          "CAMPAIGN_STATUS_ACTIVE",
+                          "CAMPAIGN_STATUS_ENDED"
+                        ],
+                        "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+                        "description": "Lifecycle status of the season. Ignored on input.",
+                        "readOnly": true
+                      }
+                    },
+                    "description": "A loyalty campaign (season): its window, reset rules and tiers with their milestones.",
+                    "title": "Loyalty Campaign Config",
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  },
+                  "description": "Every campaign (season) of the program with its status, ordered by start date ascending; seasons without a start date come last."
+                }
+              },
+              "description": "A shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts.",
+              "title": "Get Loyalty Config Response"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shopId",
+            "description": "Shop identifier from Stash Studio",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Loyalty"
+        ],
+        "security": [
+          {
+            "hmac": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Configure a loyalty season",
+        "description": "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions and reward products it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. The request body must be signed exactly as sent. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop.",
+        "operationId": "LoyaltyService_UpdateLoyaltyConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "displayConfig": {
+                  "type": "object",
+                  "properties": {
+                    "programName": {
+                      "type": "string",
+                      "description": "Name of the loyalty program as shown to players."
+                    },
+                    "vipStoreName": {
+                      "type": "string",
+                      "description": "Name of the VIP store as shown to players. Omitted when not configured."
+                    }
+                  },
+                  "description": "Shop-level display settings.",
+                  "title": "Loyalty Display Config",
+                  "required": [
+                    "programName"
+                  ]
+                },
+                "bonuses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "BONUS_TYPE_UNSPECIFIED",
+                          "BONUS_TYPE_LOYALTY_POINTS",
+                          "BONUS_TYPE_IN_GAME_CURRENCY",
+                          "BONUS_TYPE_LOYALTY_CURRENCY"
+                        ],
+                        "default": "BONUS_TYPE_UNSPECIFIED",
+                        "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Singular display name, for example Gem."
+                      },
+                      "pluralName": {
+                        "type": "string",
+                        "description": "Plural display name, for example Gems."
+                      },
+                      "abbreviatedName": {
+                        "type": "string",
+                        "description": "Short display name, for example LP."
+                      },
+                      "iconImageUrl": {
+                        "type": "string",
+                        "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      }
+                    },
+                    "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+                    "title": "Loyalty Bonus Definition",
+                    "required": [
+                      "id",
+                      "type",
+                      "name"
+                    ]
+                  },
+                  "description": "Every bonus defined for the shop."
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sku": {
+                        "type": "string",
+                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name shown on the reward."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description shown on the reward."
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      },
+                      "backgroundImageUrl": {
+                        "type": "string",
+                        "description": "Background image URL, same rules as imageUrl."
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                          "REWARD_PRODUCT_STATUS_DRAFT",
+                          "REWARD_PRODUCT_STATUS_PUBLISHED"
+                        ],
+                        "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                        "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+                        "readOnly": true
+                      }
+                    },
+                    "description": "A reward-only product that a milestone can grant by SKU.",
+                    "title": "Loyalty Reward Product",
+                    "required": [
+                      "sku",
+                      "name",
+                      "imageUrl"
+                    ]
+                  },
+                  "description": "Every reward-only product the shop holds, with its status."
+                },
+                "campaign": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the season."
+                    },
+                    "startAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+                    },
+                    "endAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+                    },
+                    "reset": {
+                      "type": "object",
+                      "properties": {
+                        "points": {
+                          "type": "string",
+                          "enum": [
+                            "POINTS_UNSPECIFIED",
+                            "POINTS_CARRY",
+                            "POINTS_RESET_TO_TIER_START"
+                          ],
+                          "default": "POINTS_UNSPECIFIED",
+                          "description": "What happens to the loyalty points balance."
+                        },
+                        "milestoneClaims": {
+                          "type": "string",
+                          "enum": [
+                            "MILESTONE_CLAIMS_UNSPECIFIED",
+                            "MILESTONE_CLAIMS_RESET",
+                            "MILESTONE_CLAIMS_CARRY"
+                          ],
+                          "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+                          "description": "What happens to milestone claims."
+                        },
+                        "currency": {
+                          "type": "string",
+                          "enum": [
+                            "CURRENCY_UNSPECIFIED",
+                            "CURRENCY_CARRY",
+                            "CURRENCY_RESET"
+                          ],
+                          "default": "CURRENCY_UNSPECIFIED",
+                          "description": "What happens to loyalty currency balances."
+                        }
+                      },
+                      "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                      "title": "Loyalty Reset Rules",
+                      "required": [
+                        "points",
+                        "milestoneClaims",
+                        "currency"
+                      ]
+                    },
+                    "tiers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Display name of the tier."
+                          },
+                          "startPoints": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+                          },
+                          "iconUrl": {
+                            "type": "string",
+                            "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                          },
+                          "backgroundImageUrl": {
+                            "type": "string",
+                            "description": "Tier background image URL, same rules as iconUrl."
+                          },
+                          "color": {
+                            "type": "string",
+                            "description": "Accent colour as a CSS hex value, for example #c65d00."
+                          },
+                          "benefits": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string",
+                                  "description": "Benefit text as shown to players."
+                                }
+                              },
+                              "description": "One perk listed on a tier.",
+                              "title": "Loyalty Tier Benefit",
+                              "required": [
+                                "text"
+                              ]
+                            },
+                            "description": "Perks listed on the tier, shown to players in order."
+                          },
+                          "earnRates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "bonusId": {
+                                  "type": "string",
+                                  "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                                },
+                                "rewardPerDollar": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                                }
+                              },
+                              "description": "How much of one bonus a tier earns per US dollar spent.",
+                              "title": "Loyalty Earn Rate",
+                              "required": [
+                                "bonusId",
+                                "rewardPerDollar"
+                              ]
+                            },
+                            "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+                          },
+                          "milestones": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Display name of the milestone."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "description": "Description shown on the milestone."
+                                },
+                                "pointsNeeded": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                                },
+                                "rewardName": {
+                                  "type": "string",
+                                  "description": "Name of the reward as shown on the milestone."
+                                },
+                                "rewardImageUrl": {
+                                  "type": "string",
+                                  "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                                },
+                                "backgroundImageUrl": {
+                                  "type": "string",
+                                  "description": "Milestone background image URL, same rules as rewardImageUrl."
+                                },
+                                "bonusRewards": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "bonusId": {
+                                        "type": "string",
+                                        "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                                      },
+                                      "amount": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "Amount of the bonus granted."
+                                      }
+                                    },
+                                    "description": "An amount of one bonus granted at a milestone.",
+                                    "title": "Loyalty Bonus Reward",
+                                    "required": [
+                                      "bonusId",
+                                      "amount"
+                                    ]
+                                  },
+                                  "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                                },
+                                "productRewards": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "sku": {
+                                        "type": "string",
+                                        "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                      },
+                                      "quantity": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "Quantity of the product granted."
+                                      }
+                                    },
+                                    "description": "A quantity of one product granted at a milestone.",
+                                    "title": "Loyalty Product Reward",
+                                    "required": [
+                                      "sku",
+                                      "quantity"
+                                    ]
+                                  },
+                                  "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                                }
+                              },
+                              "description": "A points threshold within a tier that grants rewards when claimed.",
+                              "title": "Loyalty Milestone Config",
+                              "required": [
+                                "id",
+                                "name",
+                                "pointsNeeded"
+                              ]
+                            },
+                            "description": "The tier's milestones."
+                          }
+                        },
+                        "description": "One tier of a season with its earn rates and milestones.",
+                        "title": "Loyalty Tier Config",
+                        "required": [
+                          "id",
+                          "name",
+                          "startPoints"
+                        ]
+                      },
+                      "description": "The season's tiers with their milestones. Start points must be unique within the season."
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "CAMPAIGN_STATUS_UNSPECIFIED",
+                        "CAMPAIGN_STATUS_DRAFT",
+                        "CAMPAIGN_STATUS_SCHEDULED",
+                        "CAMPAIGN_STATUS_ACTIVE",
+                        "CAMPAIGN_STATUS_ENDED"
+                      ],
+                      "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+                      "description": "Lifecycle status of the season. Ignored on input.",
+                      "readOnly": true
+                    }
+                  },
+                  "description": "The season as stored after the update, with its status.",
+                  "title": "Loyalty Campaign Config",
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                },
+                "warnings": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Notes about parts of the request that were accepted but had no effect, for example activate on a program that is already live. Empty when there is nothing to report."
+                }
+              },
+              "description": "The configuration as stored after the update.",
+              "title": "Update Loyalty Config Response"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shopId",
+            "description": "Shop identifier from Stash Studio",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "activate": {
+                  "type": "boolean",
+                  "description": "Turn the program on once the request has been applied and passes publish validation. Honoured only when the program is not live (never published, or unpublished in Studio); ignored on a live program. Creates the program for the shop if it has none."
+                },
+                "displayConfig": {
+                  "type": "object",
+                  "properties": {
+                    "programName": {
+                      "type": "string",
+                      "description": "Name of the loyalty program as shown to players."
+                    },
+                    "vipStoreName": {
+                      "type": "string",
+                      "description": "Name of the VIP store as shown to players. Omitted when not configured."
+                    }
+                  },
+                  "description": "Shop-level display settings, overwritten as sent. Omit to leave them unchanged.",
+                  "title": "Loyalty Display Config",
+                  "required": [
+                    "programName"
+                  ]
+                },
+                "bonuses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "BONUS_TYPE_UNSPECIFIED",
+                          "BONUS_TYPE_LOYALTY_POINTS",
+                          "BONUS_TYPE_IN_GAME_CURRENCY",
+                          "BONUS_TYPE_LOYALTY_CURRENCY"
+                        ],
+                        "default": "BONUS_TYPE_UNSPECIFIED",
+                        "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Singular display name, for example Gem."
+                      },
+                      "pluralName": {
+                        "type": "string",
+                        "description": "Plural display name, for example Gems."
+                      },
+                      "abbreviatedName": {
+                        "type": "string",
+                        "description": "Short display name, for example LP."
+                      },
+                      "iconImageUrl": {
+                        "type": "string",
+                        "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      }
+                    },
+                    "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+                    "title": "Loyalty Bonus Definition",
+                    "required": [
+                      "id",
+                      "type",
+                      "name"
+                    ]
+                  },
+                  "description": "Bonus definitions, created or updated by id. A bonus missing from the list is left in place; the API never deletes bonuses because wallet balances depend on them."
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sku": {
+                        "type": "string",
+                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name shown on the reward."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description shown on the reward."
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      },
+                      "backgroundImageUrl": {
+                        "type": "string",
+                        "description": "Background image URL, same rules as imageUrl."
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                          "REWARD_PRODUCT_STATUS_DRAFT",
+                          "REWARD_PRODUCT_STATUS_PUBLISHED"
+                        ],
+                        "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                        "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+                        "readOnly": true
+                      }
+                    },
+                    "description": "A reward-only product that a milestone can grant by SKU.",
+                    "title": "Loyalty Reward Product",
+                    "required": [
+                      "sku",
+                      "name",
+                      "imageUrl"
+                    ]
+                  },
+                  "description": "Reward products, created or updated by SKU. Every product listed is published on write, including one saved as a draft in Studio; leave a product out of the list to keep its Studio draft unpublished. A product missing from the list is left in place; the API never deletes products because claimed milestones and ended seasons still refer to them. Applied before the campaign, so a milestone may reference a SKU defined in the same request."
+                },
+                "campaign": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the season."
+                    },
+                    "startAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+                    },
+                    "endAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+                    },
+                    "reset": {
+                      "type": "object",
+                      "properties": {
+                        "points": {
+                          "type": "string",
+                          "enum": [
+                            "POINTS_UNSPECIFIED",
+                            "POINTS_CARRY",
+                            "POINTS_RESET_TO_TIER_START"
+                          ],
+                          "default": "POINTS_UNSPECIFIED",
+                          "description": "What happens to the loyalty points balance."
+                        },
+                        "milestoneClaims": {
+                          "type": "string",
+                          "enum": [
+                            "MILESTONE_CLAIMS_UNSPECIFIED",
+                            "MILESTONE_CLAIMS_RESET",
+                            "MILESTONE_CLAIMS_CARRY"
+                          ],
+                          "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+                          "description": "What happens to milestone claims."
+                        },
+                        "currency": {
+                          "type": "string",
+                          "enum": [
+                            "CURRENCY_UNSPECIFIED",
+                            "CURRENCY_CARRY",
+                            "CURRENCY_RESET"
+                          ],
+                          "default": "CURRENCY_UNSPECIFIED",
+                          "description": "What happens to loyalty currency balances."
+                        }
+                      },
+                      "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                      "title": "Loyalty Reset Rules",
+                      "required": [
+                        "points",
+                        "milestoneClaims",
+                        "currency"
+                      ]
+                    },
+                    "tiers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Display name of the tier."
+                          },
+                          "startPoints": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+                          },
+                          "iconUrl": {
+                            "type": "string",
+                            "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                          },
+                          "backgroundImageUrl": {
+                            "type": "string",
+                            "description": "Tier background image URL, same rules as iconUrl."
+                          },
+                          "color": {
+                            "type": "string",
+                            "description": "Accent colour as a CSS hex value, for example #c65d00."
+                          },
+                          "benefits": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string",
+                                  "description": "Benefit text as shown to players."
+                                }
+                              },
+                              "description": "One perk listed on a tier.",
+                              "title": "Loyalty Tier Benefit",
+                              "required": [
+                                "text"
+                              ]
+                            },
+                            "description": "Perks listed on the tier, shown to players in order."
+                          },
+                          "earnRates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "bonusId": {
+                                  "type": "string",
+                                  "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                                },
+                                "rewardPerDollar": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                                }
+                              },
+                              "description": "How much of one bonus a tier earns per US dollar spent.",
+                              "title": "Loyalty Earn Rate",
+                              "required": [
+                                "bonusId",
+                                "rewardPerDollar"
+                              ]
+                            },
+                            "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+                          },
+                          "milestones": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Display name of the milestone."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "description": "Description shown on the milestone."
+                                },
+                                "pointsNeeded": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                                },
+                                "rewardName": {
+                                  "type": "string",
+                                  "description": "Name of the reward as shown on the milestone."
+                                },
+                                "rewardImageUrl": {
+                                  "type": "string",
+                                  "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                                },
+                                "backgroundImageUrl": {
+                                  "type": "string",
+                                  "description": "Milestone background image URL, same rules as rewardImageUrl."
+                                },
+                                "bonusRewards": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "bonusId": {
+                                        "type": "string",
+                                        "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                                      },
+                                      "amount": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "Amount of the bonus granted."
+                                      }
+                                    },
+                                    "description": "An amount of one bonus granted at a milestone.",
+                                    "title": "Loyalty Bonus Reward",
+                                    "required": [
+                                      "bonusId",
+                                      "amount"
+                                    ]
+                                  },
+                                  "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                                },
+                                "productRewards": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "sku": {
+                                        "type": "string",
+                                        "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                      },
+                                      "quantity": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "Quantity of the product granted."
+                                      }
+                                    },
+                                    "description": "A quantity of one product granted at a milestone.",
+                                    "title": "Loyalty Product Reward",
+                                    "required": [
+                                      "sku",
+                                      "quantity"
+                                    ]
+                                  },
+                                  "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                                }
+                              },
+                              "description": "A points threshold within a tier that grants rewards when claimed.",
+                              "title": "Loyalty Milestone Config",
+                              "required": [
+                                "id",
+                                "name",
+                                "pointsNeeded"
+                              ]
+                            },
+                            "description": "The tier's milestones."
+                          }
+                        },
+                        "description": "One tier of a season with its earn rates and milestones.",
+                        "title": "Loyalty Tier Config",
+                        "required": [
+                          "id",
+                          "name",
+                          "startPoints"
+                        ]
+                      },
+                      "description": "The season's tiers with their milestones. Start points must be unique within the season."
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "CAMPAIGN_STATUS_UNSPECIFIED",
+                        "CAMPAIGN_STATUS_DRAFT",
+                        "CAMPAIGN_STATUS_SCHEDULED",
+                        "CAMPAIGN_STATUS_ACTIVE",
+                        "CAMPAIGN_STATUS_ENDED"
+                      ],
+                      "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+                      "description": "Lifecycle status of the season. Ignored on input.",
+                      "readOnly": true
+                    }
+                  },
+                  "description": "The season to create or update; its id is the upsert key. The season is replaced as a whole: a tier or milestone omitted from it is removed from that season. Other seasons are not touched.",
+                  "title": "Loyalty Campaign Config",
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              },
+              "description": "One season plus the shop-level items it depends on. Signed over the request body.",
+              "title": "Update Loyalty Config Request",
+              "required": [
+                "campaign"
+              ]
+            }
           }
         ],
         "tags": [
@@ -2424,6 +3694,392 @@
       "description": "A single reward granted when a loyalty milestone is reached.",
       "title": "Player Milestone Reward Item"
     },
+    "LoyaltyServiceUpdateLoyaltyConfigBody": {
+      "type": "object",
+      "properties": {
+        "activate": {
+          "type": "boolean",
+          "description": "Turn the program on once the request has been applied and passes publish validation. Honoured only when the program is not live (never published, or unpublished in Studio); ignored on a live program. Creates the program for the shop if it has none."
+        },
+        "displayConfig": {
+          "type": "object",
+          "properties": {
+            "programName": {
+              "type": "string",
+              "description": "Name of the loyalty program as shown to players."
+            },
+            "vipStoreName": {
+              "type": "string",
+              "description": "Name of the VIP store as shown to players. Omitted when not configured."
+            }
+          },
+          "description": "Shop-level display settings, overwritten as sent. Omit to leave them unchanged.",
+          "title": "Loyalty Display Config",
+          "required": [
+            "programName"
+          ]
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "BONUS_TYPE_UNSPECIFIED",
+                  "BONUS_TYPE_LOYALTY_POINTS",
+                  "BONUS_TYPE_IN_GAME_CURRENCY",
+                  "BONUS_TYPE_LOYALTY_CURRENCY"
+                ],
+                "default": "BONUS_TYPE_UNSPECIFIED",
+                "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+              },
+              "name": {
+                "type": "string",
+                "description": "Singular display name, for example Gem."
+              },
+              "pluralName": {
+                "type": "string",
+                "description": "Plural display name, for example Gems."
+              },
+              "abbreviatedName": {
+                "type": "string",
+                "description": "Short display name, for example LP."
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              }
+            },
+            "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+            "title": "Loyalty Bonus Definition",
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "description": "Bonus definitions, created or updated by id. A bonus missing from the list is left in place; the API never deletes bonuses because wallet balances depend on them."
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": {
+                "type": "string",
+                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name shown on the reward."
+              },
+              "description": {
+                "type": "string",
+                "description": "Description shown on the reward."
+              },
+              "imageUrl": {
+                "type": "string",
+                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              },
+              "backgroundImageUrl": {
+                "type": "string",
+                "description": "Background image URL, same rules as imageUrl."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                  "REWARD_PRODUCT_STATUS_DRAFT",
+                  "REWARD_PRODUCT_STATUS_PUBLISHED"
+                ],
+                "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+                "readOnly": true
+              }
+            },
+            "description": "A reward-only product that a milestone can grant by SKU.",
+            "title": "Loyalty Reward Product",
+            "required": [
+              "sku",
+              "name",
+              "imageUrl"
+            ]
+          },
+          "description": "Reward products, created or updated by SKU. Every product listed is published on write, including one saved as a draft in Studio; leave a product out of the list to keep its Studio draft unpublished. A product missing from the list is left in place; the API never deletes products because claimed milestones and ended seasons still refer to them. Applied before the campaign, so a milestone may reference a SKU defined in the same request."
+        },
+        "campaign": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+            },
+            "name": {
+              "type": "string",
+              "description": "Display name of the season."
+            },
+            "startAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+            },
+            "endAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+            },
+            "reset": {
+              "type": "object",
+              "properties": {
+                "points": {
+                  "type": "string",
+                  "enum": [
+                    "POINTS_UNSPECIFIED",
+                    "POINTS_CARRY",
+                    "POINTS_RESET_TO_TIER_START"
+                  ],
+                  "default": "POINTS_UNSPECIFIED",
+                  "description": "What happens to the loyalty points balance."
+                },
+                "milestoneClaims": {
+                  "type": "string",
+                  "enum": [
+                    "MILESTONE_CLAIMS_UNSPECIFIED",
+                    "MILESTONE_CLAIMS_RESET",
+                    "MILESTONE_CLAIMS_CARRY"
+                  ],
+                  "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+                  "description": "What happens to milestone claims."
+                },
+                "currency": {
+                  "type": "string",
+                  "enum": [
+                    "CURRENCY_UNSPECIFIED",
+                    "CURRENCY_CARRY",
+                    "CURRENCY_RESET"
+                  ],
+                  "default": "CURRENCY_UNSPECIFIED",
+                  "description": "What happens to loyalty currency balances."
+                }
+              },
+              "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+              "title": "Loyalty Reset Rules",
+              "required": [
+                "points",
+                "milestoneClaims",
+                "currency"
+              ]
+            },
+            "tiers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Display name of the tier."
+                  },
+                  "startPoints": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                  },
+                  "backgroundImageUrl": {
+                    "type": "string",
+                    "description": "Tier background image URL, same rules as iconUrl."
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Accent colour as a CSS hex value, for example #c65d00."
+                  },
+                  "benefits": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "string",
+                          "description": "Benefit text as shown to players."
+                        }
+                      },
+                      "description": "One perk listed on a tier.",
+                      "title": "Loyalty Tier Benefit",
+                      "required": [
+                        "text"
+                      ]
+                    },
+                    "description": "Perks listed on the tier, shown to players in order."
+                  },
+                  "earnRates": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "bonusId": {
+                          "type": "string",
+                          "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                        },
+                        "rewardPerDollar": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                        }
+                      },
+                      "description": "How much of one bonus a tier earns per US dollar spent.",
+                      "title": "Loyalty Earn Rate",
+                      "required": [
+                        "bonusId",
+                        "rewardPerDollar"
+                      ]
+                    },
+                    "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+                  },
+                  "milestones": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Display name of the milestone."
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Description shown on the milestone."
+                        },
+                        "pointsNeeded": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                        },
+                        "rewardName": {
+                          "type": "string",
+                          "description": "Name of the reward as shown on the milestone."
+                        },
+                        "rewardImageUrl": {
+                          "type": "string",
+                          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        },
+                        "backgroundImageUrl": {
+                          "type": "string",
+                          "description": "Milestone background image URL, same rules as rewardImageUrl."
+                        },
+                        "bonusRewards": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "bonusId": {
+                                "type": "string",
+                                "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                              },
+                              "amount": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Amount of the bonus granted."
+                              }
+                            },
+                            "description": "An amount of one bonus granted at a milestone.",
+                            "title": "Loyalty Bonus Reward",
+                            "required": [
+                              "bonusId",
+                              "amount"
+                            ]
+                          },
+                          "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                        },
+                        "productRewards": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string",
+                                "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Quantity of the product granted."
+                              }
+                            },
+                            "description": "A quantity of one product granted at a milestone.",
+                            "title": "Loyalty Product Reward",
+                            "required": [
+                              "sku",
+                              "quantity"
+                            ]
+                          },
+                          "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                        }
+                      },
+                      "description": "A points threshold within a tier that grants rewards when claimed.",
+                      "title": "Loyalty Milestone Config",
+                      "required": [
+                        "id",
+                        "name",
+                        "pointsNeeded"
+                      ]
+                    },
+                    "description": "The tier's milestones."
+                  }
+                },
+                "description": "One tier of a season with its earn rates and milestones.",
+                "title": "Loyalty Tier Config",
+                "required": [
+                  "id",
+                  "name",
+                  "startPoints"
+                ]
+              },
+              "description": "The season's tiers with their milestones. Start points must be unique within the season."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "CAMPAIGN_STATUS_UNSPECIFIED",
+                "CAMPAIGN_STATUS_DRAFT",
+                "CAMPAIGN_STATUS_SCHEDULED",
+                "CAMPAIGN_STATUS_ACTIVE",
+                "CAMPAIGN_STATUS_ENDED"
+              ],
+              "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+              "description": "Lifecycle status of the season. Ignored on input.",
+              "readOnly": true
+            }
+          },
+          "description": "The season to create or update; its id is the upsert key. The season is replaced as a whole: a tier or milestone omitted from it is removed from that season. Other seasons are not touched.",
+          "title": "Loyalty Campaign Config",
+          "required": [
+            "id",
+            "name"
+          ]
+        }
+      },
+      "description": "One season plus the shop-level items it depends on. Signed over the request body.",
+      "title": "Update Loyalty Config Request",
+      "required": [
+        "campaign"
+      ]
+    },
     "LoyaltyTierLoyaltyMilestone": {
       "type": "object",
       "properties": {
@@ -2549,6 +4205,803 @@
       },
       "description": "The next loyalty milestone a player is progressing toward and the rewards it grants.",
       "title": "Player Next Milestone"
+    },
+    "ResetRulesCurrency": {
+      "type": "string",
+      "enum": [
+        "CURRENCY_UNSPECIFIED",
+        "CURRENCY_CARRY",
+        "CURRENCY_RESET"
+      ],
+      "default": "CURRENCY_UNSPECIFIED",
+      "description": " - CURRENCY_CARRY: Loyalty currency balances carry over unchanged.\n - CURRENCY_RESET: Loyalty currency balances are cleared."
+    },
+    "ResetRulesMilestoneClaims": {
+      "type": "string",
+      "enum": [
+        "MILESTONE_CLAIMS_UNSPECIFIED",
+        "MILESTONE_CLAIMS_RESET",
+        "MILESTONE_CLAIMS_CARRY"
+      ],
+      "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+      "description": " - MILESTONE_CLAIMS_RESET: Earlier claims are cleared; every milestone of the season is claimable.\n - MILESTONE_CLAIMS_CARRY: Earlier claims are kept as history rather than cleared."
+    },
+    "ResetRulesPoints": {
+      "type": "string",
+      "enum": [
+        "POINTS_UNSPECIFIED",
+        "POINTS_CARRY",
+        "POINTS_RESET_TO_TIER_START"
+      ],
+      "default": "POINTS_UNSPECIFIED",
+      "description": " - POINTS_CARRY: The points balance carries over unchanged.\n - POINTS_RESET_TO_TIER_START: The points balance drops to the start of the player's current tier."
+    },
+    "v1BonusDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "BONUS_TYPE_UNSPECIFIED",
+            "BONUS_TYPE_LOYALTY_POINTS",
+            "BONUS_TYPE_IN_GAME_CURRENCY",
+            "BONUS_TYPE_LOYALTY_CURRENCY"
+          ],
+          "default": "BONUS_TYPE_UNSPECIFIED",
+          "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+        },
+        "name": {
+          "type": "string",
+          "description": "Singular display name, for example Gem."
+        },
+        "pluralName": {
+          "type": "string",
+          "description": "Plural display name, for example Gems."
+        },
+        "abbreviatedName": {
+          "type": "string",
+          "description": "Short display name, for example LP."
+        },
+        "iconImageUrl": {
+          "type": "string",
+          "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+        }
+      },
+      "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+      "title": "Loyalty Bonus Definition",
+      "required": [
+        "id",
+        "type",
+        "name"
+      ]
+    },
+    "v1BonusReward": {
+      "type": "object",
+      "properties": {
+        "bonusId": {
+          "type": "string",
+          "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Amount of the bonus granted."
+        }
+      },
+      "description": "An amount of one bonus granted at a milestone.",
+      "title": "Loyalty Bonus Reward",
+      "required": [
+        "bonusId",
+        "amount"
+      ]
+    },
+    "v1BonusType": {
+      "type": "string",
+      "enum": [
+        "BONUS_TYPE_UNSPECIFIED",
+        "BONUS_TYPE_LOYALTY_POINTS",
+        "BONUS_TYPE_IN_GAME_CURRENCY",
+        "BONUS_TYPE_LOYALTY_CURRENCY"
+      ],
+      "default": "BONUS_TYPE_UNSPECIFIED",
+      "description": "The kind of value a shop bonus represents. A shop holds at most one bonus of each kind."
+    },
+    "v1CampaignConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the season."
+        },
+        "startAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+        },
+        "endAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+        },
+        "reset": {
+          "type": "object",
+          "properties": {
+            "points": {
+              "type": "string",
+              "enum": [
+                "POINTS_UNSPECIFIED",
+                "POINTS_CARRY",
+                "POINTS_RESET_TO_TIER_START"
+              ],
+              "default": "POINTS_UNSPECIFIED",
+              "description": "What happens to the loyalty points balance."
+            },
+            "milestoneClaims": {
+              "type": "string",
+              "enum": [
+                "MILESTONE_CLAIMS_UNSPECIFIED",
+                "MILESTONE_CLAIMS_RESET",
+                "MILESTONE_CLAIMS_CARRY"
+              ],
+              "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+              "description": "What happens to milestone claims."
+            },
+            "currency": {
+              "type": "string",
+              "enum": [
+                "CURRENCY_UNSPECIFIED",
+                "CURRENCY_CARRY",
+                "CURRENCY_RESET"
+              ],
+              "default": "CURRENCY_UNSPECIFIED",
+              "description": "What happens to loyalty currency balances."
+            }
+          },
+          "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+          "title": "Loyalty Reset Rules",
+          "required": [
+            "points",
+            "milestoneClaims",
+            "currency"
+          ]
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name of the tier."
+              },
+              "startPoints": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+              },
+              "iconUrl": {
+                "type": "string",
+                "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              },
+              "backgroundImageUrl": {
+                "type": "string",
+                "description": "Tier background image URL, same rules as iconUrl."
+              },
+              "color": {
+                "type": "string",
+                "description": "Accent colour as a CSS hex value, for example #c65d00."
+              },
+              "benefits": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "Benefit text as shown to players."
+                    }
+                  },
+                  "description": "One perk listed on a tier.",
+                  "title": "Loyalty Tier Benefit",
+                  "required": [
+                    "text"
+                  ]
+                },
+                "description": "Perks listed on the tier, shown to players in order."
+              },
+              "earnRates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "bonusId": {
+                      "type": "string",
+                      "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                    },
+                    "rewardPerDollar": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                    }
+                  },
+                  "description": "How much of one bonus a tier earns per US dollar spent.",
+                  "title": "Loyalty Earn Rate",
+                  "required": [
+                    "bonusId",
+                    "rewardPerDollar"
+                  ]
+                },
+                "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+              },
+              "milestones": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the milestone."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description shown on the milestone."
+                    },
+                    "pointsNeeded": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                    },
+                    "rewardName": {
+                      "type": "string",
+                      "description": "Name of the reward as shown on the milestone."
+                    },
+                    "rewardImageUrl": {
+                      "type": "string",
+                      "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                    },
+                    "backgroundImageUrl": {
+                      "type": "string",
+                      "description": "Milestone background image URL, same rules as rewardImageUrl."
+                    },
+                    "bonusRewards": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "bonusId": {
+                            "type": "string",
+                            "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Amount of the bonus granted."
+                          }
+                        },
+                        "description": "An amount of one bonus granted at a milestone.",
+                        "title": "Loyalty Bonus Reward",
+                        "required": [
+                          "bonusId",
+                          "amount"
+                        ]
+                      },
+                      "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                    },
+                    "productRewards": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sku": {
+                            "type": "string",
+                            "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                          },
+                          "quantity": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Quantity of the product granted."
+                          }
+                        },
+                        "description": "A quantity of one product granted at a milestone.",
+                        "title": "Loyalty Product Reward",
+                        "required": [
+                          "sku",
+                          "quantity"
+                        ]
+                      },
+                      "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                    }
+                  },
+                  "description": "A points threshold within a tier that grants rewards when claimed.",
+                  "title": "Loyalty Milestone Config",
+                  "required": [
+                    "id",
+                    "name",
+                    "pointsNeeded"
+                  ]
+                },
+                "description": "The tier's milestones."
+              }
+            },
+            "description": "One tier of a season with its earn rates and milestones.",
+            "title": "Loyalty Tier Config",
+            "required": [
+              "id",
+              "name",
+              "startPoints"
+            ]
+          },
+          "description": "The season's tiers with their milestones. Start points must be unique within the season."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "CAMPAIGN_STATUS_UNSPECIFIED",
+            "CAMPAIGN_STATUS_DRAFT",
+            "CAMPAIGN_STATUS_SCHEDULED",
+            "CAMPAIGN_STATUS_ACTIVE",
+            "CAMPAIGN_STATUS_ENDED"
+          ],
+          "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+          "description": "Lifecycle status of the season. Ignored on input.",
+          "readOnly": true
+        }
+      },
+      "description": "A loyalty campaign (season): its window, reset rules and tiers with their milestones.",
+      "title": "Loyalty Campaign Config",
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "v1CampaignStatus": {
+      "type": "string",
+      "enum": [
+        "CAMPAIGN_STATUS_UNSPECIFIED",
+        "CAMPAIGN_STATUS_DRAFT",
+        "CAMPAIGN_STATUS_SCHEDULED",
+        "CAMPAIGN_STATUS_ACTIVE",
+        "CAMPAIGN_STATUS_ENDED"
+      ],
+      "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+      "description": "Lifecycle status of a loyalty campaign (season), derived from the program state and the campaign window."
+    },
+    "v1DisplayConfig": {
+      "type": "object",
+      "properties": {
+        "programName": {
+          "type": "string",
+          "description": "Name of the loyalty program as shown to players."
+        },
+        "vipStoreName": {
+          "type": "string",
+          "description": "Name of the VIP store as shown to players. Omitted when not configured."
+        }
+      },
+      "description": "Shop-level names shown to players.",
+      "title": "Loyalty Display Config",
+      "required": [
+        "programName"
+      ]
+    },
+    "v1EarnRate": {
+      "type": "object",
+      "properties": {
+        "bonusId": {
+          "type": "string",
+          "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+        },
+        "rewardPerDollar": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+        }
+      },
+      "description": "How much of one bonus a tier earns per US dollar spent.",
+      "title": "Loyalty Earn Rate",
+      "required": [
+        "bonusId",
+        "rewardPerDollar"
+      ]
+    },
+    "v1GetLoyaltyConfigResponse": {
+      "type": "object",
+      "properties": {
+        "displayConfig": {
+          "type": "object",
+          "properties": {
+            "programName": {
+              "type": "string",
+              "description": "Name of the loyalty program as shown to players."
+            },
+            "vipStoreName": {
+              "type": "string",
+              "description": "Name of the VIP store as shown to players. Omitted when not configured."
+            }
+          },
+          "description": "Shop-level display settings.",
+          "title": "Loyalty Display Config",
+          "required": [
+            "programName"
+          ]
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "BONUS_TYPE_UNSPECIFIED",
+                  "BONUS_TYPE_LOYALTY_POINTS",
+                  "BONUS_TYPE_IN_GAME_CURRENCY",
+                  "BONUS_TYPE_LOYALTY_CURRENCY"
+                ],
+                "default": "BONUS_TYPE_UNSPECIFIED",
+                "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+              },
+              "name": {
+                "type": "string",
+                "description": "Singular display name, for example Gem."
+              },
+              "pluralName": {
+                "type": "string",
+                "description": "Plural display name, for example Gems."
+              },
+              "abbreviatedName": {
+                "type": "string",
+                "description": "Short display name, for example LP."
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              }
+            },
+            "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+            "title": "Loyalty Bonus Definition",
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "description": "Every bonus defined for the shop."
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": {
+                "type": "string",
+                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name shown on the reward."
+              },
+              "description": {
+                "type": "string",
+                "description": "Description shown on the reward."
+              },
+              "imageUrl": {
+                "type": "string",
+                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              },
+              "backgroundImageUrl": {
+                "type": "string",
+                "description": "Background image URL, same rules as imageUrl."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                  "REWARD_PRODUCT_STATUS_DRAFT",
+                  "REWARD_PRODUCT_STATUS_PUBLISHED"
+                ],
+                "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+                "readOnly": true
+              }
+            },
+            "description": "A reward-only product that a milestone can grant by SKU.",
+            "title": "Loyalty Reward Product",
+            "required": [
+              "sku",
+              "name",
+              "imageUrl"
+            ]
+          },
+          "description": "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Sellable catalog products are not listed. Resending a draft in UpdateLoyaltyConfig publishes it."
+        },
+        "campaigns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name of the season."
+              },
+              "startAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+              },
+              "endAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+              },
+              "reset": {
+                "type": "object",
+                "properties": {
+                  "points": {
+                    "type": "string",
+                    "enum": [
+                      "POINTS_UNSPECIFIED",
+                      "POINTS_CARRY",
+                      "POINTS_RESET_TO_TIER_START"
+                    ],
+                    "default": "POINTS_UNSPECIFIED",
+                    "description": "What happens to the loyalty points balance."
+                  },
+                  "milestoneClaims": {
+                    "type": "string",
+                    "enum": [
+                      "MILESTONE_CLAIMS_UNSPECIFIED",
+                      "MILESTONE_CLAIMS_RESET",
+                      "MILESTONE_CLAIMS_CARRY"
+                    ],
+                    "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+                    "description": "What happens to milestone claims."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "enum": [
+                      "CURRENCY_UNSPECIFIED",
+                      "CURRENCY_CARRY",
+                      "CURRENCY_RESET"
+                    ],
+                    "default": "CURRENCY_UNSPECIFIED",
+                    "description": "What happens to loyalty currency balances."
+                  }
+                },
+                "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                "title": "Loyalty Reset Rules",
+                "required": [
+                  "points",
+                  "milestoneClaims",
+                  "currency"
+                ]
+              },
+              "tiers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the tier."
+                    },
+                    "startPoints": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+                    },
+                    "iconUrl": {
+                      "type": "string",
+                      "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                    },
+                    "backgroundImageUrl": {
+                      "type": "string",
+                      "description": "Tier background image URL, same rules as iconUrl."
+                    },
+                    "color": {
+                      "type": "string",
+                      "description": "Accent colour as a CSS hex value, for example #c65d00."
+                    },
+                    "benefits": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "string",
+                            "description": "Benefit text as shown to players."
+                          }
+                        },
+                        "description": "One perk listed on a tier.",
+                        "title": "Loyalty Tier Benefit",
+                        "required": [
+                          "text"
+                        ]
+                      },
+                      "description": "Perks listed on the tier, shown to players in order."
+                    },
+                    "earnRates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "bonusId": {
+                            "type": "string",
+                            "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                          },
+                          "rewardPerDollar": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                          }
+                        },
+                        "description": "How much of one bonus a tier earns per US dollar spent.",
+                        "title": "Loyalty Earn Rate",
+                        "required": [
+                          "bonusId",
+                          "rewardPerDollar"
+                        ]
+                      },
+                      "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+                    },
+                    "milestones": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Display name of the milestone."
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Description shown on the milestone."
+                          },
+                          "pointsNeeded": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                          },
+                          "rewardName": {
+                            "type": "string",
+                            "description": "Name of the reward as shown on the milestone."
+                          },
+                          "rewardImageUrl": {
+                            "type": "string",
+                            "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                          },
+                          "backgroundImageUrl": {
+                            "type": "string",
+                            "description": "Milestone background image URL, same rules as rewardImageUrl."
+                          },
+                          "bonusRewards": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "bonusId": {
+                                  "type": "string",
+                                  "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                                },
+                                "amount": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Amount of the bonus granted."
+                                }
+                              },
+                              "description": "An amount of one bonus granted at a milestone.",
+                              "title": "Loyalty Bonus Reward",
+                              "required": [
+                                "bonusId",
+                                "amount"
+                              ]
+                            },
+                            "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                          },
+                          "productRewards": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "sku": {
+                                  "type": "string",
+                                  "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                },
+                                "quantity": {
+                                  "type": "integer",
+                                  "format": "int64",
+                                  "description": "Quantity of the product granted."
+                                }
+                              },
+                              "description": "A quantity of one product granted at a milestone.",
+                              "title": "Loyalty Product Reward",
+                              "required": [
+                                "sku",
+                                "quantity"
+                              ]
+                            },
+                            "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                          }
+                        },
+                        "description": "A points threshold within a tier that grants rewards when claimed.",
+                        "title": "Loyalty Milestone Config",
+                        "required": [
+                          "id",
+                          "name",
+                          "pointsNeeded"
+                        ]
+                      },
+                      "description": "The tier's milestones."
+                    }
+                  },
+                  "description": "One tier of a season with its earn rates and milestones.",
+                  "title": "Loyalty Tier Config",
+                  "required": [
+                    "id",
+                    "name",
+                    "startPoints"
+                  ]
+                },
+                "description": "The season's tiers with their milestones. Start points must be unique within the season."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "CAMPAIGN_STATUS_UNSPECIFIED",
+                  "CAMPAIGN_STATUS_DRAFT",
+                  "CAMPAIGN_STATUS_SCHEDULED",
+                  "CAMPAIGN_STATUS_ACTIVE",
+                  "CAMPAIGN_STATUS_ENDED"
+                ],
+                "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+                "description": "Lifecycle status of the season. Ignored on input.",
+                "readOnly": true
+              }
+            },
+            "description": "A loyalty campaign (season): its window, reset rules and tiers with their milestones.",
+            "title": "Loyalty Campaign Config",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "description": "Every campaign (season) of the program with its status, ordered by start date ascending; seasons without a start date come last."
+        }
+      },
+      "description": "A shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts.",
+      "title": "Get Loyalty Config Response"
     },
     "v1GetLoyaltyResponse": {
       "type": "object",
@@ -2782,12 +5235,788 @@
       ],
       "default": "LOYALTY_REWARD_TYPE_UNSPECIFIED",
       "description": "The kind of reward granted at a loyalty milestone."
+    },
+    "v1MilestoneConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the milestone."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description shown on the milestone."
+        },
+        "pointsNeeded": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+        },
+        "rewardName": {
+          "type": "string",
+          "description": "Name of the reward as shown on the milestone."
+        },
+        "rewardImageUrl": {
+          "type": "string",
+          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+        },
+        "backgroundImageUrl": {
+          "type": "string",
+          "description": "Milestone background image URL, same rules as rewardImageUrl."
+        },
+        "bonusRewards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "bonusId": {
+                "type": "string",
+                "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+              },
+              "amount": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Amount of the bonus granted."
+              }
+            },
+            "description": "An amount of one bonus granted at a milestone.",
+            "title": "Loyalty Bonus Reward",
+            "required": [
+              "bonusId",
+              "amount"
+            ]
+          },
+          "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+        },
+        "productRewards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": {
+                "type": "string",
+                "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+              },
+              "quantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity of the product granted."
+              }
+            },
+            "description": "A quantity of one product granted at a milestone.",
+            "title": "Loyalty Product Reward",
+            "required": [
+              "sku",
+              "quantity"
+            ]
+          },
+          "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+        }
+      },
+      "description": "A points threshold within a tier that grants rewards when claimed.",
+      "title": "Loyalty Milestone Config",
+      "required": [
+        "id",
+        "name",
+        "pointsNeeded"
+      ]
+    },
+    "v1ProductReward": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Quantity of the product granted."
+        }
+      },
+      "description": "A quantity of one product granted at a milestone.",
+      "title": "Loyalty Product Reward",
+      "required": [
+        "sku",
+        "quantity"
+      ]
+    },
+    "v1ResetRules": {
+      "type": "object",
+      "properties": {
+        "points": {
+          "type": "string",
+          "enum": [
+            "POINTS_UNSPECIFIED",
+            "POINTS_CARRY",
+            "POINTS_RESET_TO_TIER_START"
+          ],
+          "default": "POINTS_UNSPECIFIED",
+          "description": "What happens to the loyalty points balance."
+        },
+        "milestoneClaims": {
+          "type": "string",
+          "enum": [
+            "MILESTONE_CLAIMS_UNSPECIFIED",
+            "MILESTONE_CLAIMS_RESET",
+            "MILESTONE_CLAIMS_CARRY"
+          ],
+          "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+          "description": "What happens to milestone claims."
+        },
+        "currency": {
+          "type": "string",
+          "enum": [
+            "CURRENCY_UNSPECIFIED",
+            "CURRENCY_CARRY",
+            "CURRENCY_RESET"
+          ],
+          "default": "CURRENCY_UNSPECIFIED",
+          "description": "What happens to loyalty currency balances."
+        }
+      },
+      "description": "How a player's state transitions into a season, applied when the player first arrives in it.",
+      "title": "Loyalty Reset Rules",
+      "required": [
+        "points",
+        "milestoneClaims",
+        "currency"
+      ]
+    },
+    "v1RewardProduct": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name shown on the reward."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description shown on the reward."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+        },
+        "backgroundImageUrl": {
+          "type": "string",
+          "description": "Background image URL, same rules as imageUrl."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+            "REWARD_PRODUCT_STATUS_DRAFT",
+            "REWARD_PRODUCT_STATUS_PUBLISHED"
+          ],
+          "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+          "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+          "readOnly": true
+        }
+      },
+      "description": "A reward-only product that a milestone can grant by SKU.",
+      "title": "Loyalty Reward Product",
+      "required": [
+        "sku",
+        "name",
+        "imageUrl"
+      ]
+    },
+    "v1RewardProductStatus": {
+      "type": "string",
+      "enum": [
+        "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+        "REWARD_PRODUCT_STATUS_DRAFT",
+        "REWARD_PRODUCT_STATUS_PUBLISHED"
+      ],
+      "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+      "description": "Status of a reward-only product in Stash Studio."
+    },
+    "v1TierBenefit": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Benefit text as shown to players."
+        }
+      },
+      "description": "One perk listed on a tier.",
+      "title": "Loyalty Tier Benefit",
+      "required": [
+        "text"
+      ]
+    },
+    "v1TierConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the tier."
+        },
+        "startPoints": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+        },
+        "iconUrl": {
+          "type": "string",
+          "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+        },
+        "backgroundImageUrl": {
+          "type": "string",
+          "description": "Tier background image URL, same rules as iconUrl."
+        },
+        "color": {
+          "type": "string",
+          "description": "Accent colour as a CSS hex value, for example #c65d00."
+        },
+        "benefits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Benefit text as shown to players."
+              }
+            },
+            "description": "One perk listed on a tier.",
+            "title": "Loyalty Tier Benefit",
+            "required": [
+              "text"
+            ]
+          },
+          "description": "Perks listed on the tier, shown to players in order."
+        },
+        "earnRates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "bonusId": {
+                "type": "string",
+                "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+              },
+              "rewardPerDollar": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+              }
+            },
+            "description": "How much of one bonus a tier earns per US dollar spent.",
+            "title": "Loyalty Earn Rate",
+            "required": [
+              "bonusId",
+              "rewardPerDollar"
+            ]
+          },
+          "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name of the milestone."
+              },
+              "description": {
+                "type": "string",
+                "description": "Description shown on the milestone."
+              },
+              "pointsNeeded": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+              },
+              "rewardName": {
+                "type": "string",
+                "description": "Name of the reward as shown on the milestone."
+              },
+              "rewardImageUrl": {
+                "type": "string",
+                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              },
+              "backgroundImageUrl": {
+                "type": "string",
+                "description": "Milestone background image URL, same rules as rewardImageUrl."
+              },
+              "bonusRewards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "bonusId": {
+                      "type": "string",
+                      "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Amount of the bonus granted."
+                    }
+                  },
+                  "description": "An amount of one bonus granted at a milestone.",
+                  "title": "Loyalty Bonus Reward",
+                  "required": [
+                    "bonusId",
+                    "amount"
+                  ]
+                },
+                "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+              },
+              "productRewards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sku": {
+                      "type": "string",
+                      "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Quantity of the product granted."
+                    }
+                  },
+                  "description": "A quantity of one product granted at a milestone.",
+                  "title": "Loyalty Product Reward",
+                  "required": [
+                    "sku",
+                    "quantity"
+                  ]
+                },
+                "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+              }
+            },
+            "description": "A points threshold within a tier that grants rewards when claimed.",
+            "title": "Loyalty Milestone Config",
+            "required": [
+              "id",
+              "name",
+              "pointsNeeded"
+            ]
+          },
+          "description": "The tier's milestones."
+        }
+      },
+      "description": "One tier of a season with its earn rates and milestones.",
+      "title": "Loyalty Tier Config",
+      "required": [
+        "id",
+        "name",
+        "startPoints"
+      ]
+    },
+    "v1UpdateLoyaltyConfigResponse": {
+      "type": "object",
+      "properties": {
+        "displayConfig": {
+          "type": "object",
+          "properties": {
+            "programName": {
+              "type": "string",
+              "description": "Name of the loyalty program as shown to players."
+            },
+            "vipStoreName": {
+              "type": "string",
+              "description": "Name of the VIP store as shown to players. Omitted when not configured."
+            }
+          },
+          "description": "Shop-level display settings.",
+          "title": "Loyalty Display Config",
+          "required": [
+            "programName"
+          ]
+        },
+        "bonuses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "BONUS_TYPE_UNSPECIFIED",
+                  "BONUS_TYPE_LOYALTY_POINTS",
+                  "BONUS_TYPE_IN_GAME_CURRENCY",
+                  "BONUS_TYPE_LOYALTY_CURRENCY"
+                ],
+                "default": "BONUS_TYPE_UNSPECIFIED",
+                "description": "Kind of bonus. Immutable once created; a shop holds at most one bonus of each kind."
+              },
+              "name": {
+                "type": "string",
+                "description": "Singular display name, for example Gem."
+              },
+              "pluralName": {
+                "type": "string",
+                "description": "Plural display name, for example Gems."
+              },
+              "abbreviatedName": {
+                "type": "string",
+                "description": "Short display name, for example LP."
+              },
+              "iconImageUrl": {
+                "type": "string",
+                "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              }
+            },
+            "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
+            "title": "Loyalty Bonus Definition",
+            "required": [
+              "id",
+              "type",
+              "name"
+            ]
+          },
+          "description": "Every bonus defined for the shop."
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": {
+                "type": "string",
+                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name shown on the reward."
+              },
+              "description": {
+                "type": "string",
+                "description": "Description shown on the reward."
+              },
+              "imageUrl": {
+                "type": "string",
+                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+              },
+              "backgroundImageUrl": {
+                "type": "string",
+                "description": "Background image URL, same rules as imageUrl."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                  "REWARD_PRODUCT_STATUS_DRAFT",
+                  "REWARD_PRODUCT_STATUS_PUBLISHED"
+                ],
+                "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
+                "description": "Status of the product in Studio, reported on reads. Ignored on input: every product sent in an update is published, whatever status it had.",
+                "readOnly": true
+              }
+            },
+            "description": "A reward-only product that a milestone can grant by SKU.",
+            "title": "Loyalty Reward Product",
+            "required": [
+              "sku",
+              "name",
+              "imageUrl"
+            ]
+          },
+          "description": "Every reward-only product the shop holds, with its status."
+        },
+        "campaign": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+            },
+            "name": {
+              "type": "string",
+              "description": "Display name of the season."
+            },
+            "startAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."
+            },
+            "endAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."
+            },
+            "reset": {
+              "type": "object",
+              "properties": {
+                "points": {
+                  "type": "string",
+                  "enum": [
+                    "POINTS_UNSPECIFIED",
+                    "POINTS_CARRY",
+                    "POINTS_RESET_TO_TIER_START"
+                  ],
+                  "default": "POINTS_UNSPECIFIED",
+                  "description": "What happens to the loyalty points balance."
+                },
+                "milestoneClaims": {
+                  "type": "string",
+                  "enum": [
+                    "MILESTONE_CLAIMS_UNSPECIFIED",
+                    "MILESTONE_CLAIMS_RESET",
+                    "MILESTONE_CLAIMS_CARRY"
+                  ],
+                  "default": "MILESTONE_CLAIMS_UNSPECIFIED",
+                  "description": "What happens to milestone claims."
+                },
+                "currency": {
+                  "type": "string",
+                  "enum": [
+                    "CURRENCY_UNSPECIFIED",
+                    "CURRENCY_CARRY",
+                    "CURRENCY_RESET"
+                  ],
+                  "default": "CURRENCY_UNSPECIFIED",
+                  "description": "What happens to loyalty currency balances."
+                }
+              },
+              "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+              "title": "Loyalty Reset Rules",
+              "required": [
+                "points",
+                "milestoneClaims",
+                "currency"
+              ]
+            },
+            "tiers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Display name of the tier."
+                  },
+                  "startPoints": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Points balance at which the tier begins. Unique within the season. Locked once the season is active."
+                  },
+                  "iconUrl": {
+                    "type": "string",
+                    "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                  },
+                  "backgroundImageUrl": {
+                    "type": "string",
+                    "description": "Tier background image URL, same rules as iconUrl."
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Accent colour as a CSS hex value, for example #c65d00."
+                  },
+                  "benefits": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "string",
+                          "description": "Benefit text as shown to players."
+                        }
+                      },
+                      "description": "One perk listed on a tier.",
+                      "title": "Loyalty Tier Benefit",
+                      "required": [
+                        "text"
+                      ]
+                    },
+                    "description": "Perks listed on the tier, shown to players in order."
+                  },
+                  "earnRates": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "bonusId": {
+                          "type": "string",
+                          "description": "The bonus this rate applies to. Must be defined in bonuses or already exist for the shop."
+                        },
+                        "rewardPerDollar": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Amount of the bonus earned per US dollar of spend while in this tier. For the loyalty points bonus this is the tier's points per dollar."
+                        }
+                      },
+                      "description": "How much of one bonus a tier earns per US dollar spent.",
+                      "title": "Loyalty Earn Rate",
+                      "required": [
+                        "bonusId",
+                        "rewardPerDollar"
+                      ]
+                    },
+                    "description": "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."
+                  },
+                  "milestones": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Display name of the milestone."
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Description shown on the milestone."
+                        },
+                        "pointsNeeded": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                        },
+                        "rewardName": {
+                          "type": "string",
+                          "description": "Name of the reward as shown on the milestone."
+                        },
+                        "rewardImageUrl": {
+                          "type": "string",
+                          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        },
+                        "backgroundImageUrl": {
+                          "type": "string",
+                          "description": "Milestone background image URL, same rules as rewardImageUrl."
+                        },
+                        "bonusRewards": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "bonusId": {
+                                "type": "string",
+                                "description": "The bonus granted. Must be defined in bonuses or already exist for the shop."
+                              },
+                              "amount": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Amount of the bonus granted."
+                              }
+                            },
+                            "description": "An amount of one bonus granted at a milestone.",
+                            "title": "Loyalty Bonus Reward",
+                            "required": [
+                              "bonusId",
+                              "amount"
+                            ]
+                          },
+                          "description": "Bonus amounts granted when the milestone is claimed. Editable on an active season; a milestone already claimed keeps the reward it was granted."
+                        },
+                        "productRewards": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string",
+                                "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "Quantity of the product granted."
+                              }
+                            },
+                            "description": "A quantity of one product granted at a milestone.",
+                            "title": "Loyalty Product Reward",
+                            "required": [
+                              "sku",
+                              "quantity"
+                            ]
+                          },
+                          "description": "Products granted when the milestone is claimed, by SKU. Same edit rule as bonusRewards."
+                        }
+                      },
+                      "description": "A points threshold within a tier that grants rewards when claimed.",
+                      "title": "Loyalty Milestone Config",
+                      "required": [
+                        "id",
+                        "name",
+                        "pointsNeeded"
+                      ]
+                    },
+                    "description": "The tier's milestones."
+                  }
+                },
+                "description": "One tier of a season with its earn rates and milestones.",
+                "title": "Loyalty Tier Config",
+                "required": [
+                  "id",
+                  "name",
+                  "startPoints"
+                ]
+              },
+              "description": "The season's tiers with their milestones. Start points must be unique within the season."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "CAMPAIGN_STATUS_UNSPECIFIED",
+                "CAMPAIGN_STATUS_DRAFT",
+                "CAMPAIGN_STATUS_SCHEDULED",
+                "CAMPAIGN_STATUS_ACTIVE",
+                "CAMPAIGN_STATUS_ENDED"
+              ],
+              "default": "CAMPAIGN_STATUS_UNSPECIFIED",
+              "description": "Lifecycle status of the season. Ignored on input.",
+              "readOnly": true
+            }
+          },
+          "description": "The season as stored after the update, with its status.",
+          "title": "Loyalty Campaign Config",
+          "required": [
+            "id",
+            "name"
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Notes about parts of the request that were accepted but had no effect, for example activate on a program that is already live. Empty when there is nothing to report."
+        }
+      },
+      "description": "The configuration as stored after the update.",
+      "title": "Update Loyalty Config Response"
     }
   },
   "securityDefinitions": {
     "hmac": {
       "type": "apiKey",
-      "description": "Versioned HMAC-SHA256 signature for server-to-server requests to this API (your backend calling Stash), as opposed to client-side operations. Recommended over the deprecated legacyHmac scheme for the best security. Header format: v1;{shopId};{unixMillisTimestamp};{base64Signature} (semicolon-delimited). {base64Signature} is the base64-encoded HMAC-SHA256 of the string {unixMillisTimestamp}.{requestBody} signed with your Ingress API key, where {requestBody} is the compact request JSON for POST requests and empty for GET requests. The timestamp must be within 5 minutes of Stash server time. Your shopId is your immutable shop identifier; it and your Ingress API key are available in Stash Studio under Project Settings > API Secrets.",
+      "description": "Versioned HMAC-SHA256 signature for server-to-server requests to this API (your backend calling Stash), as opposed to client-side operations. Recommended over the deprecated legacyHmac scheme for the best security. Header format: v1;{shopId};{unixMillisTimestamp};{base64Signature} (semicolon-delimited). {base64Signature} is the base64-encoded HMAC-SHA256 of the string {unixMillisTimestamp}.{requestBody} signed with your Ingress API key, where {requestBody} is the request JSON exactly as sent for POST and PUT requests and empty for GET requests. The timestamp must be within 5 minutes of Stash server time. Your shopId is your immutable shop identifier; it and your Ingress API key are available in Stash Studio under Project Settings > API Secrets.",
       "name": "x-stash-hmac-signature",
       "in": "header"
     },
