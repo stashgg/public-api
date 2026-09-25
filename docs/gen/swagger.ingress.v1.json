@@ -988,7 +988,7 @@
                     "properties": {
                       "sku": {
                         "type": "string",
-                        "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
                       },
                       "name": {
                         "type": "string",
@@ -1230,7 +1230,7 @@
                                       "properties": {
                                         "sku": {
                                           "type": "string",
-                                          "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                          "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                                         },
                                         "quantity": {
                                           "type": "integer",
@@ -1425,7 +1425,7 @@
                     "properties": {
                       "sku": {
                         "type": "string",
-                        "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
                       },
                       "name": {
                         "type": "string",
@@ -1665,7 +1665,7 @@
                                     "properties": {
                                       "sku": {
                                         "type": "string",
-                                        "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                        "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                                       },
                                       "quantity": {
                                         "type": "integer",
@@ -1856,7 +1856,7 @@
                     "properties": {
                       "sku": {
                         "type": "string",
-                        "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
                       },
                       "name": {
                         "type": "string",
@@ -2096,7 +2096,7 @@
                                     "properties": {
                                       "sku": {
                                         "type": "string",
-                                        "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                        "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                                       },
                                       "quantity": {
                                         "type": "integer",
@@ -3773,7 +3773,7 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
               },
               "name": {
                 "type": "string",
@@ -4013,7 +4013,7 @@
                             "properties": {
                               "sku": {
                                 "type": "string",
-                                "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                               },
                               "quantity": {
                                 "type": "integer",
@@ -4510,7 +4510,7 @@
                         "properties": {
                           "sku": {
                             "type": "string",
-                            "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                            "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                           },
                           "quantity": {
                             "type": "integer",
@@ -4695,7 +4695,7 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
               },
               "name": {
                 "type": "string",
@@ -4937,7 +4937,7 @@
                               "properties": {
                                 "sku": {
                                   "type": "string",
-                                  "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                  "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                                 },
                                 "quantity": {
                                   "type": "integer",
@@ -5299,7 +5299,7 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
               },
               "quantity": {
                 "type": "integer",
@@ -5330,7 +5330,7 @@
       "properties": {
         "sku": {
           "type": "string",
-          "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+          "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
         },
         "quantity": {
           "type": "integer",
@@ -5392,7 +5392,7 @@
       "properties": {
         "sku": {
           "type": "string",
-          "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+          "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
         },
         "name": {
           "type": "string",
@@ -5589,7 +5589,7 @@
                   "properties": {
                     "sku": {
                       "type": "string",
-                      "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                      "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                     },
                     "quantity": {
                       "type": "integer",
@@ -5701,7 +5701,7 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
+                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
               },
               "name": {
                 "type": "string",
@@ -5941,7 +5941,7 @@
                             "properties": {
                               "sku": {
                                 "type": "string",
-                                "description": "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
+                                "description": "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."
                               },
                               "quantity": {
                                 "type": "integer",

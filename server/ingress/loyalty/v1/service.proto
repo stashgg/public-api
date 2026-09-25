@@ -422,7 +422,7 @@ message RewardProduct {
       max_len: 256
       pattern: "^[A-Za-z0-9._-]+$"
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen product identifier (SKU): letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."}
   ];
   string name = 2 [
     (google.api.field_behavior) = REQUIRED,
@@ -723,12 +723,8 @@ message ProductReward {
   };
   string sku = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {
-      min_len: 1
-      max_len: 256
-      pattern: "^[A-Za-z0-9._-]+$"
-    },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "SKU of the product granted. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."}
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "SKU of the product granted, exactly as the product is identified in the shop: any non-empty string, the same rule as the catalog's productId. Must be a published product: a reward-only product from products in the same request or from Studio's Loyalty Products page, or a sellable product from the shop's catalog."}
   ];
   uint32 quantity = 2 [
     (google.api.field_behavior) = REQUIRED,
