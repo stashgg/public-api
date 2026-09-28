@@ -15,8 +15,9 @@ enum LoyaltyRewardType {
   LOYALTY_REWARD_TYPE_SKU_ITEM = 4;
 }
 
+// The kind of value a shop bonus represents. A shop holds at most one bonus of
+// each kind.
 enum BonusType {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "The kind of value a shop bonus represents. A shop holds at most one bonus of each kind."};
   BONUS_TYPE_UNSPECIFIED = 0;
   // Loyalty points (XP): the balance that drives tier progression and milestones. Held by Stash.
   BONUS_TYPE_LOYALTY_POINTS = 1;
@@ -26,8 +27,9 @@ enum BonusType {
   BONUS_TYPE_LOYALTY_CURRENCY = 3;
 }
 
+// Lifecycle status of a loyalty campaign (season), derived from the program
+// state and the campaign window.
 enum CampaignStatus {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Lifecycle status of a loyalty campaign (season), derived from the program state and the campaign window."};
   CAMPAIGN_STATUS_UNSPECIFIED = 0;
   // Not visible to players: the season has no start date, or the program is not live.
   CAMPAIGN_STATUS_DRAFT = 1;
@@ -39,8 +41,8 @@ enum CampaignStatus {
   CAMPAIGN_STATUS_ENDED = 4;
 }
 
+// Status of a reward-only product in Stash Studio.
 enum RewardProductStatus {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Status of a reward-only product in Stash Studio."};
   REWARD_PRODUCT_STATUS_UNSPECIFIED = 0;
   // Saved but not yet published; a milestone cannot grant it.
   REWARD_PRODUCT_STATUS_DRAFT = 1;

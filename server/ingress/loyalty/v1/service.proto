@@ -64,7 +64,7 @@ service LoyaltyService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Configure a loyalty season"
-      description: "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions and reward products it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. The request body must be signed exactly as sent. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop."
+      description: "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions and reward products it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, FAILED_PRECONDITION also when the shop's loyalty program is bound to more than one shop, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -297,7 +297,7 @@ message GetLoyaltyConfigResponse {
   };
   DisplayConfig display_config = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop-level display settings."}];
   repeated BonusDefinition bonuses = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every bonus defined for the shop."}];
-  repeated RewardProduct products = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Sellable catalog products are not listed. Resending a draft in UpdateLoyaltyConfig publishes it."}];
+  repeated RewardProduct products = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Not listed: sellable catalog products, and a Studio reward product that has no SKU (external id), which the API cannot address. Resending a draft in UpdateLoyaltyConfig publishes it."}];
   repeated CampaignConfig campaigns = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every campaign (season) of the program with its status, ordered by start date ascending; seasons without a start date come last."}];
 }
 
@@ -317,8 +317,8 @@ message UpdateLoyaltyConfigRequest {
     (validate.rules).string.uuid = true,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio"}
   ];
-  bool activate = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Turn the program on once the request has been applied and passes publish validation. Honoured only when the program is not live (never published, or unpublished in Studio); ignored on a live program. Creates the program for the shop if it has none."}];
-  DisplayConfig display_config = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop-level display settings, overwritten as sent. Omit to leave them unchanged."}];
+  bool activate = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Turn the program on once the request has been applied and passes publish validation. Honoured only on a program that has never been published; ignored otherwise and reported in warnings. A program unpublished in Studio stays off until it is re-enabled in Studio, so a sync cannot undo a deliberate stop. Creates the program for the shop if it has none."}];
+  DisplayConfig display_config = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop-level display settings, overwritten as sent: a field left out of the object is cleared. Omit the whole object to leave the settings unchanged."}];
   repeated BonusDefinition bonuses = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Bonus definitions, created or updated by id. A bonus missing from the list is left in place; the API never deletes bonuses because wallet balances depend on them."}];
   repeated RewardProduct products = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward products, created or updated by SKU. Every product listed is published on write, including one saved as a draft in Studio; leave a product out of the list to keep its Studio draft unpublished. A product missing from the list is left in place; the API never deletes products because claimed milestones and ended seasons still refer to them. Applied before the campaign, so a milestone may reference a SKU defined in the same request."}];
   CampaignConfig campaign = 6 [
@@ -352,10 +352,16 @@ message DisplayConfig {
   };
   string program_name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {min_len: 1},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name of the loyalty program as shown to players."}
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name of the loyalty program as shown to players. Up to 1024 characters."}
   ];
-  optional string vip_store_name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name of the VIP store as shown to players. Omitted when not configured."}];
+  optional string vip_store_name = 2 [
+    (validate.rules).string = {max_len: 1024},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."}
+  ];
 }
 
 message BonusDefinition {
@@ -376,8 +382,12 @@ message BonusDefinition {
       min_len: 1
       max_len: 256
       pattern: "^[A-Za-z0-9._-]+$"
+      not_in: [
+        ".",
+        ".."
+      ]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."}
   ];
   BonusType type = 2 [
     (google.api.field_behavior) = REQUIRED,
@@ -389,17 +399,27 @@ message BonusDefinition {
   ];
   string name = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {min_len: 1},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Singular display name, for example Gem."}
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Singular display name, for example Gem. Up to 1024 characters."}
   ];
-  optional string plural_name = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Plural display name, for example Gems."}];
-  optional string abbreviated_name = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Short display name, for example LP."}];
+  optional string plural_name = 4 [
+    (validate.rules).string = {max_len: 1024},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Plural display name, for example Gems. Up to 1024 characters."}
+  ];
+  optional string abbreviated_name = 5 [
+    (validate.rules).string = {max_len: 1024},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Short display name, for example LP. Up to 1024 characters."}
+  ];
   optional string icon_image_url = 6 [
     (validate.rules).string = {
       uri: true
+      max_len: 1024
       ignore_empty: true
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
   ];
 }
 
@@ -419,25 +439,34 @@ message RewardProduct {
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).string = {
       min_len: 1
-      max_len: 256
-      pattern: "^[A-Za-z0-9._-]+$"
+      max_len: 1024
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."}
   ];
   string name = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {min_len: 1},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name shown on the reward."}
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name shown on the reward. Up to 1024 characters."}
   ];
-  optional string description = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description shown on the reward."}];
+  optional string description = 3 [
+    (validate.rules).string = {max_len: 1024},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description shown on the reward. Up to 1024 characters."}
+  ];
   string image_url = 4 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {uri: true},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
+    (validate.rules).string = {
+      uri: true
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
   ];
   optional string background_image_url = 5 [
     (validate.rules).string = {
       uri: true
+      max_len: 1024
       ignore_empty: true
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Background image URL, same rules as imageUrl."}
@@ -463,19 +492,26 @@ message CampaignConfig {
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).string = {
       min_len: 1
-      max_len: 256
+      max_len: 36
       pattern: "^[A-Za-z0-9._-]+$"
+      not_in: [
+        ".",
+        ".."
+      ]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."}
   ];
   string name = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {min_len: 1},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the season."}
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the season. Up to 1024 characters."}
   ];
   optional google.protobuf.Timestamp start_at = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When the season starts (RFC 3339). Omit on a draft. A future value schedules the season; on activation, omit to start now. Locked once the season is active."}];
   optional google.protobuf.Timestamp end_at = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When the season ends (RFC 3339). Must be in the future when set and must not overlap another season. Omit for an open-ended season. May be changed on an active season."}];
-  ResetRules reset = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active."}];
+  ResetRules reset = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active."}];
   repeated TierConfig tiers = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The season's tiers with their milestones. Start points must be unique within the season."}];
   CampaignStatus status = 7 [
     (google.api.field_behavior) = OUTPUT_ONLY,
@@ -560,13 +596,20 @@ message TierConfig {
       min_len: 1
       max_len: 256
       pattern: "^[A-Za-z0-9._-]+$"
+      not_in: [
+        ".",
+        ".."
+      ]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."}
   ];
   string name = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {min_len: 1},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the tier."}
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the tier. Up to 1024 characters."}
   ];
   uint32 start_points = 3 [
     (google.api.field_behavior) = REQUIRED,
@@ -575,18 +618,26 @@ message TierConfig {
   optional string icon_url = 4 [
     (validate.rules).string = {
       uri: true
+      max_len: 1024
       ignore_empty: true
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
   ];
   optional string background_image_url = 5 [
     (validate.rules).string = {
       uri: true
+      max_len: 1024
       ignore_empty: true
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tier background image URL, same rules as iconUrl."}
   ];
-  optional string color = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Accent colour as a CSS hex value, for example #c65d00."}];
+  optional string color = 6 [
+    (validate.rules).string = {
+      pattern: "^#[0-9A-Fa-f]{6}$"
+      ignore_empty: true
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Accent colour as a six-digit CSS hex value, for example #c65d00."}
+  ];
   repeated TierBenefit benefits = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Perks listed on the tier, shown to players in order."}];
   repeated EarnRate earn_rates = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How much of each bonus a player in this tier earns per US dollar spent. One entry per bonus id. Editable on an active season."}];
   repeated MilestoneConfig milestones = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The tier's milestones."}];
@@ -651,30 +702,46 @@ message MilestoneConfig {
       min_len: 1
       max_len: 36
       pattern: "^[A-Za-z0-9._-]+$"
+      not_in: [
+        ".",
+        ".."
+      ]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."}
   ];
   string name = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string = {min_len: 1},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the milestone."}
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 1024
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the milestone. Up to 1024 characters."}
   ];
-  optional string description = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description shown on the milestone."}];
+  optional string description = 3 [
+    (validate.rules).string = {max_len: 1024},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description shown on the milestone. Up to 1024 characters."}
+  ];
   uint32 points_needed = 4 [
     (google.api.field_behavior) = REQUIRED,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."}
+    (validate.rules).uint32 = {gte: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."}
   ];
-  optional string reward_name = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name of the reward as shown on the milestone."}];
+  optional string reward_name = 5 [
+    (validate.rules).string = {max_len: 1024},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Name of the reward as shown on the milestone. Up to 1024 characters."}
+  ];
   optional string reward_image_url = 6 [
     (validate.rules).string = {
       uri: true
+      max_len: 1024
       ignore_empty: true
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."}
   ];
   optional string background_image_url = 7 [
     (validate.rules).string = {
       uri: true
+      max_len: 1024
       ignore_empty: true
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Milestone background image URL, same rules as rewardImageUrl."}

@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Stash Studio API",
-    "description": "APIs for querying a shop's managed product catalog and loyalty program, and for configuring the loyalty program from a partner's own tools. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/sdk/studio/{shop_id}/products\n```\n\n## Authentication\n\nEvery request is signed with your Ingress API key (HMAC-SHA256). Send the signature in the versioned `x-stash-hmac-signature` header.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Keys created through this portal are Ingress keys by default and work with this API (this is the same key used for `/sdk/` API authentication)\n4. Store the secret securely; you will need it to sign every request\n\n### Signing a Request\n\n1. Take the current time as a Unix timestamp in **milliseconds**, for example `1790000000000`\n2. Build the string to sign as `{timestamp}.{body}`. For GET requests `{body}` is empty. For PUT requests it is the **request body exactly as you send it** (the same bytes; do not re-serialize the JSON after signing)\n3. Compute HMAC-SHA256 of that string with your API secret and Base64-encode the result\n4. Send the header `x-stash-hmac-signature: v1;{shopId};{timestamp};{base64Signature}`. The timestamp must be within 5 minutes of Stash server time\n\n### Example (bash and python)\n\nKeep the key in a file with owner-only permissions or in a secret store, and read it inside the signing process. Never pass it as a command-line argument: process listings and shell history can capture it.\n\n```bash\nTS=$(($(date +%s) * 1000))\nBODY=\"\"   # for PUT, the exact JSON you will send, e.g. BODY='{\"activate\":true}'\nSIGNATURE=$(TS=\"$TS\" BODY=\"$BODY\" python3 - <<'PY'\nimport base64, hashlib, hmac, os\nkey = open(os.path.expanduser('~/.stash/ingress-key'), 'rb').read().strip()\nmsg = (os.environ['TS'] + '.' + os.environ['BODY']).encode()\nprint(base64.b64encode(hmac.new(key, msg, hashlib.sha256).digest()).decode())\nPY\n)\ncurl -H \"x-stash-hmac-signature: v1;{shop_id};${TS};${SIGNATURE}\" \\\n  \"https://test-api.stash.gg/sdk/studio/{shop_id}/products\"\n```\n\n### Legacy header (deprecated)\n\n`stash-hmac-signature` carries an untimestamped Base64 HMAC-SHA256 of the body alone (empty string for GET). It is still accepted but is replayable; use the versioned header for new integrations and for every configuration write.",
+    "description": "APIs for querying a shop's managed product catalog and loyalty program, and for configuring the loyalty program from a partner's own tools. Designed for server-to-server communication between partner backends and Stash services.\n\n## Base URLs\n\n| Environment | Base URL |\n|---|---|\n| **Test** | `https://test-api.stash.gg` |\n| **Production** | `https://api.stash.gg` |\n\nAll endpoint paths below are relative to the base URL. For example, to list products in the test environment:\n\n```\nGET https://test-api.stash.gg/sdk/studio/{shop_id}/products\n```\n\n## Authentication\n\nEvery request is signed with your Ingress API key (HMAC-SHA256). Send the signature in the versioned `x-stash-hmac-signature` header.\n\n### Setup\n\n1. Go to **Stash Studio > Project Settings > API Secrets**\n2. Click **Generate Secret** to create a new key\n3. Keys created through this portal are Ingress keys by default and work with this API (this is the same key used for `/sdk/` API authentication)\n4. Store the secret securely; you will need it to sign every request\n\n### Signing a Request\n\n1. Take the current time as a Unix timestamp in **milliseconds**, for example `1790000000000`\n2. Build the string to sign as `{timestamp}.{body}`. For GET requests `{body}` is empty. For PUT requests it is the **request body exactly as you send it** (the same bytes; do not re-serialize the JSON after signing)\n3. Compute HMAC-SHA256 of that string with your API secret and Base64-encode the result\n4. Send the header `x-stash-hmac-signature: v1;{shopId};{timestamp};{base64Signature}`. The timestamp must be within 5 minutes of Stash server time\n\n### Example (bash and python)\n\nKeep the key in a file with owner-only permissions or in a secret store, and read it inside the signing process. Never pass it as a command-line argument: process listings and shell history can capture it.\n\n```bash\n# sign <body>: prints the header value for the exact body you are about to\n# send. Every request gets its own timestamp and signature.\nsign() {\n  local ts sig\n  ts=$(($(date +%s) * 1000))\n  sig=$(TS=\"$ts\" BODY=\"$1\" python3 - <<'PY'\nimport base64, hashlib, hmac, os\nkey = open(os.path.expanduser('~/.stash/ingress-key'), 'rb').read().strip()\nmsg = (os.environ['TS'] + '.' + os.environ['BODY']).encode()\nprint(base64.b64encode(hmac.new(key, msg, hashlib.sha256).digest()).decode())\nPY\n)\n  printf 'v1;%s;%s;%s' '{shop_id}' \"$ts\" \"$sig\"\n}\n\n# GET: the signed body is the empty string.\ncurl -H \"x-stash-hmac-signature: $(sign '')\" \\\n  \"https://test-api.stash.gg/sdk/studio/{shop_id}/products\"\n\n# PUT: sign the exact bytes you send, then send them with --data-binary,\n# which keeps them intact. -d @file strips newlines, so the server would\n# see different bytes from the ones you signed and reject the signature.\nBODY='{\"campaign\":{\"id\":\"season-1\",\"name\":\"Season 1\",\"tiers\":[]}}'\ncurl -X PUT -H \"Content-Type: application/json\" \\\n  -H \"x-stash-hmac-signature: $(sign \"$BODY\")\" \\\n  --data-binary \"$BODY\" \\\n  \"https://test-api.stash.gg/sdk/studio/{shop_id}/loyalty/config\"\n```\n\n### Legacy header (deprecated)\n\n`stash-hmac-signature` carries an untimestamped Base64 HMAC-SHA256 of the body alone (empty string for GET). The read endpoints still accept it, but it is replayable, so use the versioned header for new integrations. The configuration write, `PUT /sdk/studio/{shop_id}/loyalty/config`, accepts only the versioned header and answers `401` to the legacy one.",
     "version": "1.0.0",
     "contact": {
       "name": "API Support",
@@ -921,11 +921,11 @@
                   "properties": {
                     "programName": {
                       "type": "string",
-                      "description": "Name of the loyalty program as shown to players."
+                      "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
                     },
                     "vipStoreName": {
                       "type": "string",
-                      "description": "Name of the VIP store as shown to players. Omitted when not configured."
+                      "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
                     }
                   },
                   "description": "Shop-level display settings.",
@@ -941,7 +941,7 @@
                     "properties": {
                       "id": {
                         "type": "string",
-                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
                       },
                       "type": {
                         "type": "string",
@@ -956,19 +956,19 @@
                       },
                       "name": {
                         "type": "string",
-                        "description": "Singular display name, for example Gem."
+                        "description": "Singular display name, for example Gem. Up to 1024 characters."
                       },
                       "pluralName": {
                         "type": "string",
-                        "description": "Plural display name, for example Gems."
+                        "description": "Plural display name, for example Gems. Up to 1024 characters."
                       },
                       "abbreviatedName": {
                         "type": "string",
-                        "description": "Short display name, for example LP."
+                        "description": "Short display name, for example LP. Up to 1024 characters."
                       },
                       "iconImageUrl": {
                         "type": "string",
-                        "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                       }
                     },
                     "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -988,19 +988,19 @@
                     "properties": {
                       "sku": {
                         "type": "string",
-                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                        "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
                       },
                       "name": {
                         "type": "string",
-                        "description": "Name shown on the reward."
+                        "description": "Name shown on the reward. Up to 1024 characters."
                       },
                       "description": {
                         "type": "string",
-                        "description": "Description shown on the reward."
+                        "description": "Description shown on the reward. Up to 1024 characters."
                       },
                       "imageUrl": {
                         "type": "string",
-                        "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                       },
                       "backgroundImageUrl": {
                         "type": "string",
@@ -1026,7 +1026,7 @@
                       "imageUrl"
                     ]
                   },
-                  "description": "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Sellable catalog products are not listed. Resending a draft in UpdateLoyaltyConfig publishes it."
+                  "description": "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Not listed: sellable catalog products, and a Studio reward product that has no SKU (external id), which the API cannot address. Resending a draft in UpdateLoyaltyConfig publishes it."
                 },
                 "campaigns": {
                   "type": "array",
@@ -1035,11 +1035,11 @@
                     "properties": {
                       "id": {
                         "type": "string",
-                        "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                        "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
                       },
                       "name": {
                         "type": "string",
-                        "description": "Display name of the season."
+                        "description": "Display name of the season. Up to 1024 characters."
                       },
                       "startAt": {
                         "type": "string",
@@ -1085,7 +1085,7 @@
                             "description": "What happens to loyalty currency balances."
                           }
                         },
-                        "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                        "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
                         "title": "Loyalty Reset Rules",
                         "required": [
                           "points",
@@ -1100,11 +1100,11 @@
                           "properties": {
                             "id": {
                               "type": "string",
-                              "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                              "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
                             },
                             "name": {
                               "type": "string",
-                              "description": "Display name of the tier."
+                              "description": "Display name of the tier. Up to 1024 characters."
                             },
                             "startPoints": {
                               "type": "integer",
@@ -1113,7 +1113,7 @@
                             },
                             "iconUrl": {
                               "type": "string",
-                              "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                              "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                             },
                             "backgroundImageUrl": {
                               "type": "string",
@@ -1121,7 +1121,7 @@
                             },
                             "color": {
                               "type": "string",
-                              "description": "Accent colour as a CSS hex value, for example #c65d00."
+                              "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
                             },
                             "benefits": {
                               "type": "array",
@@ -1172,28 +1172,28 @@
                                 "properties": {
                                   "id": {
                                     "type": "string",
-                                    "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                                    "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                                   },
                                   "name": {
                                     "type": "string",
-                                    "description": "Display name of the milestone."
+                                    "description": "Display name of the milestone. Up to 1024 characters."
                                   },
                                   "description": {
                                     "type": "string",
-                                    "description": "Description shown on the milestone."
+                                    "description": "Description shown on the milestone. Up to 1024 characters."
                                   },
                                   "pointsNeeded": {
                                     "type": "integer",
                                     "format": "int64",
-                                    "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                                    "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                                   },
                                   "rewardName": {
                                     "type": "string",
-                                    "description": "Name of the reward as shown on the milestone."
+                                    "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                                   },
                                   "rewardImageUrl": {
                                     "type": "string",
-                                    "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                                    "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                                   },
                                   "backgroundImageUrl": {
                                     "type": "string",
@@ -1345,7 +1345,7 @@
       },
       "put": {
         "summary": "Configure a loyalty season",
-        "description": "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions and reward products it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. The request body must be signed exactly as sent. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop.",
+        "description": "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions and reward products it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, FAILED_PRECONDITION also when the shop's loyalty program is bound to more than one shop, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop.",
         "operationId": "LoyaltyService_UpdateLoyaltyConfig",
         "responses": {
           "200": {
@@ -1358,11 +1358,11 @@
                   "properties": {
                     "programName": {
                       "type": "string",
-                      "description": "Name of the loyalty program as shown to players."
+                      "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
                     },
                     "vipStoreName": {
                       "type": "string",
-                      "description": "Name of the VIP store as shown to players. Omitted when not configured."
+                      "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
                     }
                   },
                   "description": "Shop-level display settings.",
@@ -1378,7 +1378,7 @@
                     "properties": {
                       "id": {
                         "type": "string",
-                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
                       },
                       "type": {
                         "type": "string",
@@ -1393,19 +1393,19 @@
                       },
                       "name": {
                         "type": "string",
-                        "description": "Singular display name, for example Gem."
+                        "description": "Singular display name, for example Gem. Up to 1024 characters."
                       },
                       "pluralName": {
                         "type": "string",
-                        "description": "Plural display name, for example Gems."
+                        "description": "Plural display name, for example Gems. Up to 1024 characters."
                       },
                       "abbreviatedName": {
                         "type": "string",
-                        "description": "Short display name, for example LP."
+                        "description": "Short display name, for example LP. Up to 1024 characters."
                       },
                       "iconImageUrl": {
                         "type": "string",
-                        "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                       }
                     },
                     "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -1425,19 +1425,19 @@
                     "properties": {
                       "sku": {
                         "type": "string",
-                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                        "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
                       },
                       "name": {
                         "type": "string",
-                        "description": "Name shown on the reward."
+                        "description": "Name shown on the reward. Up to 1024 characters."
                       },
                       "description": {
                         "type": "string",
-                        "description": "Description shown on the reward."
+                        "description": "Description shown on the reward. Up to 1024 characters."
                       },
                       "imageUrl": {
                         "type": "string",
-                        "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                       },
                       "backgroundImageUrl": {
                         "type": "string",
@@ -1470,11 +1470,11 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                      "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
                     },
                     "name": {
                       "type": "string",
-                      "description": "Display name of the season."
+                      "description": "Display name of the season. Up to 1024 characters."
                     },
                     "startAt": {
                       "type": "string",
@@ -1520,7 +1520,7 @@
                           "description": "What happens to loyalty currency balances."
                         }
                       },
-                      "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                      "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
                       "title": "Loyalty Reset Rules",
                       "required": [
                         "points",
@@ -1535,11 +1535,11 @@
                         "properties": {
                           "id": {
                             "type": "string",
-                            "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                            "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
                           },
                           "name": {
                             "type": "string",
-                            "description": "Display name of the tier."
+                            "description": "Display name of the tier. Up to 1024 characters."
                           },
                           "startPoints": {
                             "type": "integer",
@@ -1548,7 +1548,7 @@
                           },
                           "iconUrl": {
                             "type": "string",
-                            "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                            "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                           },
                           "backgroundImageUrl": {
                             "type": "string",
@@ -1556,7 +1556,7 @@
                           },
                           "color": {
                             "type": "string",
-                            "description": "Accent colour as a CSS hex value, for example #c65d00."
+                            "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
                           },
                           "benefits": {
                             "type": "array",
@@ -1607,28 +1607,28 @@
                               "properties": {
                                 "id": {
                                   "type": "string",
-                                  "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                                  "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                                 },
                                 "name": {
                                   "type": "string",
-                                  "description": "Display name of the milestone."
+                                  "description": "Display name of the milestone. Up to 1024 characters."
                                 },
                                 "description": {
                                   "type": "string",
-                                  "description": "Description shown on the milestone."
+                                  "description": "Description shown on the milestone. Up to 1024 characters."
                                 },
                                 "pointsNeeded": {
                                   "type": "integer",
                                   "format": "int64",
-                                  "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                                  "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                                 },
                                 "rewardName": {
                                   "type": "string",
-                                  "description": "Name of the reward as shown on the milestone."
+                                  "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                                 },
                                 "rewardImageUrl": {
                                   "type": "string",
-                                  "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                                  "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                                 },
                                 "backgroundImageUrl": {
                                   "type": "string",
@@ -1782,21 +1782,21 @@
               "properties": {
                 "activate": {
                   "type": "boolean",
-                  "description": "Turn the program on once the request has been applied and passes publish validation. Honoured only when the program is not live (never published, or unpublished in Studio); ignored on a live program. Creates the program for the shop if it has none."
+                  "description": "Turn the program on once the request has been applied and passes publish validation. Honoured only on a program that has never been published; ignored otherwise and reported in warnings. A program unpublished in Studio stays off until it is re-enabled in Studio, so a sync cannot undo a deliberate stop. Creates the program for the shop if it has none."
                 },
                 "displayConfig": {
                   "type": "object",
                   "properties": {
                     "programName": {
                       "type": "string",
-                      "description": "Name of the loyalty program as shown to players."
+                      "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
                     },
                     "vipStoreName": {
                       "type": "string",
-                      "description": "Name of the VIP store as shown to players. Omitted when not configured."
+                      "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
                     }
                   },
-                  "description": "Shop-level display settings, overwritten as sent. Omit to leave them unchanged.",
+                  "description": "Shop-level display settings, overwritten as sent: a field left out of the object is cleared. Omit the whole object to leave the settings unchanged.",
                   "title": "Loyalty Display Config",
                   "required": [
                     "programName"
@@ -1809,7 +1809,7 @@
                     "properties": {
                       "id": {
                         "type": "string",
-                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                        "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
                       },
                       "type": {
                         "type": "string",
@@ -1824,19 +1824,19 @@
                       },
                       "name": {
                         "type": "string",
-                        "description": "Singular display name, for example Gem."
+                        "description": "Singular display name, for example Gem. Up to 1024 characters."
                       },
                       "pluralName": {
                         "type": "string",
-                        "description": "Plural display name, for example Gems."
+                        "description": "Plural display name, for example Gems. Up to 1024 characters."
                       },
                       "abbreviatedName": {
                         "type": "string",
-                        "description": "Short display name, for example LP."
+                        "description": "Short display name, for example LP. Up to 1024 characters."
                       },
                       "iconImageUrl": {
                         "type": "string",
-                        "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                       }
                     },
                     "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -1856,19 +1856,19 @@
                     "properties": {
                       "sku": {
                         "type": "string",
-                        "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                        "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
                       },
                       "name": {
                         "type": "string",
-                        "description": "Name shown on the reward."
+                        "description": "Name shown on the reward. Up to 1024 characters."
                       },
                       "description": {
                         "type": "string",
-                        "description": "Description shown on the reward."
+                        "description": "Description shown on the reward. Up to 1024 characters."
                       },
                       "imageUrl": {
                         "type": "string",
-                        "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                        "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                       },
                       "backgroundImageUrl": {
                         "type": "string",
@@ -1901,11 +1901,11 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                      "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
                     },
                     "name": {
                       "type": "string",
-                      "description": "Display name of the season."
+                      "description": "Display name of the season. Up to 1024 characters."
                     },
                     "startAt": {
                       "type": "string",
@@ -1951,7 +1951,7 @@
                           "description": "What happens to loyalty currency balances."
                         }
                       },
-                      "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                      "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
                       "title": "Loyalty Reset Rules",
                       "required": [
                         "points",
@@ -1966,11 +1966,11 @@
                         "properties": {
                           "id": {
                             "type": "string",
-                            "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                            "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
                           },
                           "name": {
                             "type": "string",
-                            "description": "Display name of the tier."
+                            "description": "Display name of the tier. Up to 1024 characters."
                           },
                           "startPoints": {
                             "type": "integer",
@@ -1979,7 +1979,7 @@
                           },
                           "iconUrl": {
                             "type": "string",
-                            "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                            "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                           },
                           "backgroundImageUrl": {
                             "type": "string",
@@ -1987,7 +1987,7 @@
                           },
                           "color": {
                             "type": "string",
-                            "description": "Accent colour as a CSS hex value, for example #c65d00."
+                            "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
                           },
                           "benefits": {
                             "type": "array",
@@ -2038,28 +2038,28 @@
                               "properties": {
                                 "id": {
                                   "type": "string",
-                                  "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                                  "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                                 },
                                 "name": {
                                   "type": "string",
-                                  "description": "Display name of the milestone."
+                                  "description": "Display name of the milestone. Up to 1024 characters."
                                 },
                                 "description": {
                                   "type": "string",
-                                  "description": "Description shown on the milestone."
+                                  "description": "Description shown on the milestone. Up to 1024 characters."
                                 },
                                 "pointsNeeded": {
                                   "type": "integer",
                                   "format": "int64",
-                                  "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                                  "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                                 },
                                 "rewardName": {
                                   "type": "string",
-                                  "description": "Name of the reward as shown on the milestone."
+                                  "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                                 },
                                 "rewardImageUrl": {
                                   "type": "string",
-                                  "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                                  "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                                 },
                                 "backgroundImageUrl": {
                                   "type": "string",
@@ -3699,21 +3699,21 @@
       "properties": {
         "activate": {
           "type": "boolean",
-          "description": "Turn the program on once the request has been applied and passes publish validation. Honoured only when the program is not live (never published, or unpublished in Studio); ignored on a live program. Creates the program for the shop if it has none."
+          "description": "Turn the program on once the request has been applied and passes publish validation. Honoured only on a program that has never been published; ignored otherwise and reported in warnings. A program unpublished in Studio stays off until it is re-enabled in Studio, so a sync cannot undo a deliberate stop. Creates the program for the shop if it has none."
         },
         "displayConfig": {
           "type": "object",
           "properties": {
             "programName": {
               "type": "string",
-              "description": "Name of the loyalty program as shown to players."
+              "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
             },
             "vipStoreName": {
               "type": "string",
-              "description": "Name of the VIP store as shown to players. Omitted when not configured."
+              "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
             }
           },
-          "description": "Shop-level display settings, overwritten as sent. Omit to leave them unchanged.",
+          "description": "Shop-level display settings, overwritten as sent: a field left out of the object is cleared. Omit the whole object to leave the settings unchanged.",
           "title": "Loyalty Display Config",
           "required": [
             "programName"
@@ -3726,7 +3726,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
               },
               "type": {
                 "type": "string",
@@ -3741,19 +3741,19 @@
               },
               "name": {
                 "type": "string",
-                "description": "Singular display name, for example Gem."
+                "description": "Singular display name, for example Gem. Up to 1024 characters."
               },
               "pluralName": {
                 "type": "string",
-                "description": "Plural display name, for example Gems."
+                "description": "Plural display name, for example Gems. Up to 1024 characters."
               },
               "abbreviatedName": {
                 "type": "string",
-                "description": "Short display name, for example LP."
+                "description": "Short display name, for example LP. Up to 1024 characters."
               },
               "iconImageUrl": {
                 "type": "string",
-                "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               }
             },
             "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -3773,19 +3773,19 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
               },
               "name": {
                 "type": "string",
-                "description": "Name shown on the reward."
+                "description": "Name shown on the reward. Up to 1024 characters."
               },
               "description": {
                 "type": "string",
-                "description": "Description shown on the reward."
+                "description": "Description shown on the reward. Up to 1024 characters."
               },
               "imageUrl": {
                 "type": "string",
-                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               },
               "backgroundImageUrl": {
                 "type": "string",
@@ -3818,11 +3818,11 @@
           "properties": {
             "id": {
               "type": "string",
-              "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+              "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
             },
             "name": {
               "type": "string",
-              "description": "Display name of the season."
+              "description": "Display name of the season. Up to 1024 characters."
             },
             "startAt": {
               "type": "string",
@@ -3868,7 +3868,7 @@
                   "description": "What happens to loyalty currency balances."
                 }
               },
-              "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+              "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
               "title": "Loyalty Reset Rules",
               "required": [
                 "points",
@@ -3883,11 +3883,11 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                    "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
                   },
                   "name": {
                     "type": "string",
-                    "description": "Display name of the tier."
+                    "description": "Display name of the tier. Up to 1024 characters."
                   },
                   "startPoints": {
                     "type": "integer",
@@ -3896,7 +3896,7 @@
                   },
                   "iconUrl": {
                     "type": "string",
-                    "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                    "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                   },
                   "backgroundImageUrl": {
                     "type": "string",
@@ -3904,7 +3904,7 @@
                   },
                   "color": {
                     "type": "string",
-                    "description": "Accent colour as a CSS hex value, for example #c65d00."
+                    "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
                   },
                   "benefits": {
                     "type": "array",
@@ -3955,28 +3955,28 @@
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                         },
                         "name": {
                           "type": "string",
-                          "description": "Display name of the milestone."
+                          "description": "Display name of the milestone. Up to 1024 characters."
                         },
                         "description": {
                           "type": "string",
-                          "description": "Description shown on the milestone."
+                          "description": "Description shown on the milestone. Up to 1024 characters."
                         },
                         "pointsNeeded": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                          "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                         },
                         "rewardName": {
                           "type": "string",
-                          "description": "Name of the reward as shown on the milestone."
+                          "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                         },
                         "rewardImageUrl": {
                           "type": "string",
-                          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                          "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                         },
                         "backgroundImageUrl": {
                           "type": "string",
@@ -4241,7 +4241,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+          "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
         },
         "type": {
           "type": "string",
@@ -4256,19 +4256,19 @@
         },
         "name": {
           "type": "string",
-          "description": "Singular display name, for example Gem."
+          "description": "Singular display name, for example Gem. Up to 1024 characters."
         },
         "pluralName": {
           "type": "string",
-          "description": "Plural display name, for example Gems."
+          "description": "Plural display name, for example Gems. Up to 1024 characters."
         },
         "abbreviatedName": {
           "type": "string",
-          "description": "Short display name, for example LP."
+          "description": "Short display name, for example LP. Up to 1024 characters."
         },
         "iconImageUrl": {
           "type": "string",
-          "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+          "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
         }
       },
       "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -4308,18 +4308,18 @@
         "BONUS_TYPE_LOYALTY_CURRENCY"
       ],
       "default": "BONUS_TYPE_UNSPECIFIED",
-      "description": "The kind of value a shop bonus represents. A shop holds at most one bonus of each kind."
+      "description": "The kind of value a shop bonus represents. A shop holds at most one bonus of\neach kind.\n\n - BONUS_TYPE_LOYALTY_POINTS: Loyalty points (XP): the balance that drives tier progression and milestones. Held by Stash.\n - BONUS_TYPE_IN_GAME_CURRENCY: An in-game currency such as gems, delivered as bonus items on the purchase webhook. Stash holds no balance.\n - BONUS_TYPE_LOYALTY_CURRENCY: A loyalty currency held by Stash in the player's wallet."
     },
     "v1CampaignConfig": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+          "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
         },
         "name": {
           "type": "string",
-          "description": "Display name of the season."
+          "description": "Display name of the season. Up to 1024 characters."
         },
         "startAt": {
           "type": "string",
@@ -4365,7 +4365,7 @@
               "description": "What happens to loyalty currency balances."
             }
           },
-          "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+          "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
           "title": "Loyalty Reset Rules",
           "required": [
             "points",
@@ -4380,11 +4380,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
               },
               "name": {
                 "type": "string",
-                "description": "Display name of the tier."
+                "description": "Display name of the tier. Up to 1024 characters."
               },
               "startPoints": {
                 "type": "integer",
@@ -4393,7 +4393,7 @@
               },
               "iconUrl": {
                 "type": "string",
-                "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               },
               "backgroundImageUrl": {
                 "type": "string",
@@ -4401,7 +4401,7 @@
               },
               "color": {
                 "type": "string",
-                "description": "Accent colour as a CSS hex value, for example #c65d00."
+                "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
               },
               "benefits": {
                 "type": "array",
@@ -4452,28 +4452,28 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                      "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                     },
                     "name": {
                       "type": "string",
-                      "description": "Display name of the milestone."
+                      "description": "Display name of the milestone. Up to 1024 characters."
                     },
                     "description": {
                       "type": "string",
-                      "description": "Description shown on the milestone."
+                      "description": "Description shown on the milestone. Up to 1024 characters."
                     },
                     "pointsNeeded": {
                       "type": "integer",
                       "format": "int64",
-                      "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                      "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                     },
                     "rewardName": {
                       "type": "string",
-                      "description": "Name of the reward as shown on the milestone."
+                      "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                     },
                     "rewardImageUrl": {
                       "type": "string",
-                      "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                     },
                     "backgroundImageUrl": {
                       "type": "string",
@@ -4580,18 +4580,18 @@
         "CAMPAIGN_STATUS_ENDED"
       ],
       "default": "CAMPAIGN_STATUS_UNSPECIFIED",
-      "description": "Lifecycle status of a loyalty campaign (season), derived from the program state and the campaign window."
+      "description": "Lifecycle status of a loyalty campaign (season), derived from the program\nstate and the campaign window.\n\n - CAMPAIGN_STATUS_DRAFT: Not visible to players: the season has no start date, or the program is not live.\n - CAMPAIGN_STATUS_SCHEDULED: The program is live and the season's start date is in the future.\n - CAMPAIGN_STATUS_ACTIVE: The program is live and the season's window contains the current time.\n - CAMPAIGN_STATUS_ENDED: The season's end date has passed. Read-only."
     },
     "v1DisplayConfig": {
       "type": "object",
       "properties": {
         "programName": {
           "type": "string",
-          "description": "Name of the loyalty program as shown to players."
+          "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
         },
         "vipStoreName": {
           "type": "string",
-          "description": "Name of the VIP store as shown to players. Omitted when not configured."
+          "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
         }
       },
       "description": "Shop-level names shown to players.",
@@ -4628,11 +4628,11 @@
           "properties": {
             "programName": {
               "type": "string",
-              "description": "Name of the loyalty program as shown to players."
+              "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
             },
             "vipStoreName": {
               "type": "string",
-              "description": "Name of the VIP store as shown to players. Omitted when not configured."
+              "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
             }
           },
           "description": "Shop-level display settings.",
@@ -4648,7 +4648,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
               },
               "type": {
                 "type": "string",
@@ -4663,19 +4663,19 @@
               },
               "name": {
                 "type": "string",
-                "description": "Singular display name, for example Gem."
+                "description": "Singular display name, for example Gem. Up to 1024 characters."
               },
               "pluralName": {
                 "type": "string",
-                "description": "Plural display name, for example Gems."
+                "description": "Plural display name, for example Gems. Up to 1024 characters."
               },
               "abbreviatedName": {
                 "type": "string",
-                "description": "Short display name, for example LP."
+                "description": "Short display name, for example LP. Up to 1024 characters."
               },
               "iconImageUrl": {
                 "type": "string",
-                "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               }
             },
             "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -4695,19 +4695,19 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
               },
               "name": {
                 "type": "string",
-                "description": "Name shown on the reward."
+                "description": "Name shown on the reward. Up to 1024 characters."
               },
               "description": {
                 "type": "string",
-                "description": "Description shown on the reward."
+                "description": "Description shown on the reward. Up to 1024 characters."
               },
               "imageUrl": {
                 "type": "string",
-                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               },
               "backgroundImageUrl": {
                 "type": "string",
@@ -4733,7 +4733,7 @@
               "imageUrl"
             ]
           },
-          "description": "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Sellable catalog products are not listed. Resending a draft in UpdateLoyaltyConfig publishes it."
+          "description": "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Not listed: sellable catalog products, and a Studio reward product that has no SKU (external id), which the API cannot address. Resending a draft in UpdateLoyaltyConfig publishes it."
         },
         "campaigns": {
           "type": "array",
@@ -4742,11 +4742,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+                "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
               },
               "name": {
                 "type": "string",
-                "description": "Display name of the season."
+                "description": "Display name of the season. Up to 1024 characters."
               },
               "startAt": {
                 "type": "string",
@@ -4792,7 +4792,7 @@
                     "description": "What happens to loyalty currency balances."
                   }
                 },
-                "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+                "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
                 "title": "Loyalty Reset Rules",
                 "required": [
                   "points",
@@ -4807,11 +4807,11 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                      "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
                     },
                     "name": {
                       "type": "string",
-                      "description": "Display name of the tier."
+                      "description": "Display name of the tier. Up to 1024 characters."
                     },
                     "startPoints": {
                       "type": "integer",
@@ -4820,7 +4820,7 @@
                     },
                     "iconUrl": {
                       "type": "string",
-                      "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                      "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                     },
                     "backgroundImageUrl": {
                       "type": "string",
@@ -4828,7 +4828,7 @@
                     },
                     "color": {
                       "type": "string",
-                      "description": "Accent colour as a CSS hex value, for example #c65d00."
+                      "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
                     },
                     "benefits": {
                       "type": "array",
@@ -4879,28 +4879,28 @@
                         "properties": {
                           "id": {
                             "type": "string",
-                            "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                            "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                           },
                           "name": {
                             "type": "string",
-                            "description": "Display name of the milestone."
+                            "description": "Display name of the milestone. Up to 1024 characters."
                           },
                           "description": {
                             "type": "string",
-                            "description": "Description shown on the milestone."
+                            "description": "Description shown on the milestone. Up to 1024 characters."
                           },
                           "pointsNeeded": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                            "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                           },
                           "rewardName": {
                             "type": "string",
-                            "description": "Name of the reward as shown on the milestone."
+                            "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                           },
                           "rewardImageUrl": {
                             "type": "string",
-                            "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                            "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                           },
                           "backgroundImageUrl": {
                             "type": "string",
@@ -5241,28 +5241,28 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
         },
         "name": {
           "type": "string",
-          "description": "Display name of the milestone."
+          "description": "Display name of the milestone. Up to 1024 characters."
         },
         "description": {
           "type": "string",
-          "description": "Description shown on the milestone."
+          "description": "Description shown on the milestone. Up to 1024 characters."
         },
         "pointsNeeded": {
           "type": "integer",
           "format": "int64",
-          "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+          "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
         },
         "rewardName": {
           "type": "string",
-          "description": "Name of the reward as shown on the milestone."
+          "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
         },
         "rewardImageUrl": {
           "type": "string",
-          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+          "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
         },
         "backgroundImageUrl": {
           "type": "string",
@@ -5392,19 +5392,19 @@
       "properties": {
         "sku": {
           "type": "string",
-          "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+          "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
         },
         "name": {
           "type": "string",
-          "description": "Name shown on the reward."
+          "description": "Name shown on the reward. Up to 1024 characters."
         },
         "description": {
           "type": "string",
-          "description": "Description shown on the reward."
+          "description": "Description shown on the reward. Up to 1024 characters."
         },
         "imageUrl": {
           "type": "string",
-          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+          "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
         },
         "backgroundImageUrl": {
           "type": "string",
@@ -5438,7 +5438,7 @@
         "REWARD_PRODUCT_STATUS_PUBLISHED"
       ],
       "default": "REWARD_PRODUCT_STATUS_UNSPECIFIED",
-      "description": "Status of a reward-only product in Stash Studio."
+      "description": "Status of a reward-only product in Stash Studio.\n\n - REWARD_PRODUCT_STATUS_DRAFT: Saved but not yet published; a milestone cannot grant it.\n - REWARD_PRODUCT_STATUS_PUBLISHED: Published; a milestone can grant it."
     },
     "v1TierBenefit": {
       "type": "object",
@@ -5459,11 +5459,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+          "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
         },
         "name": {
           "type": "string",
-          "description": "Display name of the tier."
+          "description": "Display name of the tier. Up to 1024 characters."
         },
         "startPoints": {
           "type": "integer",
@@ -5472,7 +5472,7 @@
         },
         "iconUrl": {
           "type": "string",
-          "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+          "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
         },
         "backgroundImageUrl": {
           "type": "string",
@@ -5480,7 +5480,7 @@
         },
         "color": {
           "type": "string",
-          "description": "Accent colour as a CSS hex value, for example #c65d00."
+          "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
         },
         "benefits": {
           "type": "array",
@@ -5531,28 +5531,28 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
               },
               "name": {
                 "type": "string",
-                "description": "Display name of the milestone."
+                "description": "Display name of the milestone. Up to 1024 characters."
               },
               "description": {
                 "type": "string",
-                "description": "Description shown on the milestone."
+                "description": "Description shown on the milestone. Up to 1024 characters."
               },
               "pointsNeeded": {
                 "type": "integer",
                 "format": "int64",
-                "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
               },
               "rewardName": {
                 "type": "string",
-                "description": "Name of the reward as shown on the milestone."
+                "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
               },
               "rewardImageUrl": {
                 "type": "string",
-                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               },
               "backgroundImageUrl": {
                 "type": "string",
@@ -5634,11 +5634,11 @@
           "properties": {
             "programName": {
               "type": "string",
-              "description": "Name of the loyalty program as shown to players."
+              "description": "Name of the loyalty program as shown to players. Up to 1024 characters."
             },
             "vipStoreName": {
               "type": "string",
-              "description": "Name of the VIP store as shown to players. Omitted when not configured."
+              "description": "Name of the VIP store as shown to players, up to 1024 characters. Omitted on reads when not configured; leaving it out of an update clears it."
             }
           },
           "description": "Shop-level display settings.",
@@ -5654,7 +5654,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Referenced by earn rates and bonus rewards."
+                "description": "Partner-chosen bonus identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Referenced by earn rates and bonus rewards."
               },
               "type": {
                 "type": "string",
@@ -5669,19 +5669,19 @@
               },
               "name": {
                 "type": "string",
-                "description": "Singular display name, for example Gem."
+                "description": "Singular display name, for example Gem. Up to 1024 characters."
               },
               "pluralName": {
                 "type": "string",
-                "description": "Plural display name, for example Gems."
+                "description": "Plural display name, for example Gems. Up to 1024 characters."
               },
               "abbreviatedName": {
                 "type": "string",
-                "description": "Short display name, for example LP."
+                "description": "Short display name, for example LP. Up to 1024 characters."
               },
               "iconImageUrl": {
                 "type": "string",
-                "description": "Icon image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Icon image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               }
             },
             "description": "A shop bonus: the loyalty points balance, an in-game currency delivered through webhooks, or a loyalty currency.",
@@ -5701,19 +5701,19 @@
             "properties": {
               "sku": {
                 "type": "string",
-                "description": "Partner-chosen product identifier (SKU) for a reward product created through this API: letters, digits, dot, underscore and hyphen, up to 256 characters. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead, where any existing SKU is accepted as is."
+                "description": "Partner-chosen product identifier (SKU) for a reward product: any non-empty string up to 1024 characters, the same rule as the catalog's productId. The upsert key. A SKU that belongs to a sellable catalog product is refused here; reference such a product from a milestone's productRewards instead."
               },
               "name": {
                 "type": "string",
-                "description": "Name shown on the reward."
+                "description": "Name shown on the reward. Up to 1024 characters."
               },
               "description": {
                 "type": "string",
-                "description": "Description shown on the reward."
+                "description": "Description shown on the reward. Up to 1024 characters."
               },
               "imageUrl": {
                 "type": "string",
-                "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
               },
               "backgroundImageUrl": {
                 "type": "string",
@@ -5746,11 +5746,11 @@
           "properties": {
             "id": {
               "type": "string",
-              "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
+              "description": "Partner-chosen campaign identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". An existing id updates that season; a new id creates one. A new id is a season boundary for every player: milestone claims are keyed by campaign."
             },
             "name": {
               "type": "string",
-              "description": "Display name of the season."
+              "description": "Display name of the season. Up to 1024 characters."
             },
             "startAt": {
               "type": "string",
@@ -5796,7 +5796,7 @@
                   "description": "What happens to loyalty currency balances."
                 }
               },
-              "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. Omit to keep the defaults: points carry, milestone claims reset, currency carries. Accepted only on shops whose loyalty points are held by Stash. Locked once the season is active.",
+              "description": "What happens to a player's points, milestone claims and currency when they first arrive in this season. On create, omit to use the defaults: points carry, milestone claims reset, currency carries. On update, omit to leave the stored rules unchanged. Accepted only on shops whose loyalty points are held by Stash; GetLoyaltyConfig omits it for other shops. Locked once the season is active.",
               "title": "Loyalty Reset Rules",
               "required": [
                 "points",
@@ -5811,11 +5811,11 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters. Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
+                    "description": "Partner-chosen tier identifier: letters, digits, dot, underscore and hyphen, up to 256 characters, not \".\" or \"..\". Unique within the season. Reported as tierId by the loyalty read API and on webhooks."
                   },
                   "name": {
                     "type": "string",
-                    "description": "Display name of the tier."
+                    "description": "Display name of the tier. Up to 1024 characters."
                   },
                   "startPoints": {
                     "type": "integer",
@@ -5824,7 +5824,7 @@
                   },
                   "iconUrl": {
                     "type": "string",
-                    "description": "Tier icon URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                    "description": "Tier icon URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                   },
                   "backgroundImageUrl": {
                     "type": "string",
@@ -5832,7 +5832,7 @@
                   },
                   "color": {
                     "type": "string",
-                    "description": "Accent colour as a CSS hex value, for example #c65d00."
+                    "description": "Accent colour as a six-digit CSS hex value, for example #c65d00."
                   },
                   "benefits": {
                     "type": "array",
@@ -5883,28 +5883,28 @@
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters. Unique across the whole program, every season included. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
+                          "description": "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."
                         },
                         "name": {
                           "type": "string",
-                          "description": "Display name of the milestone."
+                          "description": "Display name of the milestone. Up to 1024 characters."
                         },
                         "description": {
                           "type": "string",
-                          "description": "Description shown on the milestone."
+                          "description": "Description shown on the milestone. Up to 1024 characters."
                         },
                         "pointsNeeded": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Points balance at which the milestone is reached. Unique within the season. Locked once the season is active."
+                          "description": "Points balance at which the milestone is reached, at least 1. Unique within the season. Locked once the season is active."
                         },
                         "rewardName": {
                           "type": "string",
-                          "description": "Name of the reward as shown on the milestone."
+                          "description": "Name of the reward as shown on the milestone. Up to 1024 characters."
                         },
                         "rewardImageUrl": {
                           "type": "string",
-                          "description": "Reward image URL. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
+                          "description": "Reward image URL, up to 1024 characters. Partner-hosted https URL; the hostname must be on the shop's image allowlist."
                         },
                         "backgroundImageUrl": {
                           "type": "string",
@@ -6022,7 +6022,7 @@
     },
     "legacyHmac": {
       "type": "apiKey",
-      "description": "DEPRECATED: use the versioned hmac scheme (x-stash-hmac-signature) instead for the best security. HMAC-SHA256 signature generated by signing the request body (empty string for GET requests) with the Ingress API key from Stash Studio. Base64-encoded.",
+      "description": "DEPRECATED: use the versioned hmac scheme (x-stash-hmac-signature) instead for the best security. HMAC-SHA256 signature generated by signing the request body (empty string for GET requests) with the Ingress API key from Stash Studio. Base64-encoded. Accepted by the read endpoints only; UpdateLoyaltyConfig rejects it with UNAUTHENTICATED because it carries no timestamp.",
       "name": "stash-hmac-signature",
       "in": "header"
     }
