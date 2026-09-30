@@ -370,6 +370,7 @@ message GetCatalogResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price of the item"}
       ];
       optional google.protobuf.Timestamp expiration = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional expiration time when this product is no longer available for purchase, for display purposes"}];
+      optional google.protobuf.Timestamp refresh_at = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp when this item's purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field. A standalone item owns its purchase allowance, which is why its reset time belongs here; an item inside a purchase pack has no allowance of its own, so PurchasePackItem carries no refresh_at and the pack declares one for all of its items."}];
       map<string, string> metadata = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."}];
 
       message PurchasableAttributes {
@@ -426,7 +427,7 @@ message GetCatalogResponse {
             gte: 0
             ignore_empty: true
           },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonus quantity for the item"}
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonus quantity to display alongside this item's quantity. Anonymous: it carries no bonus id and no type, so it is a display projection only. When the offer also sets bonus_items, that typed representation takes precedence for what is actually granted and this field remains display only."}
         ];
         optional string unit_image = 7 [
           (validate.rules).string = {
@@ -446,6 +447,35 @@ message GetCatalogResponse {
         optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
+
+      message PurchasableBonusItem {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Purchasable Bonus Item"
+            description: "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount."
+            required: [
+              "type",
+              "id",
+              "amount"
+            ]
+          }
+        };
+        PurchasableBonusItemType type = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Kind of bonus granted with this purchase, e.g. in-game currency"}];
+        string id = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string.min_len = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the bonus/currency to grant"}
+        ];
+        string amount = 3 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."}
+        ];
+      }
+      repeated PurchasableBonusItem bonus_items = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."}];
     }
 
     message OfferChainItem {
@@ -763,11 +793,183 @@ message GetCatalogResponse {
       map<string, string> metadata = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."}];
     }
 
+    message PurchasePack {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Purchase Pack"
+          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its purchase limit, expiration and refresh time, are declared once here. A purchase pack item has no fields for them, so the offer's values govern every item in it by construction."
+          required: [
+            "id",
+            "items"
+          ]
+        }
+      };
+      string id = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Your stable identifier for this offer, declared once. It is echoed back as purchase_pack_id on the register, confirm and cancel calls, so a purchase can be attributed to the offer as it was displayed. Keep it unique across the offers in a catalog response"}
+      ];
+      repeated PurchasePackItem items = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).repeated.min_items = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer's items, one per price, in display order. At most one of them may carry type PURCHASE_PACK_ITEM_TYPE_WHOLE_PURCHASE_PACK to mark the item that buys the whole offer in a single transaction"}
+      ];
+      optional uint32 max_purchasable = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's remaining purchases of this offer as a whole, shared by every item in it. Compute it per player, as you already do per item, and send it here only. When absent the offer carries no shared limit"}];
+      optional LocalizableText max_purchasable_description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the offer's shared purchase limit"}];
+      optional google.protobuf.Timestamp expiration = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time after which no item in this offer is available for purchase"}];
+      optional google.protobuf.Timestamp refresh_at = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"}];
+
+      message PurchasePackItem {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Purchase Pack Item"
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here."
+            required: [
+              "product_id",
+              "price"
+            ]
+          }
+        };
+        optional string guid = 1 [
+          (validate.rules).string = {
+            uuid: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated)"}
+        ];
+        string product_id = 2 [
+          (google.api.field_behavior) = REQUIRED,
+          (validate.rules).string.min_len = 1,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Required unique SKU/product identifier of this price point"}
+        ];
+        PurchasePackItemType type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Type of purchase pack item. PURCHASE_PACK_ITEM_TYPE_WHOLE_PURCHASE_PACK marks the item that buys the whole offer in a single transaction"}];
+        LocalizableText name = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Display name of the item"}];
+        LocalizableText description = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Description of the item"}];
+        string image = 6 [
+          (validate.rules).string = {
+            uri: true
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image"}
+        ];
+        PriceAmountOrId price = 7 [
+          (google.api.field_behavior) = REQUIRED,
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price of this item"}
+        ];
+        map<string, string> metadata = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."}];
+
+        message PurchasePackItemAttributes {
+          option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+            json_schema: {
+              title: "Purchase Pack Item Attributes"
+              description: "Optional attributes for customizing how an item of a purchase pack is displayed"
+            }
+          };
+          optional Banner banner = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner for the item"}];
+          optional Badge badge = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge for the item"}];
+          optional Background background = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for the item"}];
+          optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
+          optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item"}];
+          optional CatalogBorderType border_type = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional border decoration type for this item's card"}];
+        }
+        optional PurchasePackItemAttributes attributes = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual and behavioral attributes"}];
+
+        message PurchasePackContentItem {
+          option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+            json_schema: {
+              title: "Purchase Pack Content Item"
+              description: "Represents an in-game item obtainable by buying this item of a purchase pack"
+              required: ["quantity"]
+            }
+          };
+          optional string guid = 1 [
+            (validate.rules).string = {
+              uuid: true
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional unique identifier (UUID v4 if provided, otherwise generated). Note that product_id is not used because only the purchase pack item is purchasable, not its contents."}
+          ];
+          optional ContentItemType type = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional type of content item"}];
+          LocalizableText name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Item name"}];
+          optional LocalizableText description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional item description"}];
+          string image = 5 [
+            (validate.rules).string = {
+              uri: true
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "URL to item image (used to display multiple of this item, or always used if unit_image is not provided)"}
+          ];
+          string quantity = 6 [
+            (google.api.field_behavior) = REQUIRED,
+            (validate.rules).string = {
+              min_len: 1
+              pattern: "^[0-9]+$"
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game item quantity as string for big integer support (no decimals allowed)"}
+          ];
+          optional uint32 bonus_quantity = 7 [
+            (validate.rules).uint32 = {
+              gte: 0
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonus quantity to display alongside this item's quantity. Anonymous: it carries no bonus id and no type, so it is a display projection only. When the purchase pack item also sets bonus_items, that typed representation takes precedence for what is actually granted and this field remains display only."}
+          ];
+          optional string unit_image = 8 [
+            (validate.rules).string = {
+              uri: true
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+          ];
+          optional Button info_button = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for additional item details"}];
+          optional Callout callout = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional callout highlighting special features"}];
+          optional Background primary_background = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional primary background styling for item"}];
+          optional Background secondary_background = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary background styling for item, layered on top of the primary background"}];
+          optional SpecialIndicatorTag special_indicator = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional special indicator for e.g. an in-game capability unlocked by this item"}];
+          optional RewardBuff reward_buff = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional reward buff applied to this item"}];
+          optional bool featured = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this item should be displayed prominently above the other items within the purchase pack item"}];
+          optional ContentItemClickAction click_action = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."}];
+          optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
+        }
+        repeated PurchasePackContentItem contents = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items this item grants. On the item that buys the whole offer, the combined rewards of every price point. Optional on every type, as on a standalone item: an item with no contents is described by its name and image alone"}];
+
+        message PurchasePackBonusItem {
+          option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+            json_schema: {
+              title: "Purchase Pack Bonus Item"
+              description: "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount."
+              required: [
+                "type",
+                "id",
+                "amount"
+              ]
+            }
+          };
+          PurchasableBonusItemType type = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Kind of bonus granted with this purchase, e.g. in-game currency"}];
+          string id = 2 [
+            (google.api.field_behavior) = REQUIRED,
+            (validate.rules).string.min_len = 1,
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the bonus/currency to grant"}
+          ];
+          string amount = 3 [
+            (google.api.field_behavior) = REQUIRED,
+            (validate.rules).string = {
+              min_len: 1
+              pattern: "^[0-9]+$"
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."}
+          ];
+        }
+        repeated PurchasePackBonusItem bonus_items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of the item's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the item's own bonus for an id already listed there or the player is credited twice."}];
+      }
+    }
+
     oneof item {
       PurchasableItem product = 1;
       OfferChainItem chain = 2;
       NonPurchasableItem info = 3;
       FreeItem free = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Free-to-claim catalog item"}];
+      PurchasePack pack = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "One offer sold at several prices, containing its purchasable items"}];
     }
   }
 
