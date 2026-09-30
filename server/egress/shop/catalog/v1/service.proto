@@ -67,6 +67,19 @@ message LocalizableText {
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Localized text content for the language specified by the code sent in the request filters"}
     ];
   }
+  map<string, string> format_arguments = 4 [
+    (validate.rules).map = {
+      max_pairs: 32
+      keys: {
+        string: {pattern: "^[A-Za-z0-9_]{1,64}$"}
+      }
+      values: {
+        string: {max_bytes: 512}
+      }
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional data entries substituted into the text after localization, using the syntax set in format_syntax. The template is whichever text is resolved for the request (localized_text, the text for localization_key, or default_text), so each language can place the entries differently. Each value is inserted as a literal display string: send numbers, percentages and dates already formatted for the requested language, because no number, date or plural formatting is applied. ICU MessageFormat-style templates read an entry by name ({rate}) or by zero-based index ({0} reads key \"0\"); printf-style templates read keys \"1\", \"2\" and so on (one-based), in order for %s and %d or explicitly for %1$s and %1$d. Limits: at most 32 entries, keys matching ^[A-Za-z0-9_]{1,64}$, values of at most 512 bytes (UTF-8), templates of at most 4096 bytes and a composed text of at most 8192 bytes. If the resolved template cannot be formatted (an unsupported construct, a missing entry, an invalid value, or a template or composed text over its limit), default_text is formatted with the same syntax and entries instead, and if that also fails the text is omitted. Entries that break a limit fail with any template, so the text is omitted, and entries sent without a format_syntax omit the text without a default_text retry. When the template comes from localization_key or localized_text, send a default_text with no placeholders so the fallback renders whenever the entries themselves are valid."}
+  ];
+  TextFormatSyntax format_syntax = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Template syntax used to compose the text with format_arguments. Leave unset, with no format_arguments, for plain text, which is displayed as-is. Sending format_arguments without a syntax is a formatting failure that omits the text, without a default_text retry. To use a syntax that is not listed, ask Stash to add it."}];
 }
 
 message GetCatalogRequest {
