@@ -474,6 +474,13 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."}
         ];
+        optional string original_amount = 4 [
+          (validate.rules).string = {
+            min_len: 1
+            pattern: "^[0-9]+$"
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."}
+        ];
       }
       repeated PurchasableBonusItem bonus_items = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."}];
     }
@@ -958,6 +965,13 @@ message GetCatalogResponse {
               pattern: "^[0-9]+$"
             },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."}
+          ];
+          optional string original_amount = 4 [
+            (validate.rules).string = {
+              min_len: 1
+              pattern: "^[0-9]+$"
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."}
           ];
         }
         repeated PurchasePackBonusItem bonus_items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of the item's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the item's own bonus for an id already listed there or the player is credited twice."}];

@@ -755,6 +755,10 @@
                                           "amount": {
                                             "type": "string",
                                             "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                          },
+                                          "originalAmount": {
+                                            "type": "string",
+                                            "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                           }
                                         },
                                         "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -2061,6 +2065,10 @@
                                                 "amount": {
                                                   "type": "string",
                                                   "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                                },
+                                                "originalAmount": {
+                                                  "type": "string",
+                                                  "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                                 }
                                               },
                                               "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -2844,6 +2852,10 @@
                                                 "amount": {
                                                   "type": "string",
                                                   "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                                },
+                                                "originalAmount": {
+                                                  "type": "string",
+                                                  "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                                 }
                                               },
                                               "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -4150,6 +4162,10 @@
                                                       "amount": {
                                                         "type": "string",
                                                         "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                                      },
+                                                      "originalAmount": {
+                                                        "type": "string",
+                                                        "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                                       }
                                                     },
                                                     "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -7927,6 +7943,10 @@
               "amount": {
                 "type": "string",
                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+              },
+              "originalAmount": {
+                "type": "string",
+                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
               }
             },
             "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -8906,6 +8926,10 @@
                     "amount": {
                       "type": "string",
                       "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                    },
+                    "originalAmount": {
+                      "type": "string",
+                      "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                     }
                   },
                   "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -9674,6 +9698,10 @@
                         "amount": {
                           "type": "string",
                           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                        },
+                        "originalAmount": {
+                          "type": "string",
+                          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                         }
                       },
                       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -10980,6 +11008,10 @@
                               "amount": {
                                 "type": "string",
                                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                              },
+                              "originalAmount": {
+                                "type": "string",
+                                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                               }
                             },
                             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -11763,6 +11795,10 @@
                               "amount": {
                                 "type": "string",
                                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                              },
+                              "originalAmount": {
+                                "type": "string",
+                                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                               }
                             },
                             "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -13069,6 +13105,10 @@
                                     "amount": {
                                       "type": "string",
                                       "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                    },
+                                    "originalAmount": {
+                                      "type": "string",
+                                      "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                     }
                                   },
                                   "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -14805,6 +14845,10 @@
                               "amount": {
                                 "type": "string",
                                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                              },
+                              "originalAmount": {
+                                "type": "string",
+                                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                               }
                             },
                             "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -16111,6 +16155,10 @@
                                     "amount": {
                                       "type": "string",
                                       "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                    },
+                                    "originalAmount": {
+                                      "type": "string",
+                                      "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                     }
                                   },
                                   "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -16894,6 +16942,10 @@
                                     "amount": {
                                       "type": "string",
                                       "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                    },
+                                    "originalAmount": {
+                                      "type": "string",
+                                      "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                     }
                                   },
                                   "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -18200,6 +18252,10 @@
                                           "amount": {
                                             "type": "string",
                                             "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                          },
+                                          "originalAmount": {
+                                            "type": "string",
+                                            "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                           }
                                         },
                                         "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -19041,6 +19097,10 @@
                   "amount": {
                     "type": "string",
                     "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                  },
+                  "originalAmount": {
+                    "type": "string",
+                    "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                   }
                 },
                 "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -20347,6 +20407,10 @@
                         "amount": {
                           "type": "string",
                           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                        },
+                        "originalAmount": {
+                          "type": "string",
+                          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                         }
                       },
                       "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -21405,6 +21469,10 @@
         "amount": {
           "type": "string",
           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+        },
+        "originalAmount": {
+          "type": "string",
+          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
         }
       },
       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -21437,6 +21505,10 @@
         "amount": {
           "type": "string",
           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+        },
+        "originalAmount": {
+          "type": "string",
+          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
         }
       },
       "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -22596,6 +22668,10 @@
               "amount": {
                 "type": "string",
                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+              },
+              "originalAmount": {
+                "type": "string",
+                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
               }
             },
             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -23356,6 +23432,10 @@
                         "amount": {
                           "type": "string",
                           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                        },
+                        "originalAmount": {
+                          "type": "string",
+                          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                         }
                       },
                       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -24662,6 +24742,10 @@
                               "amount": {
                                 "type": "string",
                                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                              },
+                              "originalAmount": {
+                                "type": "string",
+                                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                               }
                             },
                             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -25860,6 +25944,10 @@
                                   "amount": {
                                     "type": "string",
                                     "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                  },
+                                  "originalAmount": {
+                                    "type": "string",
+                                    "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                   }
                                 },
                                 "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -27166,6 +27254,10 @@
                                         "amount": {
                                           "type": "string",
                                           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                        },
+                                        "originalAmount": {
+                                          "type": "string",
+                                          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                         }
                                       },
                                       "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -27949,6 +28041,10 @@
                                         "amount": {
                                           "type": "string",
                                           "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                        },
+                                        "originalAmount": {
+                                          "type": "string",
+                                          "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                         }
                                       },
                                       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -29255,6 +29351,10 @@
                                               "amount": {
                                                 "type": "string",
                                                 "description": "Amount to grant as string for big integer support (no decimals allowed). An amount that exceeds the width of the ConfirmPayment request's bonus-item quantity cannot be carried on the grant, so keep it within that bound."
+                                              },
+                                              "originalAmount": {
+                                                "type": "string",
+                                                "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
                                               }
                                             },
                                             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
