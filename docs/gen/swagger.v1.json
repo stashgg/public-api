@@ -5260,11 +5260,11 @@
                     },
                     "region": {
                       "type": "string",
-                      "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in. Not applied to the shop yet"
+                      "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"
                     },
                     "currency": {
                       "type": "string",
-                      "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in. Not applied to the shop yet"
+                      "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"
                     }
                   },
                   "description": "Player information",
@@ -30922,11 +30922,11 @@
         },
         "region": {
           "type": "string",
-          "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in. Not applied to the shop yet"
+          "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"
         },
         "currency": {
           "type": "string",
-          "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in. Not applied to the shop yet"
+          "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"
         }
       },
       "description": "Represents a player in the system",
@@ -30969,11 +30969,11 @@
             },
             "region": {
               "type": "string",
-              "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in. Not applied to the shop yet"
+              "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"
             },
             "currency": {
               "type": "string",
-              "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in. Not applied to the shop yet"
+              "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"
             }
           },
           "description": "Player information",

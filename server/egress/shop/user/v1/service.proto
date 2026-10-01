@@ -91,14 +91,14 @@ message GetPlayerResponse {
         len: 2
         ignore_empty: true
       },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in. Not applied to the shop yet"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"}
     ];
     string currency = 8 [
       (validate.rules).string = {
         len: 3
         ignore_empty: true
       },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in. Not applied to the shop yet"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"}
     ];
   }
   Player player = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player information"}];
