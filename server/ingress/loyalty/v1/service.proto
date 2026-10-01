@@ -707,7 +707,7 @@ message MilestoneConfig {
         ".."
       ]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season; the API currently also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Partner-chosen milestone identifier: letters, digits, dot, underscore and hyphen, up to 36 characters, not \".\" or \"..\". Unique within the season, and the API also refuses an id already used by another season of the program. Key milestones by campaign id plus milestoneId rather than by milestoneId alone. Reported as milestoneId on the milestone claimed event and by the loyalty read API."}
   ];
   string name = 2 [
     (google.api.field_behavior) = REQUIRED,
