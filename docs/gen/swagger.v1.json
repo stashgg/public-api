@@ -149,7 +149,7 @@
                                     "maxPurchasable": {
                                       "type": "integer",
                                       "format": "int64",
-                                      "description": "Maximum number of times this item can be purchased"
+                                      "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                                     },
                                     "maxPurchasableDescription": {
                                       "type": "object",
@@ -204,7 +204,7 @@
                                     "expiration": {
                                       "type": "string",
                                       "format": "date-time",
-                                      "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                                      "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                                     },
                                     "refreshAt": {
                                       "type": "string",
@@ -2246,7 +2246,7 @@
                                           "maxPurchasable": {
                                             "type": "integer",
                                             "format": "int64",
-                                            "description": "Maximum number of times this item can be purchased"
+                                            "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                                           },
                                           "maxPurchasableDescription": {
                                             "type": "object",
@@ -2301,7 +2301,7 @@
                                           "expiration": {
                                             "type": "string",
                                             "format": "date-time",
-                                            "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                                            "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                                           },
                                           "refreshAt": {
                                             "type": "string",
@@ -7345,7 +7345,7 @@
         "maxPurchasable": {
           "type": "integer",
           "format": "int64",
-          "description": "Maximum number of times this item can be purchased"
+          "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
         },
         "maxPurchasableDescription": {
           "type": "object",
@@ -7400,7 +7400,7 @@
         "expiration": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+          "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
         },
         "refreshAt": {
           "type": "string",
@@ -9100,7 +9100,7 @@
                   "maxPurchasable": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Maximum number of times this item can be purchased"
+                    "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                   },
                   "maxPurchasableDescription": {
                     "type": "object",
@@ -9155,7 +9155,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                    "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -11197,7 +11197,7 @@
                         "maxPurchasable": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Maximum number of times this item can be purchased"
+                          "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                         },
                         "maxPurchasableDescription": {
                           "type": "object",
@@ -11252,7 +11252,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                          "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -14247,7 +14247,7 @@
                         "maxPurchasable": {
                           "type": "integer",
                           "format": "int64",
-                          "description": "Maximum number of times this item can be purchased"
+                          "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                         },
                         "maxPurchasableDescription": {
                           "type": "object",
@@ -14302,7 +14302,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                          "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -16344,7 +16344,7 @@
                               "maxPurchasable": {
                                 "type": "integer",
                                 "format": "int64",
-                                "description": "Maximum number of times this item can be purchased"
+                                "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                               },
                               "maxPurchasableDescription": {
                                 "type": "object",
@@ -16399,7 +16399,7 @@
                               "expiration": {
                                 "type": "string",
                                 "format": "date-time",
-                                "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                                "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                               },
                               "refreshAt": {
                                 "type": "string",
@@ -18499,7 +18499,7 @@
             "maxPurchasable": {
               "type": "integer",
               "format": "int64",
-              "description": "Maximum number of times this item can be purchased"
+              "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
             },
             "maxPurchasableDescription": {
               "type": "object",
@@ -18554,7 +18554,7 @@
             "expiration": {
               "type": "string",
               "format": "date-time",
-              "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+              "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
             },
             "refreshAt": {
               "type": "string",
@@ -20526,7 +20526,7 @@
           "description": "Price ID identifier"
         }
       },
-      "description": "Represents a monetary price for display purposes",
+      "description": "The price Stash charges the player for one unit of the item, given as an amount or as a price ID that Stash resolves to an amount. It is the charged price, not a display value; a coupon discount, and any tax not already included in the price, adjust the order total",
       "title": "Price Amount Or ID"
     },
     "GetCatalogResponseRewardBuff": {
@@ -22834,7 +22834,7 @@
                   "maxPurchasable": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Maximum number of times this item can be purchased"
+                    "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                   },
                   "maxPurchasableDescription": {
                     "type": "object",
@@ -22889,7 +22889,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                    "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -25346,7 +25346,7 @@
                             "maxPurchasable": {
                               "type": "integer",
                               "format": "int64",
-                              "description": "Maximum number of times this item can be purchased"
+                              "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                             },
                             "maxPurchasableDescription": {
                               "type": "object",
@@ -25401,7 +25401,7 @@
                             "expiration": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                              "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                             },
                             "refreshAt": {
                               "type": "string",
@@ -27443,7 +27443,7 @@
                                   "maxPurchasable": {
                                     "type": "integer",
                                     "format": "int64",
-                                    "description": "Maximum number of times this item can be purchased"
+                                    "description": "The player's remaining purchases of this item: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases of this item itself. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the item has no per-player purchase limit"
                                   },
                                   "maxPurchasableDescription": {
                                     "type": "object",
@@ -27498,7 +27498,7 @@
                                   "expiration": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "Optional expiration time when this product is no longer available for purchase, for display purposes"
+                                    "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
                                   },
                                   "refreshAt": {
                                     "type": "string",
