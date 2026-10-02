@@ -5246,7 +5246,7 @@
                     },
                     "language": {
                       "type": "string",
-                      "description": "Player's preferred language as a BCP 47 tag (e.g., 'en' or 'pt-BR'). When set, it takes precedence over the language sent when the player signed in, so the game server can update a player's language after sign-in"
+                      "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"
                     },
                     "inGameLevel": {
                       "type": "integer",
@@ -30908,7 +30908,7 @@
         },
         "language": {
           "type": "string",
-          "description": "Player's preferred language as a BCP 47 tag (e.g., 'en' or 'pt-BR'). When set, it takes precedence over the language sent when the player signed in, so the game server can update a player's language after sign-in"
+          "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"
         },
         "inGameLevel": {
           "type": "integer",
@@ -30955,7 +30955,7 @@
             },
             "language": {
               "type": "string",
-              "description": "Player's preferred language as a BCP 47 tag (e.g., 'en' or 'pt-BR'). When set, it takes precedence over the language sent when the player signed in, so the game server can update a player's language after sign-in"
+              "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"
             },
             "inGameLevel": {
               "type": "integer",
