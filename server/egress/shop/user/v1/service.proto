@@ -76,7 +76,7 @@ message GetPlayerResponse {
         max_len: 3
         ignore_empty: true
       },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"}
     ];
     uint32 in_game_level = 5 [
       (validate.rules).uint32.gt = 0,
@@ -85,6 +85,20 @@ message GetPlayerResponse {
     uint32 in_game_currency = 6 [
       (validate.rules).uint32.gte = 0,
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount of in-game currency owned by player (must be non-negative, default 0)"}
+    ];
+    string region = 7 [
+      (validate.rules).string = {
+        len: 2
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"}
+    ];
+    string currency = 8 [
+      (validate.rules).string = {
+        len: 3
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"}
     ];
   }
   Player player = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player information"}];
