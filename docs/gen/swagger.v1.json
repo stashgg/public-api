@@ -203,7 +203,7 @@
                                     "expiration": {
                                       "type": "string",
                                       "format": "date-time",
-                                      "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                      "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                                     },
                                     "refreshAt": {
                                       "type": "string",
@@ -2300,7 +2300,7 @@
                                           "expiration": {
                                             "type": "string",
                                             "format": "date-time",
-                                            "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                            "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                                           },
                                           "refreshAt": {
                                             "type": "string",
@@ -7399,7 +7399,7 @@
         "expiration": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
         },
         "refreshAt": {
           "type": "string",
@@ -9154,7 +9154,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -11251,7 +11251,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -14301,7 +14301,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -16398,7 +16398,7 @@
                               "expiration": {
                                 "type": "string",
                                 "format": "date-time",
-                                "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                               },
                               "refreshAt": {
                                 "type": "string",
@@ -18553,7 +18553,7 @@
             "expiration": {
               "type": "string",
               "format": "date-time",
-              "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+              "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
             },
             "refreshAt": {
               "type": "string",
@@ -22888,7 +22888,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -25400,7 +25400,7 @@
                             "expiration": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                              "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                             },
                             "refreshAt": {
                               "type": "string",
@@ -27497,7 +27497,7 @@
                                   "expiration": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
                                   },
                                   "refreshAt": {
                                     "type": "string",

@@ -369,7 +369,7 @@ message GetCatalogResponse {
         (google.api.field_behavior) = REQUIRED,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Price of the item"}
       ];
-      optional google.protobuf.Timestamp expiration = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time after which this item can no longer be bought through the web shop cart: Stash refuses a cart purchase of the item that completes at or after this time. Stop returning the item once it expires"}];
+      optional google.protobuf.Timestamp expiration = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"}];
       optional google.protobuf.Timestamp refresh_at = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp when this item's purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field. A standalone item owns its purchase allowance, which is why its reset time belongs here; an item inside a purchase pack has no allowance of its own, so PurchasePackItem carries no refresh_at and the pack declares one for all of its items."}];
       map<string, string> metadata = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."}];
 
