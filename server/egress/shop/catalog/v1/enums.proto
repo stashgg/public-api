@@ -167,3 +167,13 @@ enum CatalogTriggerDisplayType {
   CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED = 0;
   CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING = 1;
 }
+
+enum TextFormatSyntax {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Template syntax used to compose a localizable text with its format arguments"};
+  // Plain text, displayed as-is without formatting. Only valid with no format_arguments; arguments without a syntax omit the text
+  TEXT_FORMAT_SYNTAX_UNSPECIFIED = 0;
+  // ICU MessageFormat-style simple arguments: {name} or {0}, with apostrophe quoting ('' is a literal apostrophe, '{' or '}' is a literal brace, and any other apostrophe, as in Don't, is literal). An unquoted } outside an argument is a formatting failure. plural, select, selectordinal and typed arguments such as {n, number} are not supported
+  TEXT_FORMAT_SYNTAX_ICU_MESSAGE_FORMAT = 1;
+  // printf-style: %s and %d read keys "1", "2" and so on in order, %1$s and %1$d read a key explicitly, and %% is a literal percent sign. %d requires an integer value, which is inserted unchanged. Flags, widths, precisions and other verbs are not supported
+  TEXT_FORMAT_SYNTAX_PRINTF = 2;
+}
