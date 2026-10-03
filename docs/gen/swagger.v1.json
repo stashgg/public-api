@@ -5245,7 +5245,7 @@
                     },
                     "language": {
                       "type": "string",
-                      "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"
+                      "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"
                     },
                     "inGameLevel": {
                       "type": "integer",
@@ -5259,11 +5259,11 @@
                     },
                     "region": {
                       "type": "string",
-                      "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"
+                      "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR')"
                     },
                     "currency": {
                       "type": "string",
-                      "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"
+                      "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance"
                     }
                   },
                   "description": "Player information",
@@ -30907,7 +30907,7 @@
         },
         "language": {
           "type": "string",
-          "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"
+          "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"
         },
         "inGameLevel": {
           "type": "integer",
@@ -30921,11 +30921,11 @@
         },
         "region": {
           "type": "string",
-          "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"
+          "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR')"
         },
         "currency": {
           "type": "string",
-          "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"
+          "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance"
         }
       },
       "description": "Represents a player in the system",
@@ -30954,7 +30954,7 @@
             },
             "language": {
               "type": "string",
-              "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de'). When set, it takes precedence over the language sent when the player signed in"
+              "description": "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"
             },
             "inGameLevel": {
               "type": "integer",
@@ -30968,11 +30968,11 @@
             },
             "region": {
               "type": "string",
-              "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR'). When set, it takes precedence over the region sent when the player signed in, so the game server can update a player's region after sign-in"
+              "description": "Player's region as an ISO 3166-1 alpha-2 country code (e.g., 'BR')"
             },
             "currency": {
               "type": "string",
-              "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance. When set, it takes precedence over the currency sent when the player signed in, so the game server can update a player's currency after sign-in"
+              "description": "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance"
             }
           },
           "description": "Player information",
