@@ -5519,7 +5519,7 @@
     "/api/v1/purchase/confirm": {
       "post": {
         "summary": "Confirm payment completion",
-        "description": "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. A declined purchase should also carry a decline in the response body so the player can be shown the specific reason.",
+        "description": "Step 2A: Confirms and completes a pending purchase that was previously registered. IMPORTANT: Expects HTTP error status (3xx, 4xx, 5xx) codes for failed purchases. A declined purchase should also carry a decline in the response body. Where the checkout supports it, Stash uses the decline's status to pick the message shown to the player; otherwise the player sees a generic failure.",
         "operationId": "PurchaseService_ConfirmPayment",
         "responses": {
           "200": {
