@@ -203,7 +203,7 @@
                                     "expiration": {
                                       "type": "string",
                                       "format": "date-time",
-                                      "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                      "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                                     },
                                     "refreshAt": {
                                       "type": "string",
@@ -2117,7 +2117,7 @@
                                     "expiration": {
                                       "type": "string",
                                       "format": "date-time",
-                                      "description": "Optional time after which no item in this offer is available for purchase"
+                                      "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                                     },
                                     "refreshAt": {
                                       "type": "string",
@@ -2300,7 +2300,7 @@
                                           "expiration": {
                                             "type": "string",
                                             "format": "date-time",
-                                            "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                            "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                                           },
                                           "refreshAt": {
                                             "type": "string",
@@ -4214,7 +4214,7 @@
                                           "expiration": {
                                             "type": "string",
                                             "format": "date-time",
-                                            "description": "Optional time after which no item in this offer is available for purchase"
+                                            "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                                           },
                                           "refreshAt": {
                                             "type": "string",
@@ -7399,7 +7399,7 @@
         "expiration": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
         },
         "refreshAt": {
           "type": "string",
@@ -8986,7 +8986,7 @@
         "expiration": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional time after which no item in this offer is available for purchase"
+          "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
         },
         "refreshAt": {
           "type": "string",
@@ -9154,7 +9154,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -11068,7 +11068,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional time after which no item in this offer is available for purchase"
+                    "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -11251,7 +11251,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -13165,7 +13165,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional time after which no item in this offer is available for purchase"
+                          "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -14301,7 +14301,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                          "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -16215,7 +16215,7 @@
                         "expiration": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Optional time after which no item in this offer is available for purchase"
+                          "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                         },
                         "refreshAt": {
                           "type": "string",
@@ -16398,7 +16398,7 @@
                               "expiration": {
                                 "type": "string",
                                 "format": "date-time",
-                                "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                               },
                               "refreshAt": {
                                 "type": "string",
@@ -18312,7 +18312,7 @@
                               "expiration": {
                                 "type": "string",
                                 "format": "date-time",
-                                "description": "Optional time after which no item in this offer is available for purchase"
+                                "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                               },
                               "refreshAt": {
                                 "type": "string",
@@ -18553,7 +18553,7 @@
             "expiration": {
               "type": "string",
               "format": "date-time",
-              "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+              "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
             },
             "refreshAt": {
               "type": "string",
@@ -20467,7 +20467,7 @@
             "expiration": {
               "type": "string",
               "format": "date-time",
-              "description": "Optional time after which no item in this offer is available for purchase"
+              "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
             },
             "refreshAt": {
               "type": "string",
@@ -22888,7 +22888,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -24802,7 +24802,7 @@
                   "expiration": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Optional time after which no item in this offer is available for purchase"
+                    "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                   },
                   "refreshAt": {
                     "type": "string",
@@ -25400,7 +25400,7 @@
                             "expiration": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                              "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                             },
                             "refreshAt": {
                               "type": "string",
@@ -27314,7 +27314,7 @@
                             "expiration": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "Optional time after which no item in this offer is available for purchase"
+                              "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                             },
                             "refreshAt": {
                               "type": "string",
@@ -27497,7 +27497,7 @@
                                   "expiration": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. Stop returning the item once it expires"
+                                    "description": "Optional time after which this item can no longer be bought: Stash refuses a web shop cart or Buy Now purchase of the item that completes at or after this time. If a checkout grace period is agreed for your shop, a purchase that reached checkout before this time can still complete within that period, so ConfirmPayment can arrive after this time; approve it if you want those purchases to complete. Stop returning the item once it expires"
                                   },
                                   "refreshAt": {
                                     "type": "string",
@@ -29411,7 +29411,7 @@
                                   "expiration": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "Optional time after which no item in this offer is available for purchase"
+                                    "description": "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"
                                   },
                                   "refreshAt": {
                                     "type": "string",
