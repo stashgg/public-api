@@ -145,8 +145,9 @@ message UserBonusWallet {
     (google.api.field_behavior) = REQUIRED,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Kind of balance. Must be WALLET_BONUS_TYPE_IN_GAME_CURRENCY; entries of any other type are ignored"}
   ];
-  uint64 balance = 3 [
+  // Explicit presence, so an omitted balance is told apart from a real 0.
+  optional uint64 balance = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount the player owns, a non-negative 64-bit integer. Send it as a JSON integer or as a decimal string; use a string for values above 9007199254740991, which many JSON parsers cannot represent exactly. 0 is a real balance. A negative, fractional or non-numeric value fails the whole player lookup, as it does for every numeric field of the player"}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount the player owns, a non-negative 64-bit integer. Required; an entry without it is ignored. Send it as a JSON integer or as a decimal string; use a string for values above 9007199254740991, which many JSON parsers cannot represent exactly. 0 is a real balance. A negative, fractional or non-numeric value fails the whole player lookup, as it does for every numeric field of the player"}
   ];
 }
