@@ -79,8 +79,11 @@ message GetPlayerResponse {
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player language preference using ISO 639-1 code (e.g., 'en', 'es', 'fr', 'de')"}
     ];
     uint32 in_game_level = 5 [
-      (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player in-game level (must be positive, default 1)"}
+      (validate.rules).uint32 = {
+        gt: 0
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's in-game level, such as a power level. The web shop can show it on the player's profile. Must be positive; omit it when the game has no level, and the web shop then shows none"}
     ];
     uint32 in_game_currency = 6 [
       (validate.rules).uint32.gte = 0,

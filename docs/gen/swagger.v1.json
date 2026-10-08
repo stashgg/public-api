@@ -5250,7 +5250,7 @@
                     "inGameLevel": {
                       "type": "integer",
                       "format": "int64",
-                      "description": "Player in-game level (must be positive, default 1)"
+                      "description": "Player's in-game level, such as a power level. The web shop can show it on the player's profile. Must be positive; omit it when the game has no level, and the web shop then shows none"
                     },
                     "inGameCurrency": {
                       "type": "integer",
@@ -30948,7 +30948,7 @@
         "inGameLevel": {
           "type": "integer",
           "format": "int64",
-          "description": "Player in-game level (must be positive, default 1)"
+          "description": "Player's in-game level, such as a power level. The web shop can show it on the player's profile. Must be positive; omit it when the game has no level, and the web shop then shows none"
         },
         "inGameCurrency": {
           "type": "integer",
@@ -31031,7 +31031,7 @@
             "inGameLevel": {
               "type": "integer",
               "format": "int64",
-              "description": "Player in-game level (must be positive, default 1)"
+              "description": "Player's in-game level, such as a power level. The web shop can show it on the player's profile. Must be positive; omit it when the game has no level, and the web shop then shows none"
             },
             "inGameCurrency": {
               "type": "integer",
