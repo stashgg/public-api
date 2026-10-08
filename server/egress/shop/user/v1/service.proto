@@ -19,7 +19,7 @@ service UserService {
     option (google.api.http) = {get: "/api/v1/player"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get player by ID"
-      description: "Retrieves an existing player by ID. Returns player information including profile data and in-game currency balance."
+      description: "Retrieves an existing player by ID. Returns player information including profile data and in-game currency balances."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -84,7 +84,7 @@ message GetPlayerResponse {
     ];
     uint32 in_game_currency = 6 [
       (validate.rules).uint32.gte = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount of in-game currency owned by player (must be non-negative, default 0)"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DEPRECATED: use wallet instead. Amount of in-game currency owned by player (must be non-negative, default 0). Holds a single currency only, and a value above 4294967295 fails the player lookup, so send large balances in wallet. Ignored for currency balances whenever wallet has at least one entry"}
     ];
     string region = 7 [
       (validate.rules).string = {
@@ -100,6 +100,54 @@ message GetPlayerResponse {
       },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's preferred real-money currency as an ISO 4217 code (e.g., 'BRL'). This is not the in-game currency balance"}
     ];
+    repeated UserBonusWallet wallet = 9 [
+      (validate.rules).repeated.max_items = 100,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "Balances the player owns, one entry per in-game currency, keyed by the reward type id configured in Stash Studio. Send at most 100 entries; only the first 100 are read. Replaces in_game_currency and takes precedence over it whenever this list has at least one entry, even if every entry is ignored"
+        max_items: 100
+      }
+    ];
   }
   Player player = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player information"}];
+}
+
+enum WalletBonusType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Kind of balance a wallet entry reports. Only WALLET_BONUS_TYPE_IN_GAME_CURRENCY is read today; entries of any other type are ignored"};
+  // Default unknown type; an entry with this type is ignored
+  WALLET_BONUS_TYPE_UNSPECIFIED = 0;
+  // A balance of an in-game currency configured as a reward type in Stash Studio
+  WALLET_BONUS_TYPE_IN_GAME_CURRENCY = 1;
+}
+
+// One balance in a player's wallet
+message UserBonusWallet {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "User Bonus Wallet"
+      description: "One balance the player owns, for the reward type configured in Stash Studio with the same id"
+      required: [
+        "bonus_id",
+        "bonus_type",
+        "balance"
+      ]
+    }
+  };
+  string bonus_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {
+      min_len: 1
+      max_len: 256
+      pattern: "^[A-Za-z0-9._-]+$"
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Id of the reward type configured in Stash Studio that this balance belongs to. Matched exactly and case-sensitively"}
+  ];
+  WalletBonusType bonus_type = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Kind of balance. Must be WALLET_BONUS_TYPE_IN_GAME_CURRENCY; entries of any other type are ignored"}
+  ];
+  // Explicit presence, so an omitted balance is told apart from a real 0.
+  optional uint64 balance = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount the player owns, a non-negative 64-bit integer. Required; an entry without it is ignored. Send it as a JSON integer or as a decimal string; use a string for values above 9007199254740991, which many JSON parsers cannot represent exactly. 0 is a real balance. A negative, fractional or non-numeric value fails the whole player lookup, as it does for every numeric field of the player"}
+  ];
 }
