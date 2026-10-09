@@ -720,6 +720,10 @@
                                             },
                                             "description": "Optional badge to display text next to the quantity",
                                             "title": "Simple Badge"
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents an in-game item obtainable as part of this bundle",
@@ -939,6 +943,10 @@
                                                 "unitImage": {
                                                   "type": "string",
                                                   "description": "Optional URL to unit image (used to display a single item)"
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "Represents an in-game item that can be obtained from this chain link",
@@ -1220,6 +1228,10 @@
                                           "unitImage": {
                                             "type": "string",
                                             "description": "Optional URL to unit image (used to display a single item)"
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -1337,6 +1349,10 @@
                                           "unitImage": {
                                             "type": "string",
                                             "description": "Optional URL to unit image (used to display a single item)"
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "An in-game item included in a free catalog item",
@@ -2035,6 +2051,10 @@
                                                   },
                                                   "description": "Optional badge to display text next to the quantity",
                                                   "title": "Simple Badge"
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -2822,6 +2842,10 @@
                                                   },
                                                   "description": "Optional badge to display text next to the quantity",
                                                   "title": "Simple Badge"
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "Represents an in-game item obtainable as part of this bundle",
@@ -3041,6 +3065,10 @@
                                                       "unitImage": {
                                                         "type": "string",
                                                         "description": "Optional URL to unit image (used to display a single item)"
+                                                      },
+                                                      "layoutKey": {
+                                                        "type": "string",
+                                                        "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                       }
                                                     },
                                                     "description": "Represents an in-game item that can be obtained from this chain link",
@@ -3322,6 +3350,10 @@
                                                 "unitImage": {
                                                   "type": "string",
                                                   "description": "Optional URL to unit image (used to display a single item)"
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -3439,6 +3471,10 @@
                                                 "unitImage": {
                                                   "type": "string",
                                                   "description": "Optional URL to unit image (used to display a single item)"
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "An in-game item included in a free catalog item",
@@ -4137,6 +4173,10 @@
                                                         },
                                                         "description": "Optional badge to display text next to the quantity",
                                                         "title": "Simple Badge"
+                                                      },
+                                                      "layoutKey": {
+                                                        "type": "string",
+                                                        "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                                       }
                                                     },
                                                     "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -6785,6 +6825,10 @@
               "unitImage": {
                 "type": "string",
                 "description": "Optional URL to unit image (used to display a single item)"
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "An in-game item included in a free catalog item",
@@ -7007,6 +7051,10 @@
               "unitImage": {
                 "type": "string",
                 "description": "Optional URL to unit image (used to display a single item)"
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -7186,6 +7234,10 @@
                     "unitImage": {
                       "type": "string",
                       "description": "Optional URL to unit image (used to display a single item)"
+                    },
+                    "layoutKey": {
+                      "type": "string",
+                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                     }
                   },
                   "description": "Represents an in-game item that can be obtained from this chain link",
@@ -7967,6 +8019,10 @@
                 },
                 "description": "Optional badge to display text next to the quantity",
                 "title": "Simple Badge"
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -8327,6 +8383,10 @@
           },
           "description": "Optional badge to display text next to the quantity",
           "title": "Simple Badge"
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -8950,6 +9010,10 @@
                       },
                       "description": "Optional badge to display text next to the quantity",
                       "title": "Simple Badge"
+                    },
+                    "layoutKey": {
+                      "type": "string",
+                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                     }
                   },
                   "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -9722,6 +9786,10 @@
                           },
                           "description": "Optional badge to display text next to the quantity",
                           "title": "Simple Badge"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -9941,6 +10009,10 @@
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item that can be obtained from this chain link",
@@ -10222,6 +10294,10 @@
                         "unitImage": {
                           "type": "string",
                           "description": "Optional URL to unit image (used to display a single item)"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -10339,6 +10415,10 @@
                         "unitImage": {
                           "type": "string",
                           "description": "Optional URL to unit image (used to display a single item)"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "An in-game item included in a free catalog item",
@@ -11037,6 +11117,10 @@
                                 },
                                 "description": "Optional badge to display text next to the quantity",
                                 "title": "Simple Badge"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -11824,6 +11908,10 @@
                                 },
                                 "description": "Optional badge to display text next to the quantity",
                                 "title": "Simple Badge"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -12043,6 +12131,10 @@
                                     "unitImage": {
                                       "type": "string",
                                       "description": "Optional URL to unit image (used to display a single item)"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents an in-game item that can be obtained from this chain link",
@@ -12324,6 +12416,10 @@
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -12441,6 +12537,10 @@
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "An in-game item included in a free catalog item",
@@ -13139,6 +13239,10 @@
                                       },
                                       "description": "Optional badge to display text next to the quantity",
                                       "title": "Simple Badge"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -14003,6 +14107,10 @@
         "unitImage": {
           "type": "string",
           "description": "Optional URL to unit image (used to display a single item)"
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "An in-game item included in a free catalog item",
@@ -14879,6 +14987,10 @@
                                 },
                                 "description": "Optional badge to display text next to the quantity",
                                 "title": "Simple Badge"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of this bundle",
@@ -15098,6 +15210,10 @@
                                     "unitImage": {
                                       "type": "string",
                                       "description": "Optional URL to unit image (used to display a single item)"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents an in-game item that can be obtained from this chain link",
@@ -15379,6 +15495,10 @@
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -15496,6 +15616,10 @@
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "An in-game item included in a free catalog item",
@@ -16194,6 +16318,10 @@
                                       },
                                       "description": "Optional badge to display text next to the quantity",
                                       "title": "Simple Badge"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -16981,6 +17109,10 @@
                                       },
                                       "description": "Optional badge to display text next to the quantity",
                                       "title": "Simple Badge"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents an in-game item obtainable as part of this bundle",
@@ -17200,6 +17332,10 @@
                                           "unitImage": {
                                             "type": "string",
                                             "description": "Optional URL to unit image (used to display a single item)"
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents an in-game item that can be obtained from this chain link",
@@ -17481,6 +17617,10 @@
                                     "unitImage": {
                                       "type": "string",
                                       "description": "Optional URL to unit image (used to display a single item)"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -17598,6 +17738,10 @@
                                     "unitImage": {
                                       "type": "string",
                                       "description": "Optional URL to unit image (used to display a single item)"
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "An in-game item included in a free catalog item",
@@ -18296,6 +18440,10 @@
                                             },
                                             "description": "Optional badge to display text next to the quantity",
                                             "title": "Simple Badge"
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -19141,6 +19289,10 @@
                     },
                     "description": "Optional badge to display text next to the quantity",
                     "title": "Simple Badge"
+                  },
+                  "layoutKey": {
+                    "type": "string",
+                    "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents an in-game item obtainable as part of this bundle",
@@ -19360,6 +19512,10 @@
                         "unitImage": {
                           "type": "string",
                           "description": "Optional URL to unit image (used to display a single item)"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents an in-game item that can be obtained from this chain link",
@@ -19641,6 +19797,10 @@
                   "unitImage": {
                     "type": "string",
                     "description": "Optional URL to unit image (used to display a single item)"
+                  },
+                  "layoutKey": {
+                    "type": "string",
+                    "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -19758,6 +19918,10 @@
                   "unitImage": {
                     "type": "string",
                     "description": "Optional URL to unit image (used to display a single item)"
+                  },
+                  "layoutKey": {
+                    "type": "string",
+                    "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "An in-game item included in a free catalog item",
@@ -20456,6 +20620,10 @@
                           },
                           "description": "Optional badge to display text next to the quantity",
                           "title": "Simple Badge"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -20998,6 +21166,10 @@
         "unitImage": {
           "type": "string",
           "description": "Optional URL to unit image (used to display a single item)"
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -21215,6 +21387,10 @@
               "unitImage": {
                 "type": "string",
                 "description": "Optional URL to unit image (used to display a single item)"
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "Represents an in-game item that can be obtained from this chain link",
@@ -21303,6 +21479,10 @@
         "unitImage": {
           "type": "string",
           "description": "Optional URL to unit image (used to display a single item)"
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents an in-game item that can be obtained from this chain link",
@@ -21904,6 +22084,10 @@
           },
           "description": "Optional badge to display text next to the quantity",
           "title": "Simple Badge"
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -22717,6 +22901,10 @@
                 },
                 "description": "Optional badge to display text next to the quantity",
                 "title": "Simple Badge"
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -23481,6 +23669,10 @@
                           },
                           "description": "Optional badge to display text next to the quantity",
                           "title": "Simple Badge"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -23700,6 +23892,10 @@
                               "unitImage": {
                                 "type": "string",
                                 "description": "Optional URL to unit image (used to display a single item)"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item that can be obtained from this chain link",
@@ -23981,6 +24177,10 @@
                         "unitImage": {
                           "type": "string",
                           "description": "Optional URL to unit image (used to display a single item)"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -24098,6 +24298,10 @@
                         "unitImage": {
                           "type": "string",
                           "description": "Optional URL to unit image (used to display a single item)"
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "An in-game item included in a free catalog item",
@@ -24796,6 +25000,10 @@
                                 },
                                 "description": "Optional badge to display text next to the quantity",
                                 "title": "Simple Badge"
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -25998,6 +26206,10 @@
                                     },
                                     "description": "Optional badge to display text next to the quantity",
                                     "title": "Simple Badge"
+                                  },
+                                  "layoutKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Represents an in-game item obtainable as part of this bundle",
@@ -26217,6 +26429,10 @@
                                         "unitImage": {
                                           "type": "string",
                                           "description": "Optional URL to unit image (used to display a single item)"
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "Represents an in-game item that can be obtained from this chain link",
@@ -26498,6 +26714,10 @@
                                   "unitImage": {
                                     "type": "string",
                                     "description": "Optional URL to unit image (used to display a single item)"
+                                  },
+                                  "layoutKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -26615,6 +26835,10 @@
                                   "unitImage": {
                                     "type": "string",
                                     "description": "Optional URL to unit image (used to display a single item)"
+                                  },
+                                  "layoutKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "An in-game item included in a free catalog item",
@@ -27313,6 +27537,10 @@
                                           },
                                           "description": "Optional badge to display text next to the quantity",
                                           "title": "Simple Badge"
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
@@ -28100,6 +28328,10 @@
                                           },
                                           "description": "Optional badge to display text next to the quantity",
                                           "title": "Simple Badge"
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "Represents an in-game item obtainable as part of this bundle",
@@ -28319,6 +28551,10 @@
                                               "unitImage": {
                                                 "type": "string",
                                                 "description": "Optional URL to unit image (used to display a single item)"
+                                              },
+                                              "layoutKey": {
+                                                "type": "string",
+                                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                               }
                                             },
                                             "description": "Represents an in-game item that can be obtained from this chain link",
@@ -28600,6 +28836,10 @@
                                         "unitImage": {
                                           "type": "string",
                                           "description": "Optional URL to unit image (used to display a single item)"
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "Represents an in-game item obtainable as part of a non-purchasable item bundle",
@@ -28717,6 +28957,10 @@
                                         "unitImage": {
                                           "type": "string",
                                           "description": "Optional URL to unit image (used to display a single item)"
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "An in-game item included in a free catalog item",
@@ -29415,6 +29659,10 @@
                                                 },
                                                 "description": "Optional badge to display text next to the quantity",
                                                 "title": "Simple Badge"
+                                              },
+                                              "layoutKey": {
+                                                "type": "string",
+                                                "description": "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"
                                               }
                                             },
                                             "description": "Represents an in-game item obtainable by buying this item of a purchase pack",
