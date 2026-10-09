@@ -445,6 +445,14 @@ message GetCatalogResponse {
         optional bool featured = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this item should be displayed prominently above the other items within the offer bundle"}];
         optional ContentItemClickAction click_action = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."}];
         optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
+        optional string layout_key = 18 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+        ];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
 
@@ -566,6 +574,14 @@ message GetCatalogResponse {
             },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
           ];
+          optional string layout_key = 8 [
+            (validate.rules).string = {
+              min_len: 1
+              max_len: 128
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+          ];
         }
         repeated ObtainableItem items = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items obtained from this chain link as a bundle"}];
         ChainLinkStatus status = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Current status of this chain link"}];
@@ -673,6 +689,14 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
         ];
+        optional string layout_key = 8 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+        ];
       }
       repeated NonPurchasableContentItem contents = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Content items within a non-purchasable item bundle"}];
     }
@@ -723,6 +747,14 @@ message GetCatalogResponse {
             ignore_empty: true
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+        ];
+        optional string layout_key = 8 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
         ];
       }
 
@@ -941,6 +973,14 @@ message GetCatalogResponse {
           optional bool featured = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this item should be displayed prominently above the other items within the purchase pack item"}];
           optional ContentItemClickAction click_action = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."}];
           optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
+          optional string layout_key = 18 [
+            (validate.rules).string = {
+              min_len: 1
+              max_len: 128
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's layout that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards are bound to slots by this key; a reward without one, or whose key matches no slot, is bound by its position in contents. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+          ];
         }
         repeated PurchasePackContentItem contents = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items this item grants. On the item that buys the whole offer, the combined rewards of every price point. Optional on every type, as on a standalone item: an item with no contents is described by its name and image alone"}];
 
