@@ -451,7 +451,7 @@ message GetCatalogResponse {
             max_len: 128
             ignore_empty: true
           },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards with a key fill their slots first, and when several name the same slot the first in contents fills it. Every other reward, one without a key, one whose key names no slot of the template, or one naming a slot already filled, is placed like a reward without a key rather than dropped: they fill the remaining slots in contents order, one reward per slot. Rewards beyond the template's slots follow its overflow behaviour, and a slot no reward fills stays empty. At most 128 characters; a longer or empty key is treated as absent. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
         ];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
@@ -498,7 +498,7 @@ message GetCatalogResponse {
             string: {max_len: 128}
           }
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this offer, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the fixed text field that would otherwise fill the same slot, such as name for a Title slot. An entry whose key names no text slot of the template is ignored. An entry with an empty key, or whose text is empty or resolves to empty, counts as no value, so its slot keeps the fixed field, and a slot with no value from either stays empty. At most 50 entries, each key at most 128 characters: a longer key is ignored, and beyond 50 entries with a value Stash keeps the first 50 by slot name in byte order and ignores the rest, so the offer still shows. Used on the offer card only: checkout and receipts show the fixed fields, so keep sending them. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this offer, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending name: screens other than the offer card use the fixed text fields"}
       ];
       optional string template_key = 17 [
         (validate.rules).string = {
@@ -506,7 +506,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its offer type. At most 128 characters; a longer or empty value is treated as absent, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
     }
 
@@ -597,7 +597,7 @@ message GetCatalogResponse {
               max_len: 128
               ignore_empty: true
             },
-            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards with a key fill their slots first, and when several name the same slot the first in contents fills it. Every other reward, one without a key, one whose key names no slot of the template, or one naming a slot already filled, is placed like a reward without a key rather than dropped: they fill the remaining slots in contents order, one reward per slot. Rewards beyond the template's slots follow its overflow behaviour, and a slot no reward fills stays empty. At most 128 characters; a longer or empty key is treated as absent. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
           ];
         }
         repeated ObtainableItem items = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items obtained from this chain link as a bundle"}];
@@ -712,7 +712,7 @@ message GetCatalogResponse {
             max_len: 128
             ignore_empty: true
           },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards with a key fill their slots first, and when several name the same slot the first in contents fills it. Every other reward, one without a key, one whose key names no slot of the template, or one naming a slot already filled, is placed like a reward without a key rather than dropped: they fill the remaining slots in contents order, one reward per slot. Rewards beyond the template's slots follow its overflow behaviour, and a slot no reward fills stays empty. At most 128 characters; a longer or empty key is treated as absent. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
         ];
       }
       repeated NonPurchasableContentItem contents = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Content items within a non-purchasable item bundle"}];
@@ -723,7 +723,7 @@ message GetCatalogResponse {
             string: {max_len: 128}
           }
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this item, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the fixed text field that would otherwise fill the same slot, such as title for a Title slot. An entry whose key names no text slot of the template is ignored. An entry with an empty key, or whose text is empty or resolves to empty, counts as no value, so its slot keeps the fixed field, and a slot with no value from either stays empty. At most 50 entries, each key at most 128 characters: a longer key is ignored, and beyond 50 entries with a value Stash keeps the first 50 by slot name in byte order and ignores the rest, so the offer still shows. Used on the offer card only: other screens show the fixed fields, so keep sending them. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this item, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending title: screens other than the offer card use the fixed text fields"}
       ];
       optional string template_key = 9 [
         (validate.rules).string = {
@@ -731,7 +731,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its offer type. At most 128 characters; a longer or empty value is treated as absent, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
     }
 
@@ -788,7 +788,7 @@ message GetCatalogResponse {
             max_len: 128
             ignore_empty: true
           },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards with a key fill their slots first, and when several name the same slot the first in contents fills it. Every other reward, one without a key, one whose key names no slot of the template, or one naming a slot already filled, is placed like a reward without a key rather than dropped: they fill the remaining slots in contents order, one reward per slot. Rewards beyond the template's slots follow its overflow behaviour, and a slot no reward fills stays empty. At most 128 characters; a longer or empty key is treated as absent. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
         ];
       }
 
@@ -875,7 +875,7 @@ message GetCatalogResponse {
             string: {max_len: 128}
           }
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this free item, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the fixed text field that would otherwise fill the same slot, such as name for a Title slot. An entry whose key names no text slot of the template is ignored. An entry with an empty key, or whose text is empty or resolves to empty, counts as no value, so its slot keeps the fixed field, and a slot with no value from either stays empty. At most 50 entries, each key at most 128 characters: a longer key is ignored, and beyond 50 entries with a value Stash keeps the first 50 by slot name in byte order and ignores the rest, so the offer still shows. Used on the offer card only: other screens show the fixed fields, so keep sending them. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this free item, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending name: screens other than the offer card use the fixed text fields"}
       ];
       optional string template_key = 15 [
         (validate.rules).string = {
@@ -883,7 +883,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its offer type. At most 128 characters; a longer or empty value is treated as absent, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
     }
 
@@ -919,7 +919,7 @@ message GetCatalogResponse {
             string: {max_len: 128}
           }
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this offer, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the fixed text field that would otherwise fill the same slot, such as an item's name for a Title slot. An entry whose key names no text slot of the template is ignored. An entry with an empty key, or whose text is empty or resolves to empty, counts as no value, so its slot keeps the fixed field, and a slot with no value from either stays empty. At most 50 entries, each key at most 128 characters: a longer key is ignored, and beyond 50 entries with a value Stash keeps the first 50 by slot name in byte order and ignores the rest, so the offer still shows. Used on the offer card only: checkout and receipts show the fixed fields, so keep sending them. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this offer, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer; a price point can add its own on its PurchasePackItem.text_slots. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending each item's name: screens other than the offer card use the fixed text fields"}
       ];
       optional string template_key = 8 [
         (validate.rules).string = {
@@ -927,7 +927,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its offer type. At most 128 characters; a longer or empty value is treated as absent, so omitting it leaves an existing response valid. Declared once here for the whole offer: a purchase pack item has no field for it"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
 
       message PurchasePackItem {
@@ -1047,7 +1047,7 @@ message GetCatalogResponse {
               max_len: 128
               ignore_empty: true
             },
-            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. Rewards with a key fill their slots first, and when several name the same slot the first in contents fills it. Every other reward, one without a key, one whose key names no slot of the template, or one naming a slot already filled, is placed like a reward without a key rather than dropped: they fill the remaining slots in contents order, one reward per slot. Rewards beyond the template's slots follow its overflow behaviour, and a slot no reward fills stays empty. At most 128 characters; a longer or empty key is treated as absent. Ignored by a template that names no reward slots, so omitting it leaves an existing response valid"}
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
           ];
         }
         repeated PurchasePackContentItem contents = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items this item grants. On the item that buys the whole offer, the combined rewards of every price point. Optional on every type, as on a standalone item: an item with no contents is described by its name and image alone"}];
@@ -1087,6 +1087,15 @@ message GetCatalogResponse {
           ];
         }
         repeated PurchasePackBonusItem bonus_items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of the item's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the item's own bonus for an id already listed there or the player is credited twice."}];
+        map<string, LocalizableText> text_slots = 12 [
+          (validate.rules).map = {
+            max_pairs: 50
+            keys: {
+              string: {max_len: 128}
+            }
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"}
+        ];
       }
     }
 
