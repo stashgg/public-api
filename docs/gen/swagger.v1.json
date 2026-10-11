@@ -773,6 +773,33 @@
                                         ]
                                       },
                                       "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                                    },
+                                    "textSlots": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Text content that can be localized for a specific language",
+                                        "title": "Localizable Text"
+                                      },
+                                      "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                    },
+                                    "templateKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents a purchasable product",
@@ -1241,6 +1268,33 @@
                                         ]
                                       },
                                       "description": "Content items within a non-purchasable item bundle"
+                                    },
+                                    "textSlots": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Text content that can be localized for a specific language",
+                                        "title": "Localizable Text"
+                                      },
+                                      "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                    },
+                                    "templateKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents a non-purchasable item (banner, etc.)",
@@ -1428,6 +1482,33 @@
                                         "type": "string"
                                       },
                                       "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                                    },
+                                    "textSlots": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Text content that can be localized for a specific language",
+                                        "title": "Localizable Text"
+                                      },
+                                      "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                    },
+                                    "templateKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Free-to-claim catalog item",
@@ -2148,6 +2229,33 @@
                                       "type": "string",
                                       "format": "date-time",
                                       "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                                    },
+                                    "textSlots": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                          "defaultText": {
+                                            "type": "string",
+                                            "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                          },
+                                          "localizationKey": {
+                                            "type": "string",
+                                            "description": "The unique key used to identify the localized text content for a specific language"
+                                          },
+                                          "localizedText": {
+                                            "type": "string",
+                                            "description": "Localized text content for the language specified by the code sent in the request filters"
+                                          }
+                                        },
+                                        "description": "Text content that can be localized for a specific language",
+                                        "title": "Localizable Text"
+                                      },
+                                      "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                    },
+                                    "templateKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "One offer sold at several prices, containing its purchasable items",
@@ -2895,6 +3003,33 @@
                                               ]
                                             },
                                             "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                                          },
+                                          "textSlots": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Text content that can be localized for a specific language",
+                                              "title": "Localizable Text"
+                                            },
+                                            "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                          },
+                                          "templateKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents a purchasable product",
@@ -3363,6 +3498,33 @@
                                               ]
                                             },
                                             "description": "Content items within a non-purchasable item bundle"
+                                          },
+                                          "textSlots": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Text content that can be localized for a specific language",
+                                              "title": "Localizable Text"
+                                            },
+                                            "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                          },
+                                          "templateKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents a non-purchasable item (banner, etc.)",
@@ -3550,6 +3712,33 @@
                                               "type": "string"
                                             },
                                             "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                                          },
+                                          "textSlots": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Text content that can be localized for a specific language",
+                                              "title": "Localizable Text"
+                                            },
+                                            "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                          },
+                                          "templateKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Free-to-claim catalog item",
@@ -4270,6 +4459,33 @@
                                             "type": "string",
                                             "format": "date-time",
                                             "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                                          },
+                                          "textSlots": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                              "type": "object",
+                                              "properties": {
+                                                "defaultText": {
+                                                  "type": "string",
+                                                  "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                                },
+                                                "localizationKey": {
+                                                  "type": "string",
+                                                  "description": "The unique key used to identify the localized text content for a specific language"
+                                                },
+                                                "localizedText": {
+                                                  "type": "string",
+                                                  "description": "Localized text content for the language specified by the code sent in the request filters"
+                                                }
+                                              },
+                                              "description": "Text content that can be localized for a specific language",
+                                              "title": "Localizable Text"
+                                            },
+                                            "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                          },
+                                          "templateKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "One offer sold at several prices, containing its purchasable items",
@@ -6904,6 +7120,33 @@
             "type": "string"
           },
           "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+        },
+        "textSlots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "defaultText": {
+                "type": "string",
+                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+              },
+              "localizationKey": {
+                "type": "string",
+                "description": "The unique key used to identify the localized text content for a specific language"
+              },
+              "localizedText": {
+                "type": "string",
+                "description": "Localized text content for the language specified by the code sent in the request filters"
+              }
+            },
+            "description": "Text content that can be localized for a specific language",
+            "title": "Localizable Text"
+          },
+          "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+        },
+        "templateKey": {
+          "type": "string",
+          "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents a claimable free catalog item",
@@ -7064,6 +7307,33 @@
             ]
           },
           "description": "Content items within a non-purchasable item bundle"
+        },
+        "textSlots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "defaultText": {
+                "type": "string",
+                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+              },
+              "localizationKey": {
+                "type": "string",
+                "description": "The unique key used to identify the localized text content for a specific language"
+              },
+              "localizedText": {
+                "type": "string",
+                "description": "Localized text content for the language specified by the code sent in the request filters"
+              }
+            },
+            "description": "Text content that can be localized for a specific language",
+            "title": "Localizable Text"
+          },
+          "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+        },
+        "templateKey": {
+          "type": "string",
+          "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents a non-purchasable item (banner, etc.)",
@@ -8072,6 +8342,33 @@
             ]
           },
           "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+        },
+        "textSlots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "defaultText": {
+                "type": "string",
+                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+              },
+              "localizationKey": {
+                "type": "string",
+                "description": "The unique key used to identify the localized text content for a specific language"
+              },
+              "localizedText": {
+                "type": "string",
+                "description": "Localized text content for the language specified by the code sent in the request filters"
+              }
+            },
+            "description": "Text content that can be localized for a specific language",
+            "title": "Localizable Text"
+          },
+          "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+        },
+        "templateKey": {
+          "type": "string",
+          "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents a purchasable product",
@@ -9107,6 +9404,33 @@
           "type": "string",
           "format": "date-time",
           "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+        },
+        "textSlots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "defaultText": {
+                "type": "string",
+                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+              },
+              "localizationKey": {
+                "type": "string",
+                "description": "The unique key used to identify the localized text content for a specific language"
+              },
+              "localizedText": {
+                "type": "string",
+                "description": "Localized text content for the language specified by the code sent in the request filters"
+              }
+            },
+            "description": "Text content that can be localized for a specific language",
+            "title": "Localizable Text"
+          },
+          "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+        },
+        "templateKey": {
+          "type": "string",
+          "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
         }
       },
       "description": "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its purchase limit, expiration and refresh time, are declared once here. A purchase pack item has no fields for them, so the offer's values govern every item in it by construction.",
@@ -9839,6 +10163,33 @@
                       ]
                     },
                     "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a purchasable product",
@@ -10307,6 +10658,33 @@
                       ]
                     },
                     "description": "Content items within a non-purchasable item bundle"
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a non-purchasable item (banner, etc.)",
@@ -10494,6 +10872,33 @@
                       "type": "string"
                     },
                     "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -11214,6 +11619,33 @@
                     "type": "string",
                     "format": "date-time",
                     "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "One offer sold at several prices, containing its purchasable items",
@@ -11961,6 +12393,33 @@
                             ]
                           },
                           "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a purchasable product",
@@ -12429,6 +12888,33 @@
                             ]
                           },
                           "description": "Content items within a non-purchasable item bundle"
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a non-purchasable item (banner, etc.)",
@@ -12616,6 +13102,33 @@
                             "type": "string"
                           },
                           "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -13336,6 +13849,33 @@
                           "type": "string",
                           "format": "date-time",
                           "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "One offer sold at several prices, containing its purchasable items",
@@ -15040,6 +15580,33 @@
                             ]
                           },
                           "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a purchasable product",
@@ -15508,6 +16075,33 @@
                             ]
                           },
                           "description": "Content items within a non-purchasable item bundle"
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a non-purchasable item (banner, etc.)",
@@ -15695,6 +16289,33 @@
                             "type": "string"
                           },
                           "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -16415,6 +17036,33 @@
                           "type": "string",
                           "format": "date-time",
                           "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                        },
+                        "textSlots": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "defaultText": {
+                                "type": "string",
+                                "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                              },
+                              "localizationKey": {
+                                "type": "string",
+                                "description": "The unique key used to identify the localized text content for a specific language"
+                              },
+                              "localizedText": {
+                                "type": "string",
+                                "description": "Localized text content for the language specified by the code sent in the request filters"
+                              }
+                            },
+                            "description": "Text content that can be localized for a specific language",
+                            "title": "Localizable Text"
+                          },
+                          "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                        },
+                        "templateKey": {
+                          "type": "string",
+                          "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "One offer sold at several prices, containing its purchasable items",
@@ -17162,6 +17810,33 @@
                                   ]
                                 },
                                 "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                              },
+                              "textSlots": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Text content that can be localized for a specific language",
+                                  "title": "Localizable Text"
+                                },
+                                "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                              },
+                              "templateKey": {
+                                "type": "string",
+                                "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents a purchasable product",
@@ -17630,6 +18305,33 @@
                                   ]
                                 },
                                 "description": "Content items within a non-purchasable item bundle"
+                              },
+                              "textSlots": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Text content that can be localized for a specific language",
+                                  "title": "Localizable Text"
+                                },
+                                "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                              },
+                              "templateKey": {
+                                "type": "string",
+                                "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents a non-purchasable item (banner, etc.)",
@@ -17817,6 +18519,33 @@
                                   "type": "string"
                                 },
                                 "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                              },
+                              "textSlots": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Text content that can be localized for a specific language",
+                                  "title": "Localizable Text"
+                                },
+                                "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                              },
+                              "templateKey": {
+                                "type": "string",
+                                "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Free-to-claim catalog item",
@@ -18537,6 +19266,33 @@
                                 "type": "string",
                                 "format": "date-time",
                                 "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                              },
+                              "textSlots": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "object",
+                                  "properties": {
+                                    "defaultText": {
+                                      "type": "string",
+                                      "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                    },
+                                    "localizationKey": {
+                                      "type": "string",
+                                      "description": "The unique key used to identify the localized text content for a specific language"
+                                    },
+                                    "localizedText": {
+                                      "type": "string",
+                                      "description": "Localized text content for the language specified by the code sent in the request filters"
+                                    }
+                                  },
+                                  "description": "Text content that can be localized for a specific language",
+                                  "title": "Localizable Text"
+                                },
+                                "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                              },
+                              "templateKey": {
+                                "type": "string",
+                                "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "One offer sold at several prices, containing its purchasable items",
@@ -19342,6 +20098,33 @@
                 ]
               },
               "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+            },
+            "textSlots": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Text content that can be localized for a specific language",
+                "title": "Localizable Text"
+              },
+              "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+            },
+            "templateKey": {
+              "type": "string",
+              "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
             }
           },
           "description": "Represents a purchasable product",
@@ -19810,6 +20593,33 @@
                 ]
               },
               "description": "Content items within a non-purchasable item bundle"
+            },
+            "textSlots": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Text content that can be localized for a specific language",
+                "title": "Localizable Text"
+              },
+              "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+            },
+            "templateKey": {
+              "type": "string",
+              "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
             }
           },
           "description": "Represents a non-purchasable item (banner, etc.)",
@@ -19997,6 +20807,33 @@
                 "type": "string"
               },
               "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+            },
+            "textSlots": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Text content that can be localized for a specific language",
+                "title": "Localizable Text"
+              },
+              "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+            },
+            "templateKey": {
+              "type": "string",
+              "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
             }
           },
           "description": "Free-to-claim catalog item",
@@ -20717,6 +21554,33 @@
               "type": "string",
               "format": "date-time",
               "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+            },
+            "textSlots": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "defaultText": {
+                    "type": "string",
+                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                  },
+                  "localizationKey": {
+                    "type": "string",
+                    "description": "The unique key used to identify the localized text content for a specific language"
+                  },
+                  "localizedText": {
+                    "type": "string",
+                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                  }
+                },
+                "description": "Text content that can be localized for a specific language",
+                "title": "Localizable Text"
+              },
+              "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+            },
+            "templateKey": {
+              "type": "string",
+              "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
             }
           },
           "description": "One offer sold at several prices, containing its purchasable items",
@@ -23722,6 +24586,33 @@
                       ]
                     },
                     "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a purchasable product",
@@ -24190,6 +25081,33 @@
                       ]
                     },
                     "description": "Content items within a non-purchasable item bundle"
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a non-purchasable item (banner, etc.)",
@@ -24377,6 +25295,33 @@
                       "type": "string"
                     },
                     "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -25097,6 +26042,33 @@
                     "type": "string",
                     "format": "date-time",
                     "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                  },
+                  "textSlots": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "defaultText": {
+                          "type": "string",
+                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                        },
+                        "localizationKey": {
+                          "type": "string",
+                          "description": "The unique key used to identify the localized text content for a specific language"
+                        },
+                        "localizedText": {
+                          "type": "string",
+                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                        }
+                      },
+                      "description": "Text content that can be localized for a specific language",
+                      "title": "Localizable Text"
+                    },
+                    "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                  },
+                  "templateKey": {
+                    "type": "string",
+                    "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "One offer sold at several prices, containing its purchasable items",
@@ -26259,6 +27231,33 @@
                                 ]
                               },
                               "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                            },
+                            "textSlots": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Text content that can be localized for a specific language",
+                                "title": "Localizable Text"
+                              },
+                              "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                            },
+                            "templateKey": {
+                              "type": "string",
+                              "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "Represents a purchasable product",
@@ -26727,6 +27726,33 @@
                                 ]
                               },
                               "description": "Content items within a non-purchasable item bundle"
+                            },
+                            "textSlots": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Text content that can be localized for a specific language",
+                                "title": "Localizable Text"
+                              },
+                              "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                            },
+                            "templateKey": {
+                              "type": "string",
+                              "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "Represents a non-purchasable item (banner, etc.)",
@@ -26914,6 +27940,33 @@
                                 "type": "string"
                               },
                               "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                            },
+                            "textSlots": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Text content that can be localized for a specific language",
+                                "title": "Localizable Text"
+                              },
+                              "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                            },
+                            "templateKey": {
+                              "type": "string",
+                              "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "Free-to-claim catalog item",
@@ -27634,6 +28687,33 @@
                               "type": "string",
                               "format": "date-time",
                               "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                            },
+                            "textSlots": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                  "defaultText": {
+                                    "type": "string",
+                                    "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                  },
+                                  "localizationKey": {
+                                    "type": "string",
+                                    "description": "The unique key used to identify the localized text content for a specific language"
+                                  },
+                                  "localizedText": {
+                                    "type": "string",
+                                    "description": "Localized text content for the language specified by the code sent in the request filters"
+                                  }
+                                },
+                                "description": "Text content that can be localized for a specific language",
+                                "title": "Localizable Text"
+                              },
+                              "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                            },
+                            "templateKey": {
+                              "type": "string",
+                              "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "One offer sold at several prices, containing its purchasable items",
@@ -28381,6 +29461,33 @@
                                       ]
                                     },
                                     "description": "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."
+                                  },
+                                  "textSlots": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Text content that can be localized for a specific language",
+                                      "title": "Localizable Text"
+                                    },
+                                    "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                  },
+                                  "templateKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the template this offer is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Represents a purchasable product",
@@ -28849,6 +29956,33 @@
                                       ]
                                     },
                                     "description": "Content items within a non-purchasable item bundle"
+                                  },
+                                  "textSlots": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Text content that can be localized for a specific language",
+                                      "title": "Localizable Text"
+                                    },
+                                    "description": "Optional text for the named text slots of this item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                  },
+                                  "templateKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the template this item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Represents a non-purchasable item (banner, etc.)",
@@ -29036,6 +30170,33 @@
                                       "type": "string"
                                     },
                                     "description": "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."
+                                  },
+                                  "textSlots": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Text content that can be localized for a specific language",
+                                      "title": "Localizable Text"
+                                    },
+                                    "description": "Optional text for the named text slots of this free item's template, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                  },
+                                  "templateKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the template this free item is displayed with, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Free-to-claim catalog item",
@@ -29756,6 +30917,33 @@
                                     "type": "string",
                                     "format": "date-time",
                                     "description": "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"
+                                  },
+                                  "textSlots": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "object",
+                                      "properties": {
+                                        "defaultText": {
+                                          "type": "string",
+                                          "description": "Default text content, usually in English (fallback if no localized text is provided or if region/language is not supported or cannot be determined)"
+                                        },
+                                        "localizationKey": {
+                                          "type": "string",
+                                          "description": "The unique key used to identify the localized text content for a specific language"
+                                        },
+                                        "localizedText": {
+                                          "type": "string",
+                                          "description": "Localized text content for the language specified by the code sent in the request filters"
+                                        }
+                                      },
+                                      "description": "Text content that can be localized for a specific language",
+                                      "title": "Localizable Text"
+                                    },
+                                    "description": "Optional text for the named text slots of this offer's template, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer: a purchase pack item has no field for it. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. An entry wins over the item's fixed text field that would otherwise fill the same slot, such as name for a title, and a slot with no entry keeps that field. An entry whose key matches no text slot of the template is ignored, and an entry with an empty key or no text is treated as absent. Keys are at most 128 characters. Ignored by a template that names no text slots, so omitting it leaves an existing response valid"
+                                  },
+                                  "templateKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the template this offer is displayed with, declared once here for the whole offer: a purchase pack item has no field for it, compared exactly and case-sensitively against the template keys agreed for your shop. The template decides which reward slots layout_key and which text slots text_slots can fill. An item without one, or whose key matches no template, is displayed with the shop's default template for its kind. An empty value is treated as absent, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "One offer sold at several prices, containing its purchasable items",
