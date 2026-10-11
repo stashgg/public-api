@@ -331,7 +331,7 @@ message GetCatalogResponse {
       uint32 cents = 2 [
         (google.api.field_behavior) = REQUIRED,
         (validate.rules).uint32.gt = 0,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount in minor units for this ISO 4217 currency. By default Stash reads this using the fraction-digit count CLDR (the Unicode Common Locale Data Repository) assigns the currency in the CLDR release Stash bundles (release 32), which is not always the same digit count ISO 4217 uses for that currency. A shop can instead be set up to read (and write purchase amounts for) a different standard — a newer CLDR release (47) or ISO 4217 — via a per-shop setting your Stash engineering partner can configure on your behalf, so confirm with them which standard applies to your shop rather than assuming CLDR 32 digit counts for every currency."}
       ];
     }
     oneof price {
