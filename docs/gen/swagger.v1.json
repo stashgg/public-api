@@ -800,6 +800,10 @@
                                     "templateKey": {
                                       "type": "string",
                                       "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents a purchasable product",
@@ -1295,6 +1299,10 @@
                                     "templateKey": {
                                       "type": "string",
                                       "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Represents a non-purchasable item (banner, etc.)",
@@ -1509,6 +1517,10 @@
                                     "templateKey": {
                                       "type": "string",
                                       "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "Free-to-claim catalog item",
@@ -2210,7 +2222,7 @@
                                             "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                           }
                                         },
-                                        "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                                        "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                                         "title": "Purchase Pack Item",
                                         "required": [
                                           "productId",
@@ -2279,6 +2291,10 @@
                                     "templateKey": {
                                       "type": "string",
                                       "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "One offer sold at several prices, containing its purchasable items",
@@ -3053,6 +3069,10 @@
                                           "templateKey": {
                                             "type": "string",
                                             "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                          },
+                                          "version": {
+                                            "type": "string",
+                                            "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents a purchasable product",
@@ -3548,6 +3568,10 @@
                                           "templateKey": {
                                             "type": "string",
                                             "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                          },
+                                          "version": {
+                                            "type": "string",
+                                            "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Represents a non-purchasable item (banner, etc.)",
@@ -3762,6 +3786,10 @@
                                           "templateKey": {
                                             "type": "string",
                                             "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                          },
+                                          "version": {
+                                            "type": "string",
+                                            "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "Free-to-claim catalog item",
@@ -4463,7 +4491,7 @@
                                                   "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                                 }
                                               },
-                                              "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                                              "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                                               "title": "Purchase Pack Item",
                                               "required": [
                                                 "productId",
@@ -4532,6 +4560,10 @@
                                           "templateKey": {
                                             "type": "string",
                                             "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                          },
+                                          "version": {
+                                            "type": "string",
+                                            "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "One offer sold at several prices, containing its purchasable items",
@@ -7193,6 +7225,10 @@
         "templateKey": {
           "type": "string",
           "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+        },
+        "version": {
+          "type": "string",
+          "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents a claimable free catalog item",
@@ -7380,6 +7416,10 @@
         "templateKey": {
           "type": "string",
           "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+        },
+        "version": {
+          "type": "string",
+          "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents a non-purchasable item (banner, etc.)",
@@ -8415,6 +8455,10 @@
         "templateKey": {
           "type": "string",
           "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+        },
+        "version": {
+          "type": "string",
+          "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
         }
       },
       "description": "Represents a purchasable product",
@@ -9431,7 +9475,7 @@
                 "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
               }
             },
-            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
             "title": "Purchase Pack Item",
             "required": [
               "productId",
@@ -9500,6 +9544,10 @@
         "templateKey": {
           "type": "string",
           "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+        },
+        "version": {
+          "type": "string",
+          "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
         }
       },
       "description": "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its purchase limit, expiration and refresh time, are declared once here. A purchase pack item has no fields for them, so the offer's values govern every item in it by construction.",
@@ -10259,6 +10307,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a purchasable product",
@@ -10754,6 +10806,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a non-purchasable item (banner, etc.)",
@@ -10968,6 +11024,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -11669,7 +11729,7 @@
                           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                         }
                       },
-                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                       "title": "Purchase Pack Item",
                       "required": [
                         "productId",
@@ -11738,6 +11798,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "One offer sold at several prices, containing its purchasable items",
@@ -12512,6 +12576,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a purchasable product",
@@ -13007,6 +13075,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a non-purchasable item (banner, etc.)",
@@ -13221,6 +13293,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -13922,7 +13998,7 @@
                                 "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                               }
                             },
-                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                             "title": "Purchase Pack Item",
                             "required": [
                               "productId",
@@ -13991,6 +14067,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "One offer sold at several prices, containing its purchasable items",
@@ -15722,6 +15802,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a purchasable product",
@@ -16217,6 +16301,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Represents a non-purchasable item (banner, etc.)",
@@ -16431,6 +16519,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "Free-to-claim catalog item",
@@ -17132,7 +17224,7 @@
                                 "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                               }
                             },
-                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                             "title": "Purchase Pack Item",
                             "required": [
                               "productId",
@@ -17201,6 +17293,10 @@
                         "templateKey": {
                           "type": "string",
                           "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "One offer sold at several prices, containing its purchasable items",
@@ -17975,6 +18071,10 @@
                               "templateKey": {
                                 "type": "string",
                                 "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                              },
+                              "version": {
+                                "type": "string",
+                                "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents a purchasable product",
@@ -18470,6 +18570,10 @@
                               "templateKey": {
                                 "type": "string",
                                 "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                              },
+                              "version": {
+                                "type": "string",
+                                "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Represents a non-purchasable item (banner, etc.)",
@@ -18684,6 +18788,10 @@
                               "templateKey": {
                                 "type": "string",
                                 "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                              },
+                              "version": {
+                                "type": "string",
+                                "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "Free-to-claim catalog item",
@@ -19385,7 +19493,7 @@
                                       "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                     }
                                   },
-                                  "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                                  "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                                   "title": "Purchase Pack Item",
                                   "required": [
                                     "productId",
@@ -19454,6 +19562,10 @@
                               "templateKey": {
                                 "type": "string",
                                 "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                              },
+                              "version": {
+                                "type": "string",
+                                "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "One offer sold at several prices, containing its purchasable items",
@@ -20286,6 +20398,10 @@
             "templateKey": {
               "type": "string",
               "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+            },
+            "version": {
+              "type": "string",
+              "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
             }
           },
           "description": "Represents a purchasable product",
@@ -20781,6 +20897,10 @@
             "templateKey": {
               "type": "string",
               "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+            },
+            "version": {
+              "type": "string",
+              "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
             }
           },
           "description": "Represents a non-purchasable item (banner, etc.)",
@@ -20995,6 +21115,10 @@
             "templateKey": {
               "type": "string",
               "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+            },
+            "version": {
+              "type": "string",
+              "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
             }
           },
           "description": "Free-to-claim catalog item",
@@ -21696,7 +21820,7 @@
                     "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                   }
                 },
-                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                 "title": "Purchase Pack Item",
                 "required": [
                   "productId",
@@ -21765,6 +21889,10 @@
             "templateKey": {
               "type": "string",
               "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+            },
+            "version": {
+              "type": "string",
+              "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
             }
           },
           "description": "One offer sold at several prices, containing its purchasable items",
@@ -24027,7 +24155,7 @@
           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
         }
       },
-      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
       "title": "Purchase Pack Item",
       "required": [
         "productId",
@@ -24820,6 +24948,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a purchasable product",
@@ -25315,6 +25447,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Represents a non-purchasable item (banner, etc.)",
@@ -25529,6 +25665,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "Free-to-claim catalog item",
@@ -26230,7 +26370,7 @@
                           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                         }
                       },
-                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                       "title": "Purchase Pack Item",
                       "required": [
                         "productId",
@@ -26299,6 +26439,10 @@
                   "templateKey": {
                     "type": "string",
                     "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "One offer sold at several prices, containing its purchasable items",
@@ -27488,6 +27632,10 @@
                             "templateKey": {
                               "type": "string",
                               "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                            },
+                            "version": {
+                              "type": "string",
+                              "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "Represents a purchasable product",
@@ -27983,6 +28131,10 @@
                             "templateKey": {
                               "type": "string",
                               "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                            },
+                            "version": {
+                              "type": "string",
+                              "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "Represents a non-purchasable item (banner, etc.)",
@@ -28197,6 +28349,10 @@
                             "templateKey": {
                               "type": "string",
                               "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                            },
+                            "version": {
+                              "type": "string",
+                              "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "Free-to-claim catalog item",
@@ -28898,7 +29054,7 @@
                                     "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                   }
                                 },
-                                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                                 "title": "Purchase Pack Item",
                                 "required": [
                                   "productId",
@@ -28967,6 +29123,10 @@
                             "templateKey": {
                               "type": "string",
                               "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                            },
+                            "version": {
+                              "type": "string",
+                              "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                             }
                           },
                           "description": "One offer sold at several prices, containing its purchasable items",
@@ -29741,6 +29901,10 @@
                                   "templateKey": {
                                     "type": "string",
                                     "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                  },
+                                  "version": {
+                                    "type": "string",
+                                    "description": "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Represents a purchasable product",
@@ -30236,6 +30400,10 @@
                                   "templateKey": {
                                     "type": "string",
                                     "description": "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                  },
+                                  "version": {
+                                    "type": "string",
+                                    "description": "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Represents a non-purchasable item (banner, etc.)",
@@ -30450,6 +30618,10 @@
                                   "templateKey": {
                                     "type": "string",
                                     "description": "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                  },
+                                  "version": {
+                                    "type": "string",
+                                    "description": "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "Free-to-claim catalog item",
@@ -31151,7 +31323,7 @@
                                           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                         }
                                       },
-                                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
+                                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here.",
                                       "title": "Purchase Pack Item",
                                       "required": [
                                         "productId",
@@ -31220,6 +31392,10 @@
                                   "templateKey": {
                                     "type": "string",
                                     "description": "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
+                                  },
+                                  "version": {
+                                    "type": "string",
+                                    "description": "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "One offer sold at several prices, containing its purchasable items",

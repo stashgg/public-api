@@ -508,6 +508,14 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
+      optional string version = 18 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
     }
 
     message OfferChainItem {
@@ -733,6 +741,14 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
+      optional string version = 10 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
     }
 
     message FreeItem {
@@ -885,6 +901,14 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
+      optional string version = 16 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
     }
 
     message PurchasePack {
@@ -929,12 +953,20 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
+      optional string version = 9 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
 
       message PurchasePackItem {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here."
             required: [
               "product_id",
               "price"
