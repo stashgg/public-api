@@ -2210,7 +2210,7 @@
                                             "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                           }
                                         },
-                                        "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                                        "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                                         "title": "Purchase Pack Item",
                                         "required": [
                                           "productId",
@@ -4463,7 +4463,7 @@
                                                   "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                                 }
                                               },
-                                              "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                                              "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                                               "title": "Purchase Pack Item",
                                               "required": [
                                                 "productId",
@@ -9431,7 +9431,7 @@
                 "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
               }
             },
-            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
             "title": "Purchase Pack Item",
             "required": [
               "productId",
@@ -11669,7 +11669,7 @@
                           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                         }
                       },
-                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                       "title": "Purchase Pack Item",
                       "required": [
                         "productId",
@@ -13922,7 +13922,7 @@
                                 "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                               }
                             },
-                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                             "title": "Purchase Pack Item",
                             "required": [
                               "productId",
@@ -17132,7 +17132,7 @@
                                 "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                               }
                             },
-                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                            "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                             "title": "Purchase Pack Item",
                             "required": [
                               "productId",
@@ -19385,7 +19385,7 @@
                                       "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                     }
                                   },
-                                  "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                                  "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                                   "title": "Purchase Pack Item",
                                   "required": [
                                     "productId",
@@ -21696,7 +21696,7 @@
                     "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                   }
                 },
-                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                 "title": "Purchase Pack Item",
                 "required": [
                   "productId",
@@ -24027,7 +24027,7 @@
           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
         }
       },
-      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
       "title": "Purchase Pack Item",
       "required": [
         "productId",
@@ -26230,7 +26230,7 @@
                           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                         }
                       },
-                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                       "title": "Purchase Pack Item",
                       "required": [
                         "productId",
@@ -28898,7 +28898,7 @@
                                     "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                   }
                                 },
-                                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                                "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                                 "title": "Purchase Pack Item",
                                 "required": [
                                   "productId",
@@ -31151,7 +31151,7 @@
                                           "description": "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"
                                         }
                                       },
-                                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here.",
+                                      "description": "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here.",
                                       "title": "Purchase Pack Item",
                                       "required": [
                                         "productId",

@@ -934,7 +934,7 @@ message GetCatalogResponse {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time and template key, which belong to the pack and have no field here."
             required: [
               "product_id",
               "price"
