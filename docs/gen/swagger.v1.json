@@ -762,6 +762,10 @@
                                           "originalAmount": {
                                             "type": "string",
                                             "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -2186,6 +2190,10 @@
                                                 "originalAmount": {
                                                   "type": "string",
                                                   "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -3031,6 +3039,10 @@
                                                 "originalAmount": {
                                                   "type": "string",
                                                   "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                                },
+                                                "layoutKey": {
+                                                  "type": "string",
+                                                  "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                                 }
                                               },
                                               "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -4455,6 +4467,10 @@
                                                       "originalAmount": {
                                                         "type": "string",
                                                         "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                                      },
+                                                      "layoutKey": {
+                                                        "type": "string",
+                                                        "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                                       }
                                                     },
                                                     "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -8417,6 +8433,10 @@
               "originalAmount": {
                 "type": "string",
                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -9439,6 +9459,10 @@
                     "originalAmount": {
                       "type": "string",
                       "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                    },
+                    "layoutKey": {
+                      "type": "string",
+                      "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                     }
                   },
                   "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -10269,6 +10293,10 @@
                         "originalAmount": {
                           "type": "string",
                           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -11693,6 +11721,10 @@
                               "originalAmount": {
                                 "type": "string",
                                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -12538,6 +12570,10 @@
                               "originalAmount": {
                                 "type": "string",
                                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -13962,6 +13998,10 @@
                                     "originalAmount": {
                                       "type": "string",
                                       "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -15764,6 +15804,10 @@
                               "originalAmount": {
                                 "type": "string",
                                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -17188,6 +17232,10 @@
                                     "originalAmount": {
                                       "type": "string",
                                       "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -18033,6 +18081,10 @@
                                     "originalAmount": {
                                       "type": "string",
                                       "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                    },
+                                    "layoutKey": {
+                                      "type": "string",
+                                      "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                     }
                                   },
                                   "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -19457,6 +19509,10 @@
                                           "originalAmount": {
                                             "type": "string",
                                             "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                          },
+                                          "layoutKey": {
+                                            "type": "string",
+                                            "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                           }
                                         },
                                         "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -20360,6 +20416,10 @@
                   "originalAmount": {
                     "type": "string",
                     "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                  },
+                  "layoutKey": {
+                    "type": "string",
+                    "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                   }
                 },
                 "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -21784,6 +21844,10 @@
                         "originalAmount": {
                           "type": "string",
                           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -22912,6 +22976,10 @@
         "originalAmount": {
           "type": "string",
           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -22948,6 +23016,10 @@
         "originalAmount": {
           "type": "string",
           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+        },
+        "layoutKey": {
+          "type": "string",
+          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
         }
       },
       "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -24119,6 +24191,10 @@
               "originalAmount": {
                 "type": "string",
                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+              },
+              "layoutKey": {
+                "type": "string",
+                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
               }
             },
             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -24910,6 +24986,10 @@
                         "originalAmount": {
                           "type": "string",
                           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                        },
+                        "layoutKey": {
+                          "type": "string",
+                          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                         }
                       },
                       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -26334,6 +26414,10 @@
                               "originalAmount": {
                                 "type": "string",
                                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                              },
+                              "layoutKey": {
+                                "type": "string",
+                                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                               }
                             },
                             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -27594,6 +27678,10 @@
                                   "originalAmount": {
                                     "type": "string",
                                     "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                  },
+                                  "layoutKey": {
+                                    "type": "string",
+                                    "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                   }
                                 },
                                 "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -29018,6 +29106,10 @@
                                         "originalAmount": {
                                           "type": "string",
                                           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -29863,6 +29955,10 @@
                                         "originalAmount": {
                                           "type": "string",
                                           "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                        },
+                                        "layoutKey": {
+                                          "type": "string",
+                                          "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                         }
                                       },
                                       "description": "A bonus granted in addition to a purchasable item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
@@ -31287,6 +31383,10 @@
                                               "originalAmount": {
                                                 "type": "string",
                                                 "description": "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."
+                                              },
+                                              "layoutKey": {
+                                                "type": "string",
+                                                "description": "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"
                                               }
                                             },
                                             "description": "A bonus granted in addition to a purchase pack item's contents when the item is bought (e.g. an in-game currency top-up). A type, an id, and an amount.",
