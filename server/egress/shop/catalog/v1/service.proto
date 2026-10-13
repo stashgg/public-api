@@ -1242,6 +1242,7 @@ message GetCatalogResponse {
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
     repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
+    optional Banner banner = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner shown once for the whole shop, for example a message about a bonus the player gets for buying on the web. It can differ per player, because the catalog is requested per player. Its text is a LocalizableText resolved to the player's language like any other text field. Display only: it never changes what is granted or charged. Omit it for no banner"}];
   }
   Catalog catalog = 1 [
     (google.api.field_behavior) = REQUIRED,
