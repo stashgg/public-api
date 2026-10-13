@@ -445,6 +445,14 @@ message GetCatalogResponse {
         optional bool featured = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this item should be displayed prominently above the other items within the offer bundle"}];
         optional ContentItemClickAction click_action = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."}];
         optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
+        optional string layout_key = 18 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
+        ];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
 
@@ -483,6 +491,31 @@ message GetCatalogResponse {
         ];
       }
       repeated PurchasableBonusItem bonus_items = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."}];
+      map<string, LocalizableText> text_slots = 16 [
+        (validate.rules).map = {
+          max_pairs: 50
+          keys: {
+            string: {max_len: 128}
+          }
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this offer, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending name: screens other than the offer card use the fixed text fields"}
+      ];
+      optional string template_key = 17 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
+      optional string version = 18 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
     }
 
     message OfferChainItem {
@@ -565,6 +598,14 @@ message GetCatalogResponse {
               ignore_empty: true
             },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+          ];
+          optional string layout_key = 8 [
+            (validate.rules).string = {
+              min_len: 1
+              max_len: 128
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
           ];
         }
         repeated ObtainableItem items = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items obtained from this chain link as a bundle"}];
@@ -673,8 +714,41 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
         ];
+        optional string layout_key = 8 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
+        ];
       }
       repeated NonPurchasableContentItem contents = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Content items within a non-purchasable item bundle"}];
+      map<string, LocalizableText> text_slots = 8 [
+        (validate.rules).map = {
+          max_pairs: 50
+          keys: {
+            string: {max_len: 128}
+          }
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this item, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending title: screens other than the offer card use the fixed text fields"}
+      ];
+      optional string template_key = 9 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
+      optional string version = 10 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
     }
 
     message FreeItem {
@@ -723,6 +797,14 @@ message GetCatalogResponse {
             ignore_empty: true
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
+        ];
+        optional string layout_key = 8 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
         ];
       }
 
@@ -802,6 +884,31 @@ message GetCatalogResponse {
       optional string target_tier_id = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional identifier of the loyalty tier this free item targets. For a locked preview of the next tier's reward, return the item with status LOCKED and the next tier's identifier."}];
       repeated FreeBonusItem bonus_items = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonus rewards granted when this free item is claimed (e.g. loyalty points)."}];
       map<string, string> metadata = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key-value pairs to be included in webhook events related to this item. Not to be displayed or used for business logic. Use attributes for customizing the display."}];
+      map<string, LocalizableText> text_slots = 14 [
+        (validate.rules).map = {
+          max_pairs: 50
+          keys: {
+            string: {max_len: 128}
+          }
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this free item, keyed by slot name (for example Title or RibbonText). Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending name: screens other than the offer card use the fixed text fields"}
+      ];
+      optional string template_key = 15 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
+      optional string version = 16 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this free item, an opaque string you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. It is the item's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
     }
 
     message PurchasePack {
@@ -829,12 +936,37 @@ message GetCatalogResponse {
       optional LocalizableText max_purchasable_description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the offer's shared purchase limit"}];
       optional google.protobuf.Timestamp expiration = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"}];
       optional google.protobuf.Timestamp refresh_at = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"}];
+      map<string, LocalizableText> text_slots = 7 [
+        (validate.rules).map = {
+          max_pairs: 50
+          keys: {
+            string: {max_len: 128}
+          }
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this offer, keyed by slot name (for example Title or RibbonText), declared once here for the whole offer; a price point can add its own on its PurchasePackItem.text_slots. Each key is compared exactly and case-sensitively against the text slot names agreed for your shop's offer templates, and each value is localizable text that Stash resolves to the player's language like any other text field. At most 50 entries, each key at most 128 characters. An entry with an empty or longer key, or whose text is empty or resolves to empty, is ignored; beyond 50 entries with text, Stash keeps the first 50 by slot name in byte order. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent or when the template names no text slots, so omitting it leaves an existing response valid. Keep sending each item's name: screens other than the offer card use the fixed text fields"}
+      ];
+      optional string template_key = 8 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
+      optional string version = 9 [
+        (validate.rules).string = {
+          min_len: 1
+          max_len: 128
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it): an opaque string you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. It is the offer's own version and is unrelated to the template version inside template_key. Compared exactly and case-sensitively. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+      ];
 
       message PurchasePackItem {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration and refresh time, which belong to the pack and have no field here."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here."
             required: [
               "product_id",
               "price"
@@ -941,6 +1073,14 @@ message GetCatalogResponse {
           optional bool featured = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether this item should be displayed prominently above the other items within the purchase pack item"}];
           optional ContentItemClickAction click_action = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional action associated with clicking this content item. When set to CONTENT_ITEM_CLICK_ACTION_SHOW_DETAILS_BY_ID, the guid field must be set in order to view details for the relevant item in the OfferDetails response."}];
           optional SimpleBadge badge = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge to display text next to the quantity"}];
+          optional string layout_key = 18 [
+            (validate.rules).string = {
+              min_len: 1
+              max_len: 128
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
+          ];
         }
         repeated PurchasePackContentItem contents = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items this item grants. On the item that buys the whole offer, the combined rewards of every price point. Optional on every type, as on a standalone item: an item with no contents is described by its name and image alone"}];
 
@@ -979,6 +1119,15 @@ message GetCatalogResponse {
           ];
         }
         repeated PurchasePackBonusItem bonus_items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of the item's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the item's own bonus for an id already listed there or the player is credited twice."}];
+        map<string, LocalizableText> text_slots = 12 [
+          (validate.rules).map = {
+            max_pairs: 50
+            keys: {
+              string: {max_len: 128}
+            }
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"}
+        ];
       }
     }
 
