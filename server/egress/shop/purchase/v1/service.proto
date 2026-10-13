@@ -142,7 +142,7 @@ message RegisterPaymentRequest {
   ];
   optional uint32 decimal_places = 13 [
     (validate.rules).uint32 = {lte: 18},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW). Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Number of decimal places in this request's `cents` values for this ISO 4217 currency, under the minor-unit standard configured for your shop: Unicode CLDR release 32 by default. See `cents` in GetCatalog and https://docs.stash.gg/guides/stash-webshop/catalog/real-time-catalog#prices for the standards a shop can use and their sources. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
 
   message PurchaseRegistration {
@@ -171,7 +171,7 @@ message RegisterPaymentRequest {
     uint32 cents = 3 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units scaled per CLDR for this ISO 4217 currency (e.g. 999 for $9.99 in USD). Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units for this ISO 4217 currency (e.g. 999 for $9.99 in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
     ];
     uint32 quantity = 4 [
       (google.api.field_behavior) = REQUIRED,
@@ -289,7 +289,7 @@ message CancelPaymentRequest {
   ];
   optional uint32 decimal_places = 7 [
     (validate.rules).uint32 = {lte: 18},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency, from public CLDR supplemental data for this currency code (scales line-item minor units). Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW). Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Number of decimal places in this request's line-item `cents` values for this ISO 4217 currency, under the minor-unit standard configured for your shop: Unicode CLDR release 32 by default. See `cents` in GetCatalog and https://docs.stash.gg/guides/stash-webshop/catalog/real-time-catalog#prices for the standards a shop can use and their sources. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
 
   message CanceledItem {
@@ -323,7 +323,7 @@ message CancelPaymentRequest {
     uint32 cents = 4 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits. Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per item for this ISO 4217 currency (e.g. 999 per item in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
     ];
     optional string purchase_pack_id = 6 [
       (validate.rules).string.min_len = 1,
@@ -392,17 +392,17 @@ message ConfirmPaymentRequest {
   ];
   optional uint32 decimal_places = 23 [
     (validate.rules).uint32 = {lte: 18},
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "CLDR fraction-digit count for this ISO 4217 currency; applies to tax, total, and line-item minor units. Value comes from public CLDR supplemental data for this currency code. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW). Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Number of decimal places in this request's `tax`, `total` and line-item `cents` values for this ISO 4217 currency, under the minor-unit standard configured for your shop: Unicode CLDR release 32 by default. See `cents` in GetCatalog and https://docs.stash.gg/guides/stash-webshop/catalog/real-time-catalog#prices for the standards a shop can use and their sources. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
   uint32 tax = 5 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).uint32.gte = 0,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax as integer minor units per CLDR for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0). Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax as integer minor units for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
   ];
   uint32 total = 6 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).uint32.gt = 0,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Total including tax, as integer minor units per CLDR for this ISO 4217 currency (e.g. 1098 for $10.98 in USD). Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Total including tax, as integer minor units for this ISO 4217 currency (e.g. 1098 for $10.98 in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
   ];
   int64 time_millis = 7 [
     (google.api.field_behavior) = REQUIRED,
@@ -442,7 +442,7 @@ message ConfirmPaymentRequest {
     uint32 cents = 4 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per CLDR for this ISO 4217 currency (e.g. 999 per item in USD), scaled per that currency's CLDR fraction digits. Uses the same minor-unit standard as this shop's catalog prices; see GetCatalog's `cents` field."}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per item for this ISO 4217 currency (e.g. 999 per item in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
     ];
     optional string purchase_pack_id = 6 [
       (validate.rules).string.min_len = 1,
