@@ -167,3 +167,13 @@ enum CatalogTriggerDisplayType {
   CATALOG_TRIGGER_DISPLAY_TYPE_UNSPECIFIED = 0;
   CATALOG_TRIGGER_DISPLAY_TYPE_FLOATING = 1;
 }
+
+enum TextFormatSyntax {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Template syntax used to compose a localizable text with its format arguments"};
+  // Plain text, displayed as-is; only valid with no format_arguments
+  TEXT_FORMAT_SYNTAX_UNSPECIFIED = 0;
+  // ICU MessageFormat-style simple arguments, {name} or {0}
+  TEXT_FORMAT_SYNTAX_ICU_MESSAGE_FORMAT = 1;
+  // printf-style, %s and %d read keys "1", "2" in order
+  TEXT_FORMAT_SYNTAX_PRINTF = 2;
+}
