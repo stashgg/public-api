@@ -36,8 +36,8 @@ buf generate
 
 echo "Merging Swagger files..."
 mkdir -p docs/gen
-npx --yes swagger-merger@1.5.4 -i ./docs/config/swagger-merger-config.json -o ./docs/gen/swagger.v1.json
-npx --yes swagger-merger@1.5.4 -i ./docs/config/swagger-merger-ingress-config.json -o ./docs/gen/swagger.ingress.v1.json
+npx --yes swagger-merger@1.5.4 -c -i ./docs/config/swagger-merger-config.json -o ./docs/gen/swagger.v1.json
+npx --yes swagger-merger@1.5.4 -c -i ./docs/config/swagger-merger-ingress-config.json -o ./docs/gen/swagger.ingress.v1.json
 
 echo "Building Redoc docs..."
 npx --yes @redocly/cli@2.6.0 build-docs ./docs/gen/swagger.v1.json -o ./docs/gen/redoc.v1.html
