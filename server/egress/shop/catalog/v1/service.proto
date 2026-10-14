@@ -489,6 +489,14 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."}
         ];
+        optional string layout_key = 5 [
+          (validate.rules).string = {
+            min_len: 1
+            max_len: 128
+            ignore_empty: true
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
+        ];
       }
       repeated PurchasableBonusItem bonus_items = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of an offer's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the offer's own bonus for an id already listed there or the player is credited twice."}];
       map<string, LocalizableText> text_slots = 16 [
@@ -1116,6 +1124,14 @@ message GetCatalogResponse {
               pattern: "^[0-9]+$"
             },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional amount shown struck through next to this bonus's amount, as the amount before the offer's bonus, as string for big integer support (no decimals allowed). Display only: it is never granted and never changes what is granted. Leave it unset for no strikethrough."}
+          ];
+          optional string layout_key = 5 [
+            (validate.rules).string = {
+              min_len: 1
+              max_len: 128
+              ignore_empty: true
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this bonus fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is granted or the amount sent on the ConfirmPayment request. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
           ];
         }
         repeated PurchasePackBonusItem bonus_items = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional bonuses granted in addition to this item's contents when it is purchased, each an explicit type, id and amount. This is the typed, first-class representation of the item's bonus and takes precedence over contents[].bonus_quantity, which is an anonymous display projection carrying neither an id nor a type: when both are present, bonus_items decides what is granted and bonus_quantity is display only. On purchase, the amounts sent on the ConfirmPayment request's bonus_items are authoritative for the bonus ids they name and are the amounts to grant, so do not also grant the item's own bonus for an id already listed there or the player is credited twice."}];
