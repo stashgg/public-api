@@ -89,6 +89,8 @@ enum ContentItemType {
   CONTENT_ITEM_TYPE_UNSPECIFIED = 0;
   // Web store bonus content item type
   CONTENT_ITEM_TYPE_WEB_STORE_BONUS = 1;
+  // Free content item type: an item included free with the offer, which Stash may label as free where the offer is shown, delivered with the offer's other contents
+  CONTENT_ITEM_TYPE_FREE_ITEM = 2;
 }
 
 enum BadgeAction {
