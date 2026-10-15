@@ -538,7 +538,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Echoed unchanged as templateKey on this item in the PURCHASE_SUCCEEDED, PURCHASE_FAILED and PURCHASE_REFUNDED webhooks, as it was when the purchase started. Optional, so omitting it leaves an existing response valid"}
       ];
       optional string version = 18 [
         (validate.rules).string = {
@@ -546,7 +546,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, which you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the offer, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the offer's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, which you change whenever you re-publish the offer, for example after fixing and reactivating it under the same product_id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the offer, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the offer's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Echoed unchanged as version on this item in the PURCHASE_SUCCEEDED, PURCHASE_FAILED and PURCHASE_REFUNDED webhooks, as it was when the purchase started. Optional, so omitting it leaves an existing response valid"}
       ];
     }
 
@@ -932,7 +932,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this free item is displayed with, including its version (for example offer-name-v4), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Echoed unchanged as templateKey on the FREE_ITEM_REDEEMED webhook for this item. Optional, so omitting it leaves an existing response valid"}
       ];
       optional string version = 16 [
         (validate.rules).string = {
@@ -940,7 +940,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this free item, which you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the item, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the item's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this free item, which you change whenever you re-publish the item, for example after fixing and reactivating it under the same item_id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the item, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the item's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Echoed unchanged as version on the FREE_ITEM_REDEEMED webhook for this item. Optional, so omitting it leaves an existing response valid"}
       ];
     }
 
@@ -958,7 +958,7 @@ message GetCatalogResponse {
       string id = 1 [
         (google.api.field_behavior) = REQUIRED,
         (validate.rules).string.min_len = 1,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Your stable identifier for this offer, declared once. It is echoed back as purchase_pack_id on the register, confirm and cancel calls, so a purchase can be attributed to the offer as it was displayed. Keep it unique across the offers in a catalog response"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Your stable identifier for this offer, declared once. It is echoed back as purchase_pack_id on the register, confirm and cancel calls, and as purchasePackId on each purchased item in the PURCHASE_SUCCEEDED, PURCHASE_FAILED and PURCHASE_REFUNDED webhooks, so a purchase can be attributed to the offer as it was displayed. Keep it unique across the offers in a catalog response"}
       ];
       repeated PurchasePackItem items = 2 [
         (google.api.field_behavior) = REQUIRED,
@@ -984,7 +984,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the template this offer is displayed with, including its version (for example offer-name-v4), declared once here for the whole offer (a purchase pack item has no field for it), compared exactly and case-sensitively against the template keys agreed for your shop. At most 128 characters; an empty or longer value is treated as absent. Echoed unchanged as templateKey on each purchased item of this offer in the PURCHASE_SUCCEEDED, PURCHASE_FAILED and PURCHASE_REFUNDED webhooks. Optional, so omitting it leaves an existing response valid"}
       ];
       optional string version = 9 [
         (validate.rules).string = {
@@ -992,7 +992,7 @@ message GetCatalogResponse {
           max_len: 128
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it), which you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the offer, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the offer's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it), which you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the offer, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the offer's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Echoed unchanged as version on each purchased item of this offer in the PURCHASE_SUCCEEDED, PURCHASE_FAILED and PURCHASE_REFUNDED webhooks. Optional, so omitting it leaves an existing response valid"}
       ];
 
       message PurchasePackAttributes {
