@@ -184,6 +184,6 @@ enum InformationType {
   INFORMATION_TYPE_UNSPECIFIED = 0;
   // The rarity of a reward, such as a star rating or a guaranteed minimum rarity
   INFORMATION_TYPE_RARITY = 1;
-  // The odds or drop rates of what an offer or reward can grant
-  INFORMATION_TYPE_ODDS = 2;
+  // The drop rates (the odds disclosure) of what a reward can grant
+  INFORMATION_TYPE_DROP_RATES = 2;
 }

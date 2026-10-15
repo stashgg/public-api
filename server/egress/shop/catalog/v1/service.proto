@@ -193,7 +193,7 @@ message GetCatalogResponse {
     ];
     optional string background_style = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for button"}];
     optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional popup tooltip for additional information"}];
-    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_ODDS (odds or drop rates), so the shop can style it by kind. Unset or unrecognized shows a general info button"}];
+    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_DROP_RATES (a reward's drop rates, the odds disclosure), so the shop can style it by kind. On a reward's info button with INFORMATION_TYPE_DROP_RATES, the tooltip text may contain links, as described on Catalog.drop_rates_info_button. Unset or unrecognized shows a general info button"}];
   }
 
   message Callout {
@@ -291,15 +291,6 @@ message GetCatalogResponse {
       }
     };
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tooltip text providing additional information"}];
-    optional string link_url = 2 [
-      (validate.rules).string = {
-        uri: true
-        prefix: "https://"
-        max_len: 2048
-        ignore_empty: true
-      },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info button tooltips only, ignored on other tooltips: an optional https URL of a page with more information, e.g. a full odds disclosure, shown as a link in the tooltip. A URL that is not https is ignored"}
-    ];
   }
 
   message PriceAmountOrId {
@@ -409,7 +400,7 @@ message GetCatalogResponse {
         optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
         optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item"}];
         optional CatalogBorderType border_type = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional border decoration type for this offer card"}];
-        optional Button info_button = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for the offer as a whole, for example the odds disclosure for everything the offer can grant, with information_type set to INFORMATION_TYPE_ODDS and the tooltip's link_url pointing to the full odds page. Separate from contents[].info_button, which describes one reward"}];
+        optional bool show_drop_rates_info = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional. Set to true to show the catalog's drop rates info button (Catalog.drop_rates_info_button) on this offer, for an offer whose rewards are drawn at random. Leave it unset on offers without drop rates, for example coins only. Ignored when the catalog has no drop rates info button"}];
       }
       optional PurchasableAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual and behavioral attributes"}];
 
@@ -848,7 +839,7 @@ message GetCatalogResponse {
           }
         };
         optional Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-card background styling"}];
-        optional Button info_button = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for the free item as a whole, for example the odds disclosure for everything it can grant. Same shape and meaning as the info button on a purchasable item's attributes"}];
+        optional bool show_drop_rates_info = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional. Set to true to show the catalog's drop rates info button (Catalog.drop_rates_info_button) on this free item, as on a purchasable item's attributes"}];
       }
 
       message FreeBonusItem {
@@ -948,7 +939,7 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Purchase Pack"
-          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its purchase limit, expiration, refresh time and offer-level info button, are declared once here. A purchase pack item has no fields for them, so the offer's values govern every item in it by construction."
+          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its shared purchase limit, expiration, refresh time and drop rates opt-in, are declared once here. A purchase pack item has no fields for the expiration, refresh time or opt-in, so the offer's values govern every item in it by construction; an item may add its own purchase limit on top of the shared one."
           required: [
             "id",
             "items"
@@ -965,7 +956,7 @@ message GetCatalogResponse {
         (validate.rules).repeated.min_items = 1,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer's items, one per price, in display order. At most one of them may carry type PURCHASE_PACK_ITEM_TYPE_WHOLE_PURCHASE_PACK to mark the item that buys the whole offer in a single transaction"}
       ];
-      optional uint32 max_purchasable = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's remaining purchases of this offer as a whole, shared by every item in it. Compute it per player, as you already do per item, and send it here only. When absent the offer carries no shared limit"}];
+      optional uint32 max_purchasable = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's remaining purchases of this offer as a whole, shared by every item in it. Compute it per player, as you already do per item. An item may also carry its own max_purchasable for that price point, and the lower of the two applies to it. When absent the offer carries no shared limit"}];
       optional LocalizableText max_purchasable_description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the offer's shared purchase limit"}];
       optional google.protobuf.Timestamp expiration = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"}];
       optional google.protobuf.Timestamp refresh_at = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"}];
@@ -995,22 +986,13 @@ message GetCatalogResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it), which you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the offer, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the offer's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
 
-      message PurchasePackAttributes {
-        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-          json_schema: {
-            title: "Purchase Pack Attributes"
-            description: "Optional attributes for customizing how a purchase pack is displayed as a whole"
-          }
-        };
-        optional Button info_button = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for the offer as a whole, for example the odds disclosure for everything any of its items can grant, with information_type set to INFORMATION_TYPE_ODDS and the tooltip's link_url pointing to the full odds page. Separate from an item's contents[].info_button, which describes one reward"}];
-      }
-      optional PurchasePackAttributes attributes = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional attributes for displaying the offer as a whole; each item keeps its own attributes"}];
+      optional bool show_drop_rates_info = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional. Set to true to show the catalog's drop rates info button (Catalog.drop_rates_info_button) on this offer, declared once here for the whole offer. Leave it unset on offers without drop rates, for example coins only. Ignored when the catalog has no drop rates info button"}];
 
       message PurchasePackItem {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key, version and offer-level info button, which belong to the pack and have no field here."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit description, expiration, refresh time, template key, version and drop rates opt-in, which belong to the pack and have no field here. Its own max_purchasable limits that price point on top of the pack's shared limit."
             required: [
               "product_id",
               "price"
@@ -1180,6 +1162,7 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional text for the named text slots of this price point, keyed by slot name (for example Title or RibbonText), with the same rules and limits as the purchase pack's text_slots. For a slot name set both here and on the pack, this entry is used for this price point; the pack's entries fill every other slot, and of the combined entries Stash keeps the first 50 by slot name in byte order. An entry that is ignored here (an empty or longer key, or text that is empty or resolves to empty) leaves the pack's entry for that slot. A slot name repeated within the object keeps its first value, and the rest of the response still loads. Optional, and ignored when absent, so omitting it leaves an existing response valid"}
         ];
+        optional uint32 max_purchasable = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's remaining purchases of this price point: how many more times this player can buy it. Compute it per player and send the current count on every response; Stash does not count purchases itself. 0 shows the price point sold out, and Stash refuses checkout for it. The pack's shared max_purchasable still applies, so the lower of the two limits this item. Stash reads it when checkout starts and refuses a purchase whose quantity exceeds it, so also enforce the limit when you confirm a purchase. When absent the price point has no limit of its own. To withdraw a price point entirely, leave it out of the response"}];
       }
     }
 
@@ -1225,6 +1208,32 @@ message GetCatalogResponse {
       ];
     }
 
+    message DropRatesInfoButton {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Drop Rates Info Button"
+          description: "An info button for the drop rates (the odds disclosure) of an offer, declared once for the catalog and shown on each offer that opts in with show_drop_rates_info. Send a tooltip, a link_url, or both"
+        }
+      };
+      optional string icon_image_url = 1 [
+        (validate.rules).string = {
+          uri: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to the button's icon image; a generic info icon is shown when absent"}
+      ];
+      optional Tooltip tooltip = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip opened by the button. Its text may contain links written as [label](url), for example 'For odds, see [here](https://example.com/odds)'. Only that link form is read, and every other character shows as typed. A link whose url is not an absolute https URL shows its label as plain text. Links are read from the text after format_arguments are applied, and an argument value never creates or changes a link. Other tooltips do not read links, except a reward's info button with information_type INFORMATION_TYPE_DROP_RATES"}];
+      optional string link_url = 3 [
+        (validate.rules).string = {
+          uri: true
+          prefix: "https://"
+          max_len: 2048
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional https URL of the drop rates page, opened when the player taps the button. A URL that is not https is ignored"}
+      ];
+    }
+
     message Section {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
@@ -1265,6 +1274,7 @@ message GetCatalogResponse {
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
     repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
+    optional DropRatesInfoButton drop_rates_info_button = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button, declared once for the catalog and shown on every offer whose show_drop_rates_info is true. Offers that do not opt in show no drop rates button"}];
     optional Banner banner = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner shown once for the whole shop, for example a message about a bonus the player gets for buying on the web. It can differ per player, because the catalog is requested per player. Its text is a LocalizableText resolved to the player's language like any other text field. Display only: it never changes what is granted or charged. Omit it for no banner"}];
   }
   Catalog catalog = 1 [
