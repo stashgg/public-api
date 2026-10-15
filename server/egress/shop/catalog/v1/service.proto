@@ -193,7 +193,7 @@ message GetCatalogResponse {
     ];
     optional string background_style = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for button"}];
     optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional popup tooltip for additional information"}];
-    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_DROP_RATES (a reward's drop rates, the odds disclosure), so the shop can style it by kind. On a reward's info button with INFORMATION_TYPE_DROP_RATES, the tooltip text may contain links, as described on Catalog.drop_rates_info_button. Unset or unrecognized shows a general info button"}];
+    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_DROP_RATES (a reward's drop rates, the odds disclosure), so the shop can style it by kind. On a reward's info button with INFORMATION_TYPE_DROP_RATES, the tooltip text may contain links, read as described on Catalog.drop_rates_info_button.tooltip. Unset or unrecognized shows a general info button"}];
   }
 
   message Callout {
@@ -839,7 +839,7 @@ message GetCatalogResponse {
           }
         };
         optional Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-card background styling"}];
-        optional bool show_drop_rates_info = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional. Set to true to show the catalog's drop rates info button (Catalog.drop_rates_info_button) on this free item, as on a purchasable item's attributes"}];
+        optional bool show_drop_rates_info = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional. Set to true to show the catalog's drop rates info button (Catalog.drop_rates_info_button) on this free item, for a free item whose rewards are drawn at random. Leave it unset on free items without drop rates, for example coins only. Ignored when the catalog has no drop rates info button"}];
       }
 
       message FreeBonusItem {
@@ -956,7 +956,7 @@ message GetCatalogResponse {
         (validate.rules).repeated.min_items = 1,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The offer's items, one per price, in display order. At most one of them may carry type PURCHASE_PACK_ITEM_TYPE_WHOLE_PURCHASE_PACK to mark the item that buys the whole offer in a single transaction"}
       ];
-      optional uint32 max_purchasable = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's remaining purchases of this offer as a whole, shared by every item in it. Compute it per player, as you already do per item. An item may also carry its own max_purchasable for that price point, and the lower of the two applies to it. When absent the offer carries no shared limit"}];
+      optional uint32 max_purchasable = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's remaining purchases of this offer as a whole, shared by every item in it. Compute it per player, as you already do per item. An item may also carry its own max_purchasable for that price point, and the lower of the two applies to it. At 0 no item in the offer can be bought. When absent the offer carries no shared limit"}];
       optional LocalizableText max_purchasable_description = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the offer's shared purchase limit"}];
       optional google.protobuf.Timestamp expiration = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time after which no item in this offer is available for purchase, except a purchase that reached checkout before this time and completes within a checkout grace period agreed for your shop"}];
       optional google.protobuf.Timestamp refresh_at = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional time when this offer's shared purchase allowance next resets, for display purposes such as a countdown. Purchase enforcement uses max_purchasable and expiration, never this field"}];
@@ -1212,7 +1212,7 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Drop Rates Info Button"
-          description: "An info button for the drop rates (the odds disclosure) of an offer, declared once for the catalog and shown on each offer that opts in with show_drop_rates_info. Send a tooltip, a link_url, or both"
+          description: "An info button for the drop rates (the odds disclosure) of an offer, declared once for the catalog and shown on each offer that opts in with show_drop_rates_info. Tapping it opens the tooltip when one is sent, and otherwise opens link_url. A button with neither is not shown"
         }
       };
       optional string icon_image_url = 1 [
@@ -1222,7 +1222,7 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to the button's icon image; a generic info icon is shown when absent"}
       ];
-      optional Tooltip tooltip = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip opened by the button. Its text may contain links written as [label](url), for example 'For odds, see [here](https://example.com/odds)'. Only that link form is read, and every other character shows as typed. A link whose url is not an absolute https URL shows its label as plain text. Links are read from the text after format_arguments are applied, and an argument value never creates or changes a link. Other tooltips do not read links, except a reward's info button with information_type INFORMATION_TYPE_DROP_RATES"}];
+      optional Tooltip tooltip = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip opened by the button. Its text may contain links written as [label](url), for example 'For odds, see [here](https://example.com/odds)': a [, the label up to the first ], then immediately a (, and the url up to the first ), with no spaces in the url. Only that form is read; every other character, including a [ or ( that does not complete a link, shows as typed. A link whose url does not start with lowercase https:// followed by a host shows its label as plain text. Links are read from the text after format_arguments are applied: an argument value always shows as typed and never starts or ends a link, an argument inside a label shows as part of that label, and a link whose url contains an argument shows its label as plain text. In a printf-style template write a % in a url as %%, and in an ICU-style template quote any brace, or the text is a formatting failure. Other tooltips do not read links, except a reward's info button with information_type INFORMATION_TYPE_DROP_RATES"}];
       optional string link_url = 3 [
         (validate.rules).string = {
           uri: true
@@ -1230,7 +1230,7 @@ message GetCatalogResponse {
           max_len: 2048
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional https URL of the drop rates page, opened when the player taps the button. A URL that is not https is ignored"}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL of the drop rates page, starting with lowercase https://, opened when the player taps a button that has no tooltip. With a tooltip, link the page from the tooltip text instead. A URL that is not https is ignored"}
       ];
     }
 
@@ -1274,7 +1274,7 @@ message GetCatalogResponse {
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
     repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
-    optional DropRatesInfoButton drop_rates_info_button = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button, declared once for the catalog and shown on every offer whose show_drop_rates_info is true. Offers that do not opt in show no drop rates button"}];
+    optional DropRatesInfoButton drop_rates_info_button = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button, declared once for the catalog and shown on every offer whose show_drop_rates_info is true. Offers that do not opt in show no catalog drop rates button; reward info buttons are unaffected"}];
     optional Banner banner = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner shown once for the whole shop, for example a message about a bonus the player gets for buying on the web. It can differ per player, because the catalog is requested per player. Its text is a LocalizableText resolved to the player's language like any other text field. Display only: it never changes what is granted or charged. Omit it for no banner"}];
   }
   Catalog catalog = 1 [
