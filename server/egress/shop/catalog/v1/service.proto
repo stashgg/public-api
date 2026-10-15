@@ -965,7 +965,7 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Purchase Pack"
-          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its shared purchase limit, expiration, refresh time and drop rates info button, are declared once here. A purchase pack item has no fields for the expiration, refresh time or drop rates info button, so the offer's values govern every item in it by construction; an item may add its own purchase limit on top of the shared one."
+          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its shared purchase limit, expiration, refresh time and display attributes (such as the drop rates info button), are declared once here. A purchase pack item has no fields for the expiration, refresh time or pack attributes, so the offer's values govern every item in it by construction; an item may add its own purchase limit on top of the shared one."
           required: [
             "id",
             "items"
@@ -1012,13 +1012,22 @@ message GetCatalogResponse {
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional version of this offer, declared once here for the whole offer and every item in it (a purchase pack item has no field for it), which you change whenever you re-publish the offer, for example after fixing and reactivating it under the same id. Use a whole number (only the ASCII digits 0 to 9, for example 5) and raise it on each re-publish: an Abort Offers call that names a whole-number version also hides every lower whole-number version of the offer, compared by value, so 10 is above 9 and 05 reads as 5. Any other value, for example v5, is compared exactly and case-sensitively, so an abort that names it hides only that version. It is the offer's own version and is unrelated to the template version inside template_key. At most 128 characters; an empty or longer value is treated as absent. Optional, so omitting it leaves an existing response valid"}
       ];
 
-      optional DropRatesInfoButton drop_rates_info_button = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button for this offer as a whole, declared once here and shown with every price point. When present, the offer's card shows it. Leave it unset on offers without drop rates, for example coins only"}];
+      message PurchasePackAttributes {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Purchase Pack Attributes"
+            description: "Optional attributes for how the whole purchase pack is displayed"
+          }
+        };
+        optional DropRatesInfoButton drop_rates_info_button = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button for this offer as a whole, declared once here and shown with every price point. When present, the offer's card shows it. Leave it unset on offers without drop rates, for example coins only"}];
+      }
+      optional PurchasePackAttributes attributes = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional attributes for how the whole offer is displayed; each item keeps its own attributes"}];
 
       message PurchasePackItem {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit description, expiration, refresh time, template key, version and drop rates info button, which belong to the pack and have no field here. Its own max_purchasable limits that price point on top of the pack's shared limit."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit description, expiration, refresh time, template key, version and pack attributes (such as the drop rates info button), which belong to the pack and have no field here. Its own max_purchasable limits that price point on top of the pack's shared limit."
             required: [
               "product_id",
               "price"
