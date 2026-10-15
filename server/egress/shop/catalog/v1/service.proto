@@ -193,7 +193,7 @@ message GetCatalogResponse {
     ];
     optional string background_style = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for button"}];
     optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional popup tooltip for additional information"}];
-    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only: the kind of information the button gives, RARITY (a reward's rarity) or ODDS (odds or drop rates), so the shop can style it by kind. Unset or unrecognized shows a general info button"}];
+    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_ODDS (odds or drop rates), so the shop can style it by kind. Unset or unrecognized shows a general info button"}];
   }
 
   message Callout {
@@ -294,9 +294,11 @@ message GetCatalogResponse {
     optional string link_url = 2 [
       (validate.rules).string = {
         uri: true
+        prefix: "https://"
+        max_len: 2048
         ignore_empty: true
       },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional https URL of a page with more information, e.g. a full odds disclosure, shown as a link in the tooltip"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info button tooltips only, ignored on other tooltips: an optional https URL of a page with more information, e.g. a full odds disclosure, shown as a link in the tooltip. A URL that is not https is ignored"}
     ];
   }
 
@@ -946,7 +948,7 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Purchase Pack"
-          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its purchase limit, expiration and refresh time, are declared once here. A purchase pack item has no fields for them, so the offer's values govern every item in it by construction."
+          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its purchase limit, expiration, refresh time and offer-level info button, are declared once here. A purchase pack item has no fields for them, so the offer's values govern every item in it by construction."
           required: [
             "id",
             "items"
@@ -1008,7 +1010,7 @@ message GetCatalogResponse {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key and version, which belong to the pack and have no field here."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit, expiration, refresh time, template key, version and offer-level info button, which belong to the pack and have no field here."
             required: [
               "product_id",
               "price"
