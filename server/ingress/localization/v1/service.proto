@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package server.ingress.localization.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/localization/v1";
+
+// Partner-facing Localization API, authenticated with versioned HMAC over the
+// SDK surface (/sdk/studio/{shop_id}/...). It lets a partner ask Stash to
+// refresh a shop's localizations after the partner's localization source
+// changes.
+service LocalizationService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Localization"
+    description: "Endpoints for refreshing a shop's localizations from its localization source"
+  };
+  rpc RefreshLocalizations(RefreshLocalizationsRequest) returns (RefreshLocalizationsResponse) {
+    option (google.api.http) = {
+      post: "/sdk/studio/{shop_id}/localizations/refresh"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Refresh localizations"
+      description: "Asks Stash to refresh the shop's localizations from its enabled localization source, for example after the source file changes. The request body is the empty JSON object {}. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent ({}); the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. A successful response means the refresh is durably queued, not that the import has completed or that the storefront shows the result. Repeated calls are safe, so retry after UNAVAILABLE or a timeout with a fresh timestamp and signature. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the time window, sent in the legacy header, or names a different shop or one Stash does not know; FAILED_PRECONDITION when the shop has no enabled localization source; and UNAVAILABLE when the refresh could not be queued, in which case retry."
+      security: [
+        {
+          security_requirement: {key: "hmac"}
+        }
+      ]
+    };
+  }
+}
+
+message RefreshLocalizationsRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Refresh Localizations Request"
+      description: "Request to refresh a shop's localizations. The shop is taken from the path, so the JSON body is the empty object {}. Signed over the request body."
+      required: ["shop_id"]
+    }
+  };
+  string shop_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio. Must equal the shop in the x-stash-hmac-signature header."}
+  ];
+}
+
+message RefreshLocalizationsResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Refresh Localizations Response"
+      description: "Acknowledgement that the refresh was queued."
+    }
+  };
+  bool accepted = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "true once the refresh is durably queued; not import completion or storefront visibility."}
+  ];
+}
