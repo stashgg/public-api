@@ -177,3 +177,13 @@ enum TextFormatSyntax {
   // printf-style, %s and %d read keys "1", "2" in order
   TEXT_FORMAT_SYNTAX_PRINTF = 2;
 }
+
+enum InformationType {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Kind of information an info button gives, so the shop can style the button and its tooltip by kind"};
+  // General information, styled as a plain info button
+  INFORMATION_TYPE_UNSPECIFIED = 0;
+  // The rarity of a reward, such as a star rating or a guaranteed minimum rarity
+  INFORMATION_TYPE_RARITY = 1;
+  // The drop rates (the odds disclosure) of what a reward can grant
+  INFORMATION_TYPE_DROP_RATES = 2;
+}
