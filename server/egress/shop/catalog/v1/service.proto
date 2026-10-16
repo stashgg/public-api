@@ -183,7 +183,7 @@ message GetCatalogResponse {
         description: "Generic button for an action, e.g. 'Buy Now', 'View Details', etc."
       }
     };
-    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button text for action (e.g., 'Buy Now', 'View Details'). An info button may leave it out and show only its icon"}];
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button text for action (e.g., 'Buy Now', 'View Details'). An info button may leave it out and show only its icon. A buy button may leave it out to keep its default label, the price, for example when it sends only layout_key"}];
     optional string icon_image_url = 2 [
       (validate.rules).string = {
         uri: true
@@ -202,6 +202,14 @@ message GetCatalogResponse {
         ignore_empty: true
       },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: optional URL of a page with more information, such as the full drop rates, starting with lowercase https://, opened when the player taps an info button that has no tooltip. With a tooltip, link the page from the tooltip text instead. A URL that is not https is ignored"}
+    ];
+    optional string layout_key = 7 [
+      (validate.rules).string = {
+        min_len: 1
+        max_len: 128
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Buy buttons only, ignored on info and reveal buttons: optional key naming the slot of the offer's template that this buy button sits in, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates, like contents[].layout_key does for a reward. At most 128 characters; an empty or longer key is treated as absent. Display only: it never changes what is bought or charged. Send it without text to keep the button's default label, the price. Optional, and ignored when absent or when the template names no buy button slots, so omitting it leaves an existing response valid"}
     ];
   }
 
@@ -407,7 +415,7 @@ message GetCatalogResponse {
         optional Badge badge = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge for the item"}];
         optional Background background = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for the item"}];
         optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
-        optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item"}];
+        optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item. Its layout_key names the slot of the offer's template that the button sits in"}];
         optional CatalogBorderType border_type = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional border decoration type for this offer card"}];
         optional Button info_button = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this offer as a whole, shown on the offer's card when present. Its information_type says what it explains, for example INFORMATION_TYPE_DROP_RATES for the drop rates (the odds disclosure) of an offer whose rewards are drawn at random. Leave it unset when there is nothing to explain, for example on coins only. A reward's own info button is contents[].info_button"}];
       }
@@ -1056,7 +1064,7 @@ message GetCatalogResponse {
           optional Badge badge = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional badge for the item"}];
           optional Background background = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for the item"}];
           optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
-          optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item"}];
+          optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item. Its layout_key names the slot of the offer's template that the button sits in"}];
           optional CatalogBorderType border_type = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional border decoration type for this item's card"}];
         }
         optional PurchasePackItemAttributes attributes = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual and behavioral attributes"}];
