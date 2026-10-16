@@ -331,7 +331,7 @@ message GetCatalogResponse {
       uint32 cents = 2 [
         (google.api.field_behavior) = REQUIRED,
         (validate.rules).uint32.gt = 0,
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount in CLDR minor units for this ISO 4217 currency (integer smallest subdivision per CLDR for this code). Display scaling comes from public CLDR data for the currency, not from a separate field."}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount as an integer in minor units of this ISO 4217 currency (e.g. 199 for 1.99 USD, 300 for 300 JPY). The number of decimal places per currency follows the minor-unit standard configured for your shop. The default is Unicode CLDR release 32: the `digits` values under `fractions` in https://github.com/unicode-org/cldr/blob/release-32/common/supplemental/supplementalData.xml (2 for a currency not listed there). A shop can instead be configured for Unicode CLDR release 47 (https://github.com/unicode-org/cldr/blob/release-47/common/supplemental/supplementalData.xml) or ISO 4217 (https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml). The standards disagree for some currencies: COP, IDR, PKR and TZS have 0 decimal places under CLDR release 32 and 2 under CLDR release 47 and ISO 4217. To use a standard other than the default, contact your Stash engineering partner."}
       ];
     }
     oneof price {
