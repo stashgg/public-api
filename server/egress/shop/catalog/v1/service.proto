@@ -183,7 +183,7 @@ message GetCatalogResponse {
         description: "Generic button for an action, e.g. 'Buy Now', 'View Details', etc."
       }
     };
-    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button text for action (e.g., 'Buy Now', 'View Details')"}];
+    LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Button text for action (e.g., 'Buy Now', 'View Details'). An info button may leave it out and show only its icon"}];
     optional string icon_image_url = 2 [
       (validate.rules).string = {
         uri: true
@@ -192,8 +192,17 @@ message GetCatalogResponse {
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to button icon image"}
     ];
     optional string background_style = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional CSS-style background styling information for button"}];
-    optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional popup tooltip for additional information"}];
-    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_DROP_RATES (a reward's drop rates, the odds disclosure), so the shop can style it by kind. On a reward's info button with INFORMATION_TYPE_DROP_RATES, the tooltip text may contain links, read as described on DropRatesInfoButton.tooltip. Unset or unrecognized shows a general info button"}];
+    optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional popup tooltip for additional information. On an info button, a tap opens the tooltip, otherwise link_url; an unshowable tooltip or a non-https link_url counts as not sent, and an info button with neither is not shown. With information_type INFORMATION_TYPE_DROP_RATES the text may contain links written [label](url), e.g. 'For odds, see [here](https://example.com/odds)': the label ends at the first ], then ( and the url up to the first ), with no spaces (write ) as %29). Only that form is read; anything else shows as typed. A url not starting with lowercase https:// plus a host, or containing user@, shows its label as plain text, and an empty label shows nothing. Links are read after format_arguments are applied: an argument never starts or ends a link, may sit inside a label, and turns a link whose url contains it into plain text. In a printf-style template write % as %%, in an ICU-style one quote braces. Other tooltips read no links"}];
+    optional InformationType information_type = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: the kind of information the button gives, INFORMATION_TYPE_RARITY (a reward's rarity) or INFORMATION_TYPE_DROP_RATES (the drop rates, the odds disclosure, of a reward or a whole offer), so the shop can style it by kind. With INFORMATION_TYPE_DROP_RATES, the tooltip text may contain links. Unset or unrecognized shows a general info button"}];
+    optional string link_url = 6 [
+      (validate.rules).string = {
+        uri: true
+        prefix: "https://"
+        max_len: 2048
+        ignore_empty: true
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Info buttons only, ignored on buy and reveal buttons: optional URL of a page with more information, such as the full drop rates, starting with lowercase https://, opened when the player taps an info button that has no tooltip. With a tooltip, link the page from the tooltip text instead. A URL that is not https is ignored"}
+    ];
   }
 
   message Callout {
@@ -291,32 +300,6 @@ message GetCatalogResponse {
       }
     };
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tooltip text providing additional information"}];
-  }
-
-  message DropRatesInfoButton {
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-      json_schema: {
-        title: "Drop Rates Info Button"
-        description: "An info button for the drop rates (the odds disclosure) of an offer as a whole, shown on the offer's card when present. Tapping it opens the tooltip when one is sent, and otherwise opens link_url. A tooltip whose text cannot be shown, and a link_url that is not https, count as not sent, and a button with neither is not shown"
-      }
-    };
-    optional string icon_image_url = 1 [
-      (validate.rules).string = {
-        uri: true
-        ignore_empty: true
-      },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to the button's icon image; a generic info icon is shown when absent"}
-    ];
-    optional Tooltip tooltip = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip opened by the button. Its text may contain links written as [label](url), for example 'For odds, see [here](https://example.com/odds)': a [, the label up to the first ], then immediately a (, and the url up to the first ), with no spaces in the url; write a ) inside a url as %29. Only that form is read; every other character, including a [ or ( that does not complete a link, shows as typed. A link whose url does not start with lowercase https:// followed by a host, or whose url carries user information (user@host), shows its label as plain text, and a link with an empty label shows nothing. Links are read from the text after format_arguments are applied: an argument value always shows as typed and never starts or ends a link, an argument inside a label shows as part of that label, and a link whose url contains an argument shows its label as plain text. In a printf-style template write a % in a url as %%, and in an ICU-style template quote any brace, or the text is a formatting failure. Other tooltips do not read links, except a reward's info button with information_type INFORMATION_TYPE_DROP_RATES"}];
-    optional string link_url = 3 [
-      (validate.rules).string = {
-        uri: true
-        prefix: "https://"
-        max_len: 2048
-        ignore_empty: true
-      },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL of the drop rates page, starting with lowercase https://, opened when the player taps a button that has no tooltip. With a tooltip, link the page from the tooltip text instead. A URL that is not https is ignored"}
-    ];
   }
 
   message PriceAmountOrId {
@@ -426,7 +409,7 @@ message GetCatalogResponse {
         optional Tooltip tooltip = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional tooltip for the item"}];
         optional Button buy_button = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional buy button for the item"}];
         optional CatalogBorderType border_type = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional border decoration type for this offer card"}];
-        optional DropRatesInfoButton drop_rates_info_button = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button for this offer as a whole, for an offer whose rewards are drawn at random. When present, the offer's card shows it. Leave it unset on offers without drop rates, for example coins only. A reward's own drop rates go on its contents[].info_button"}];
+        optional Button info_button = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this offer as a whole, shown on the offer's card when present. Its information_type says what it explains, for example INFORMATION_TYPE_DROP_RATES for the drop rates (the odds disclosure) of an offer whose rewards are drawn at random. Leave it unset when there is nothing to explain, for example on coins only. A reward's own info button is contents[].info_button"}];
       }
       optional PurchasableAttributes attributes = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional visual and behavioral attributes"}];
 
@@ -865,7 +848,7 @@ message GetCatalogResponse {
           }
         };
         optional Background background = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional per-card background styling"}];
-        optional DropRatesInfoButton drop_rates_info_button = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button for this free item as a whole, for a free item whose rewards are drawn at random. When present, the card shows it. Leave it unset on free items without drop rates, for example coins only"}];
+        optional Button info_button = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this free item as a whole, shown on its card when present. Its information_type says what it explains, for example INFORMATION_TYPE_DROP_RATES for a free item whose rewards are drawn at random"}];
       }
 
       message FreeBonusItem {
@@ -965,7 +948,7 @@ message GetCatalogResponse {
       option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
           title: "Purchase Pack"
-          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its shared purchase limit, expiration, refresh time and display attributes (such as the drop rates info button), are declared once here. A purchase pack item has no fields for the expiration, refresh time or pack attributes, so the offer's values govern every item in it by construction; an item may add its own purchase limit on top of the shared one."
+          description: "One offer sold at several prices. Its items are the offer's price points, and the values shared by the whole offer, its shared purchase limit, expiration, refresh time and display attributes (such as the info button), are declared once here. A purchase pack item has no fields for the expiration, refresh time or pack attributes, so the offer's values govern every item in it by construction; an item may add its own purchase limit on top of the shared one."
           required: [
             "id",
             "items"
@@ -1019,7 +1002,7 @@ message GetCatalogResponse {
             description: "Optional attributes for how the whole purchase pack is displayed"
           }
         };
-        optional DropRatesInfoButton drop_rates_info_button = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional drop rates (the odds disclosure) info button for this offer as a whole, declared once here and shown with every price point. When present, the offer's card shows it. Leave it unset on offers without drop rates, for example coins only"}];
+        optional Button info_button = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this offer as a whole, declared once here and shown with every price point. Its information_type says what it explains, for example INFORMATION_TYPE_DROP_RATES for the drop rates (the odds disclosure) of an offer whose rewards are drawn at random. Each price point's rewards keep their own contents[].info_button"}];
       }
       optional PurchasePackAttributes attributes = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional attributes for how the whole offer is displayed; each item keeps its own attributes"}];
 
@@ -1027,7 +1010,7 @@ message GetCatalogResponse {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
           json_schema: {
             title: "Purchase Pack Item"
-            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit description, expiration, refresh time, template key, version and pack attributes (such as the drop rates info button), which belong to the pack and have no field here. Its own max_purchasable limits that price point on top of the pack's shared limit."
+            description: "One item of a purchase pack: a price point of the offer, or the item that buys the whole offer. It carries everything a standalone purchasable item does except the purchase limit description, expiration, refresh time, template key, version and pack attributes (such as the info button), which belong to the pack and have no field here. Its own max_purchasable limits that price point on top of the pack's shared limit."
             required: [
               "product_id",
               "price"
