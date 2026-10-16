@@ -460,7 +460,7 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
         ];
-        optional Button info_button = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for additional item details"}];
+        optional Button info_button = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this reward, with the same fields and rules as an offer's info button: information_type says what it explains (e.g. INFORMATION_TYPE_RARITY or INFORMATION_TYPE_DROP_RATES), and a tap opens its tooltip, otherwise its link_url"}];
         optional Callout callout = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional callout highlighting special features"}];
         optional Background primary_background = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional primary background styling for item"}];
         optional Background secondary_background = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary background styling for item, layered on top of the primary background"}];
@@ -1108,7 +1108,7 @@ message GetCatalogResponse {
             },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
           ];
-          optional Button info_button = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for additional item details"}];
+          optional Button info_button = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this reward, with the same fields and rules as an offer's info button: information_type says what it explains (e.g. INFORMATION_TYPE_RARITY or INFORMATION_TYPE_DROP_RATES), and a tap opens its tooltip, otherwise its link_url"}];
           optional Callout callout = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional callout highlighting special features"}];
           optional Background primary_background = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional primary background styling for item"}];
           optional Background secondary_background = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary background styling for item, layered on top of the primary background"}];
