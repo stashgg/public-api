@@ -2,7 +2,7 @@
 standard-version: 1.6.1
 ---
 
-Review changes to this repository as changes to the public protobuf, JSON, OpenAPI, and generated-client contracts used by game backends and partners. Post a finding only when a specific request, response, currency, shop, or sequence would produce a wrong result, rejection, disclosure, or broken contract. Otherwise stay silent.
+Review changes to this repository as changes to the public protobuf, JSON, OpenAPI, and generated-client contracts used by game backends and partners. Post a finding only when a specific request, response, currency, shop, or sequence would produce a wrong result, rejection, disclosure, or broken contract, or when the change or its PR names a partner, game, or customer (`partner-name-disclosure`). Otherwise stay silent.
 
 ## What NOT to flag
 
@@ -62,43 +62,49 @@ When changing purchase request serialization or `optional decimal_places` in `se
 
 **Failure:** A later schema or generator change again omits `decimalPlaces: 0` and valid zero-decimal purchases are rejected.
 
-## 10. shop-player-scope (C1)
+## 10. partner-name-disclosure (C1)
+
+Keep partner, game, and customer names out of everything this repository and its pull requests publish: proto comments under `server/`, docs and examples under `docs/`, commit messages, branch names, and PR titles and descriptions. The repository and its PRs are public, so a name written in any of them is visible to everyone. Write "the partner", "a game", or a generic example instead. Flag a name as a finding wherever it appears, including when it appears only in the PR title or description.
+
+**Failure:** A partner, game, or customer is publicly identified through a proto comment, doc, example, commit message, branch name, or PR title or description.
+
+## 11. shop-player-scope (C1)
 
 Keep player-specific loyalty reads scoped by both shop and player in `LoyaltyService.GetPlayerLoyalty` and `GetPlayerLoyaltyRequest` in `server/ingress/loyalty/v1/service.proto`. Do not recast `player_id` alone as sufficient to select a loyalty standing.
 
 **Failure:** A request for one shop exposes another shop's player's loyalty balance or tier.
 
-## 11. hmac-body-integrity (C3)
+## 12. hmac-body-integrity (C3)
 
 Keep the versioned HMAC descriptions in `server/ingress/server.proto` and `server/egress/server.proto` bound to the exact request body, including the documented empty body for ingress GET requests. A changed signing format must not make the signature independent of the payload it authenticates.
 
 **Failure:** A request body is altered after signing and still appears authenticated.
 
-## 12. hmac-replay-window (C3)
+## 13. hmac-replay-window (C3)
 
 Keep the signed timestamp and five-minute acceptance window in the versioned HMAC descriptions in `server/ingress/server.proto` and `server/egress/server.proto`. A changed signing format must still let receivers reject a captured old request.
 
 **Failure:** A stale signed request is replayed and accepted outside its intended time window.
 
-## 13. ingress-egress-key-scope (C3)
+## 14. ingress-egress-key-scope (C3)
 
 Keep the Ingress key for partner-backend-to-Stash calls and the Egress key for Stash-to-game-backend calls, as defined separately in `server/ingress/server.proto` and `server/egress/server.proto`. Do not present either key as interchangeable in API descriptions or signing examples.
 
 **Failure:** A key issued for one API direction is reused to authenticate the other direction.
 
-## 14. signing-secret-exposure (C3)
+## 15. signing-secret-exposure (C3)
 
 Do not place a real signing key in command arguments, URLs, or logged output in examples for `docs/config/swagger-merger-ingress-config.json`. Its current `openssl dgst -hmac "YOUR_API_SECRET"` example becomes an argv exposure if a partner substitutes a real key; changes to signing guidance must avoid that pattern.
 
 **Failure:** A partner's Ingress key becomes visible through a process list or captured command log.
 
-## 15. minor-unit-scale (D1)
+## 16. minor-unit-scale (D1)
 
 Preserve integer CLDR minor-unit meaning for `PriceAmountOrId.PriceAmount.cents` in `server/egress/shop/catalog/v1/service.proto`, purchase `cents`, `tax`, and `total` in `server/egress/shop/purchase/v1/service.proto`, and `Price.cents` in `server/ingress/studio/v1/service.proto`. Keep the ISO currency and applicable CLDR fraction digits tied to the same amount; do not recast these wire values as floating major units.
 
 **Failure:** A game backend or partner charges or displays an amount different from the intended exact minor-unit price.
 
-## 16. zero-decimal-presence (D1)
+## 17. zero-decimal-presence (D1)
 
 Keep `decimal_places` present even when its value is zero in `RegisterPaymentRequest`, `CancelPaymentRequest`, and `ConfirmPaymentRequest` in `server/egress/shop/purchase/v1/service.proto`. Their `optional uint32` fields and required OpenAPI descriptions encode the zero-decimal currency case; a plain proto3 scalar or JSON omission loses it.
 
