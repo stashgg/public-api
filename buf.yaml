@@ -11,3 +11,9 @@ lint:
 breaking:
   use:
     - FILE
+  ignore_only:
+    # The catalog's shop-wide banner moved from the item Banner message to its
+    # own ShopBanner message (title, subtitle, description) before any
+    # integration sent it. Remove this exception once that change is on main.
+    FIELD_SAME_TYPE:
+      - server/egress/shop/catalog/v1/service.proto
