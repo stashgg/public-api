@@ -1,0 +1,340 @@
+syntax = "proto3";
+
+package server.ingress.transactions.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/transactions/v1";
+
+// Partner-facing Transactions API, authenticated with versioned HMAC over the
+// SDK surface (/sdk/studio/{shop_id}/...). It lets a partner pull the rows of a
+// shop's Financial Report for a time window.
+service TransactionsService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Transactions"
+    description: "Endpoint for pulling a shop's Financial Report rows"
+  };
+  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse) {
+    option (google.api.http) = {get: "/sdk/studio/{shop_id}/transactions"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List transaction records"
+      description: "Lists the rows of the shop's Financial Report, the settled-transaction report you reconcile payouts against, for a time window. Each record is one report row, with that row's meaning, signs and settlement dating, so the totals of the records equal the report and the payout. Join records to your purchases by transaction_id; upsert them by record_id. Set start_at and end_at (RFC 3339) to the window [start_at, end_at): start_at is inclusive, end_at is exclusive, end_at must be later than start_at, and the window is at most 31 days. A record is in the window when its ts is. An end_at later than available_until is accepted: the response then covers [start_at, available_until), and you pull again later from available_until. Records are ordered by ts, then record_id. To read all records of a window, send next_page_token as page_token, with the same start_at and end_at, until next_page_token is absent. Each page reports its own as_of. as_of identifies one snapshot of the shop's report data, and one snapshot covers every month, final and preliminary. When the pages of one walk report different as_of values, Stash rebuilt the report during the walk, so the walk is not a consistent snapshot. Start the window again from the first page, and delete no record because of that walk. An empty window returns an empty records list, not an error. A record is final when the final report for its period exists; Stash generates it on day 5 of the next month (UTC). A final record never changes. A preliminary record (final is false) can change or disappear without a notice. On every re-pull, replace all preliminary records of the pulled window with what the response returns, and upsert the others by record_id. Re-pull a window until day 5 (UTC) of the month after the window's last month has passed and the final reports exist, whatever the window returned; then pull it one last time. On each record, merchant.payout = merchant.amount - merchant.channel_fees - merchant.tax - merchant.stash_fee + merchant.stash_fee_waived. The deductions are positive when charged on the row and negative when credited back, so subtract them as they are; do not change their signs, and do not filter records by sign. Add amounts only within one merchant.currency. This method accepts only the versioned x-stash-hmac-signature header, signed over the empty body because this is a GET request; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the 5-minute time window, sent in the legacy header, or names a different shop or one Stash does not know; INVALID_ARGUMENT for a missing or malformed start_at or end_at, an end_at that is not later than start_at, a window longer than 31 days, a limit outside 1 to 100, a malformed page_token, or a page_token sent with a different window; and UNAVAILABLE when the data cannot be read, in which case retry with a fresh timestamp and signature."
+      security: [
+        {
+          security_requirement: {key: "hmac"}
+        }
+      ]
+    };
+  }
+}
+
+message ListTransactionsRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "List Transactions Request"
+      description: "Request to list a shop's Financial Report rows for a time window."
+      required: [
+        "shop_id",
+        "start_at",
+        "end_at"
+      ]
+    }
+  };
+  string shop_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.uuid = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio. Must equal the shop in the x-stash-hmac-signature header."}
+  ];
+  google.protobuf.Timestamp start_at = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Start of the window, inclusive (RFC 3339). Compared with each record's ts."}
+  ];
+  google.protobuf.Timestamp end_at = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "End of the window, exclusive (RFC 3339). Must be later than start_at and at most 31 days after it. A value later than available_until is accepted; the response then covers [start_at, available_until)."}
+  ];
+  optional uint32 limit = 4 [
+    (validate.rules).uint32 = {
+      gte: 1
+      lte: 100
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Maximum records per page. Defaults to 50. Maximum allowed value is 100."
+      minimum: 1
+      maximum: 100
+    }
+  ];
+  optional string page_token = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Opaque token from next_page_token of the previous response. Omit it on the first page. It carries the window and the position, so send the same start_at and end_at with it. Do not parse or build it."}];
+}
+
+message ListTransactionsResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "List Transactions Response"
+      description: "One page of a shop's Financial Report rows for a time window."
+      required: [
+        "asOf",
+        "availableUntil"
+      ]
+    }
+  };
+  repeated TransactionRecord records = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The records on this page, ordered by ts, then record_id. Empty when the window has no records."}];
+  optional string next_page_token = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Send this value as page_token to read the next page. Present when more records exist in the covered window; absent on the last page."}];
+  google.protobuf.Timestamp as_of = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When Stash built the snapshot of the shop's report data behind this page (RFC 3339, UTC). One snapshot covers every month, final and preliminary, so the pages of a window that spans months carry the same value unless Stash rebuilt the data during the walk. If the pages of one walk report different values, start the window again from the first page."}
+  ];
+  google.protobuf.Timestamp available_until = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The end of the report data available now (RFC 3339, UTC). The response covers [start_at, min(end_at, available_until)). When available_until is earlier than end_at, pull again later from available_until."}
+  ];
+
+  // TransactionRecord is one row of the shop's Financial Report. Its Charge and
+  // Merchant messages are nested so the record is self-contained and shares
+  // nothing with other APIs.
+  message TransactionRecord {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Transaction Record"
+        description: "One row of the shop's Financial Report, with that row's meaning, signs and settlement dating."
+        required: [
+          "recordId",
+          "transactionId",
+          "type",
+          "ts",
+          "chargedAt",
+          "period",
+          "final",
+          "charge",
+          "merchant",
+          "taxRatePercent"
+        ]
+      }
+    };
+    string record_id = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifies this report row. Unique within the shop and stable across report regenerations. Use it to upsert your copy of each row; use transaction_id to join rows to your purchases."}
+    ];
+    string transaction_id = 19 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The Stash transaction ID of the sale: the same value Stash sends in ConfirmPayment and as transactionId on purchase webhooks. Join records to your own purchase records by it. Every row of one sale (its payment, refunds, disputes and adjustments) shares it, so it does not identify a row; use record_id for that."}
+    ];
+    string type = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's type column. Values today: \"payment\", \"refund\", \"dispute\", \"adjustment\". The set is open: store a record with a value you do not know, do not reject it."}
+    ];
+    optional string order_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's order_id column: the checkout order the charge belongs to. Use transaction_id as your join key; this field is for matching the report CSV. Absent when the report row has none."}];
+    google.protobuf.Timestamp ts = 4 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's ts column: the settlement time. It is the charge time for a failed payment and for rows from before Stash's settlement-dating cutover. The window filters on it."}
+    ];
+    google.protobuf.Timestamp charged_at = 5 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's ts__charged column: when the player was charged."}
+    ];
+    optional google.protobuf.Timestamp settled_at = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's ts__settled column: when the row settled. Absent when the row has not settled, for example a failed payment."}];
+    string period = 7 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.pattern = "^[0-9]{4}-[0-9]{2}$",
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "The report's period__year and period__month columns as YYYY-MM: the month of ts, which is the month of the report that carries the row."
+        pattern: "^[0-9]{4}-[0-9]{2}$"
+      }
+    ];
+    optional bool final = 8 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "True when the final report for period exists. Stash generates it on day 5 of the next month (UTC). A final record never changes. A preliminary record (false) can change or disappear."}
+    ];
+    Charge charge = 9 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The charge columns of the report row (charge__*)."}
+    ];
+    Merchant merchant = 10 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The merchant columns of the report row (merchant__*): the settled amounts and the payout."}
+    ];
+    optional string tax_country = 11 [
+      (validate.rules).string.pattern = "^[A-Z]{2}$",
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "The report's tax_country column: the country used for the tax calculation, as an ISO 3166-1 alpha-2 code in uppercase."
+        pattern: "^[A-Z]{2}$"
+      }
+    ];
+    optional string tax_state = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's tax_state column."}];
+    string tax_rate_percent = 13 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.pattern = "^[0-9]+(\\.[0-9]+)?$",
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "The report's tax_rate_percent column: the tax rate applied, in percent, for example \"19.0000\". A decimal string; parse it as a decimal, never as floating point."
+        pattern: "^[0-9]+(\\.[0-9]+)?$"
+      }
+    ];
+    optional string shop_name = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's shop_name column: the shop's display name. Absent when the shop's report does not carry this column or the row has no value."}];
+    optional string purchase_tax_calculation_id = 15 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's purchase_tax_calculation_id column: identifies the tax calculation behind the row's tax. Quote it when you report a suspected tax error. Absent when the shop's report does not carry this column or the row has no value."}];
+    optional string creator_code_id = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's creator_code_id column: the creator code attributed to the purchase. Absent when the shop's report does not carry this column or the row has no value."}];
+    optional string creator_code = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's creator_code column: the code as the player entered it. Absent when the shop's report does not carry this column or the row has no value."}];
+    optional string creator_code_name = 18 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's creator_code_name column: the creator's display name at purchase time. Absent when the shop's report does not carry this column or the row has no value."}];
+
+    // Charge holds the charge columns (charge__*) of the report row.
+    message Charge {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Transaction Record Charge"
+          description: "The charge columns of a report row: what the player paid, in the currency the player paid in."
+          required: [
+            "id",
+            "status",
+            "currency",
+            "amount",
+            "taxAmount"
+          ]
+        }
+      };
+      string id = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__id column. Every row of one charge, its payment, refunds, disputes and adjustments, shares it."}
+      ];
+      string status = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__status column. The set is open: store a value you do not know. Today: a payment is \"succeeded\" or \"failed\"; a refund is \"succeeded\"; a dispute is \"won\", \"lost\", or any other value, which means the dispute is open; an adjustment is \"applied\"."}
+      ];
+      string currency = 3 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^[A-Z]{3}$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's charge__currency column: the ISO 4217 currency code in uppercase that the player paid in (for example \"EUR\")."
+          pattern: "^[A-Z]{3}$"
+        }
+      ];
+      string amount = 4 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's charge__amount column: what the player paid, tax included, in the charge currency, signed as in the report. Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string tax_amount = 5 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's charge__tax_amount column: the tax in the charge currency. Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      optional string billing_country = 6 [
+        (validate.rules).string.pattern = "^[A-Z]{2}$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's charge__billing_country column: Stash's best-known player location as an ISO 3166-1 alpha-2 code in uppercase. It is not a verified billing address."
+          pattern: "^[A-Z]{2}$"
+        }
+      ];
+      optional string failure_message = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__failure_message column: the payment provider's failure text. Set on failed payments. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string failure_reason = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__failure_reason column: Stash's normalized decline reason, an open set such as \"insufficient_funds\" or \"card_expired\". Set on failed payments. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string description = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__description column: the purchase description. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string cart = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__cart column: the cart summary at checkout. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string cart_id = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__cart_id column: the cart the charge paid for. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string payment_method = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__payment_method column: the payment method family, an open set such as \"card\", \"paypal\", \"apple_pay\", \"google_pay\". Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string payment_source = 13 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__payment_source column: how the purchase started, an open set such as \"Cart\" or \"StashPay\". Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string billing_state = 14 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__billing_state column: the state or region of the billing address. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string card_country = 15 [
+        (validate.rules).string.pattern = "^[A-Z]{2}$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's charge__card__country column: the country of the card issuer, as an ISO 3166-1 alpha-2 code in uppercase. Absent when the shop's report does not carry this column or the row has no value."
+          pattern: "^[A-Z]{2}$"
+        }
+      ];
+      optional string card_brand = 16 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__card__brand column: the card brand, for example \"visa\". Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string card_funding = 17 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__card__funding column: the card funding type: \"credit\", \"debit\", \"prepaid\" or \"unknown\". The set is open. Absent when the shop's report does not carry this column or the row has no value."}];
+      optional string card_network = 18 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report's charge__card__network column: the card network. Absent when the shop's report does not carry this column or the row has no value."}];
+    }
+
+    // Merchant holds the merchant columns (merchant__*) of the report row.
+    message Merchant {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Transaction Record Merchant"
+          description: "The merchant columns of a report row, in the payout currency. payout = amount - channel_fees - tax - stash_fee + stash_fee_waived on every row. channel_fees, tax and stash_fee are positive when charged on the row, negative when a prior charge is credited back, and zero otherwise; the sign does not follow the row type. stash_fee_waived is usually zero or positive and is negative when a refund reverses a waiver. Subtract the deductions as they are, and never filter records by sign."
+          required: [
+            "currency",
+            "exchangeRate",
+            "amount",
+            "channelFees",
+            "tax",
+            "stashFee",
+            "stashFeeWaived",
+            "payout"
+          ]
+        }
+      };
+      string currency = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^[A-Z]{3}$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__currency column: the payout currency, an ISO 4217 code in uppercase (for example \"USD\")."
+          pattern: "^[A-Z]{3}$"
+        }
+      ];
+      string exchange_rate = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__exchange_rate column: units of the payout currency per one unit of the charge currency that Stash applied. A decimal string; parse it as a decimal, never as floating point."
+          pattern: "^[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string amount = 3 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__amount column: the gross settled amount. Negative on a refund and on a dispute withdrawal; zero on a failed payment. Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string channel_fees = 4 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__channel_fees column: the payment processor's fee. Positive when charged on the row, negative when credited back. Usually not credited back on a refund. Zero by design under bundled pricing. Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string tax = 5 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__tax column: the tax withheld. Positive when charged on the row, negative when credited back (most refunds). Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string stash_fee = 6 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__stash_fee column: the Stash fee. Positive when charged on the row, negative when credited back (most refunds). Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string stash_fee_waived = 7 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__stash_fee_waived column: the part of the Stash fee that Stash waived. Usually zero or positive; negative when a refund reverses a waiver. Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+      string payout = 8 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.pattern = "^-?[0-9]+(\\.[0-9]+)?$",
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "The report's merchant__payout column: what Stash owes the shop for this row: amount - channel_fees - tax - stash_fee + stash_fee_waived. Can be negative. Major units, as a decimal string; parse it as a decimal, never as floating point."
+          pattern: "^-?[0-9]+(\\.[0-9]+)?$"
+        }
+      ];
+    }
+  }
+}
