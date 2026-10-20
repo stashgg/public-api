@@ -56,17 +56,17 @@ Keep `ManagedCatalogService.GetProduct` and `Product.product_id` in `server/ingr
 
 **Failure:** A partner's valid SKU lookup misses its product or resolves a different product identity.
 
-## 9. zero-decimal-regression (B5)
+## 9. acknowledged-breaking-change (B4)
+
+Keep every breaking change to these contracts visible to `buf breaking` and acknowledged where it is made. Do not add `ignore`, `ignore_only`, or `except` entries to the `breaking` section of `buf.yaml`, temporary or not; leave the check failing, and state in the PR description that the break is expected, which field or message breaks, and why that is safe for the game backends that consume it, for example that none sends or reads the field yet. The failing check is the deliberate marker that the break was made consciously; it does not block merging.
+
+**Failure:** A breaking change reaches game backends unmarked, because a buf config exception silenced the check, or unexplained, because its PR never says why the break is safe for them.
+
+## 10. zero-decimal-regression (B5)
 
 When changing purchase request serialization or `optional decimal_places` in `server/egress/shop/purchase/v1/service.proto`, pin a regression check that emits a zero-decimal request with `decimalPlaces: 0`. `make check` in `Makefile` cannot prove that emitted JSON retains the literal zero.
 
 **Failure:** A later schema or generator change again omits `decimalPlaces: 0` and valid zero-decimal purchases are rejected.
-
-## 10. buf-breaking-acknowledgement (B5)
-
-Do not add `ignore`, `ignore_only`, or `except` entries to the `breaking` section of `buf.yaml`, temporary or not, to let a breaking change pass `buf breaking`. A deliberate breaking change leaves the check failing, and its PR description acknowledges the break as expected and states why it is safe, for example that no integration sends or reads the changed field yet. The failing check is the deliberate warning that the break was made consciously; it does not block merging.
-
-**Failure:** A breaking-check exception stays in `buf.yaml` and hides a later, unintended breaking change in the same file from CI.
 
 ## 11. partner-name-disclosure (C1)
 
