@@ -154,6 +154,22 @@ message GetCatalogResponse {
     LocalizableText text = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Banner text content for emphasized title or heading"}];
   }
 
+  // The catalog's shop-wide banner. Separate from Banner, which item attributes
+  // use, so the shop-wide banner can grow its own fields without changing item
+  // banners. description takes field number 1 so a banner encoded with Banner's
+  // text field decodes as its description.
+  message ShopBanner {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Shop Banner"
+        description: "Banner shown once for the whole shop, with an optional title, subtitle and description. Each is a LocalizableText resolved to the player's language like any other text field, and the shop may display each one differently. A field that is absent or resolves to blank is left out, and a banner whose fields all resolve to blank is not shown."
+      }
+    };
+    optional LocalizableText description = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional description of the banner"}];
+    optional LocalizableText title = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional title of the banner"}];
+    optional LocalizableText subtitle = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional subtitle of the banner"}];
+  }
+
   message Badge {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
@@ -1274,7 +1290,7 @@ message GetCatalogResponse {
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
     repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
-    optional Banner banner = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner shown once for the whole shop, for example a message about a bonus the player gets for buying on the web. It can differ per player, because the catalog is requested per player. Its text is a LocalizableText resolved to the player's language like any other text field. Display only: it never changes what is granted or charged. Omit it for no banner"}];
+    optional ShopBanner banner = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional banner shown once for the whole shop, for example a title and subtitle about a bonus the player gets for buying on the web. It can differ per player, because the catalog is requested per player. Its title, subtitle and description are each optional and each a LocalizableText resolved to the player's language like any other text field. Display only: it never changes what is granted or charged. Omit it for no banner"}];
   }
   Catalog catalog = 1 [
     (google.api.field_behavior) = REQUIRED,
