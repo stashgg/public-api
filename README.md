@@ -111,7 +111,7 @@ Documentation is generated from the `server/ingress` protos:
 | Output | Location | How it is produced |
 |--------|----------|--------------------|
 | **Redoc (standalone)** | `docs/gen/redoc.ingress.v1.html` | Built from `docs/gen/swagger.ingress.v1.json` |
-| **OpenAPI JSON** | `docs/gen/swagger.ingress.v1.json` | Merged from the generated `server/ingress/studio/v1`, `server/ingress/loyalty/v1`, `server/ingress/localization/v1` and `server/ingress/server` OpenAPI specs per `docs/config/swagger-merger-ingress-config.json` |
+| **OpenAPI JSON** | `docs/gen/swagger.ingress.v1.json` | Merged from the generated `server/ingress/studio/v1`, `server/ingress/loyalty/v1`, `server/ingress/localization/v1`, `server/ingress/transactions/v1` and `server/ingress/server` OpenAPI specs per `docs/config/swagger-merger-ingress-config.json` |
 
 When the Managed Catalog endpoints or schemas change, edit the `server/ingress` protos and run `./gen.sh` to regenerate the merged `docs/gen/` outputs.
 
