@@ -49,7 +49,7 @@ service LoyaltyService {
     option (google.api.http) = {get: "/sdk/studio/{shop_id}/loyalty/config"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get loyalty configuration"
-      description: "Retrieves the shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts: display settings, bonus definitions, reward products with their status, and every campaign (season) with its status. Product rewards are returned by SKU. Use it to verify a sync. Returns NOT_FOUND when the shop has no loyalty program."
+      description: "Retrieves the shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts: display settings, bonus definitions, reward products with their status, and every campaign (season) with its status. Product rewards are returned by SKU. Use it to verify a sync. Returns NOT_FOUND when the shop has no loyalty program. This method accepts only the versioned x-stash-hmac-signature header, signed over the empty body because this is a GET request; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED because it carries no timestamp. The shop in the signature header must equal the shop_id in the path."
       security: [
         {
           security_requirement: {key: "hmac"}
