@@ -87,7 +87,7 @@ enum ContentItemType {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "Represents the type of content item"};
   // Default content item type
   CONTENT_ITEM_TYPE_UNSPECIFIED = 0;
-  // Web store bonus content item type
+  // Web store bonus content item type: a bonus the player receives with the offer. A row with a guid is shown in the bonus area at checkout, not among the offer's items, and is sent in the ConfirmPayment request's bonus_items with the guid as the id and the quantity summed across units and cart lines, beside the bonuses the offer declares in its own bonus_items. The ConfirmPayment bonus-item quantity is an unsigned 32-bit integer, so keep a row's quantity, multiplied by the units bought and summed across cart lines, at or below 4,294,967,295: an offer whose row alone exceeds it is left out of the shop, and a cart or purchase whose total would exceed it is refused. Use one fixed guid per bonus currency, the same on every offer, so the same bonus on several offers adds up to one entry, and grant it once, from bonus_items, not also as one of the offer's contents, or the player is credited twice. A row without a guid is shown as an ordinary content item and is never sent in bonus_items
   CONTENT_ITEM_TYPE_WEB_STORE_BONUS = 1;
   // Free content item type: an item included free with the offer, which Stash may label as free where the offer is shown, delivered with the offer's other contents
   CONTENT_ITEM_TYPE_FREE_ITEM = 2;
