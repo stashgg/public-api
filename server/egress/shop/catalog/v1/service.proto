@@ -57,7 +57,7 @@ message LocalizableText {
         min_len: 1
         ignore_empty: true
       },
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique key used to identify the localized text content for a specific language"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The unique key used to identify the localized text content for a specific language. When the shop has no translation of the key for the request's language, default_text is shown; for a text on the shop's web page, a shop with catalog diagnostics enabled also receives a CATALOG_TEXT_FALLBACK webhook naming the key"}
     ];
     string localized_text = 3 [
       (validate.rules).string = {
