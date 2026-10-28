@@ -146,7 +146,7 @@ message ListTransactionsResponse {
     ];
     optional bool final = 8 [
       (google.api.field_behavior) = REQUIRED,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "True when the final report for period exists. Stash generates it on day 5 of the next month (UTC). A final record never changes. A preliminary record (false) can change or disappear."}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "True when the final report for period exists. Stash generates it on day 5 of the next month (UTC). A final record never changes. A preliminary record (false) can change or disappear. The final report is not a claim that every sale of the month is in it: a sale that settles after day 5 lands in the following period, with that period's ts, so a closed period never gains a record."}
     ];
     Charge charge = 9 [
       (google.api.field_behavior) = REQUIRED,

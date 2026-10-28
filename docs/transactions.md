@@ -210,7 +210,7 @@ Add `merchant` amounts only within one `merchant.currency`. The `charge` amounts
 
 Every record has a `final` flag.
 
-- **`final` is `true`** when the final report for the record's `period` exists. Stash generates the final report on day 5 of the next month (UTC). A final record never changes.
+- **`final` is `true`** when the final report for the record's `period` exists. Stash generates the final report on day 5 of the next month (UTC). A final record never changes. The final report is not a claim that every sale of the month is in it: a sale that settles after day 5 lands in the following period, with that period's `ts`. A closed period never gains a record.
 - **`final` is `false`** for a preliminary record. It can change, and it can disappear without a notice, for example when the report is regenerated.
 
 To keep your copy equal to the report:
