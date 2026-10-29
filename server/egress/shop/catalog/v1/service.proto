@@ -1287,6 +1287,14 @@ message GetCatalogResponse {
       repeated Group groups = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional offer groups within this section; array order is display order"}];
       optional Background background = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional background styling for this section"}];
       optional google.protobuf.Timestamp display_expiration = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional timestamp for display-only section UI such as a countdown (e.g., 'Offers expire in 7d 19h'). Does not change purchase rules; only each offer's own expiration is enforced at purchase time."}];
+      optional LocalizableText subtitle = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional short line shown under the section header, resolved to the player's language like any other text field. A subtitle that is absent or resolves to blank is not shown."}];
+      optional string icon_image_url = 9 [
+        (validate.rules).string = {
+          uri: true
+          ignore_empty: true
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL of an icon shown beside the section header. An empty value means no icon."}
+      ];
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
     repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
