@@ -394,10 +394,10 @@ message ConfirmPaymentRequest {
     (validate.rules).uint32 = {lte: 18},
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Number of decimal places in this request's `tax`, `total` and line-item `cents` values for this ISO 4217 currency, under the minor-unit standard configured for your shop: Unicode CLDR release 32 by default. See `cents` in GetCatalog for the standards a shop can use and their sources. Always sent, including the literal 0 for zero-decimal currencies (e.g. JPY, KRW)."}
   ];
-  uint32 tax = 5 [
+  optional uint32 tax = 5 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).uint32.gte = 0,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax as integer minor units for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax as integer minor units for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog). Always sent, including the literal 0 when the purchase has no tax."}
   ];
   uint32 total = 6 [
     (google.api.field_behavior) = REQUIRED,
