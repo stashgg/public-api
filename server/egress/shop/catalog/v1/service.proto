@@ -1295,6 +1295,18 @@ message GetCatalogResponse {
         },
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL of an icon shown beside the section header. An empty value means no icon."}
       ];
+      message EmptyState {
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+          json_schema: {
+            title: "Catalog Section Empty State"
+            description: "What a section shows when no offers remain. Each value is optional, and a value that is absent or resolves to blank is left out. A section with a header and an empty state stays in the shop when it has no offers; a section without one is left out, as it is today."
+          }
+        };
+        optional string image_url = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional https URL of an image shown above the message. Stash checks this URL itself and treats any other value as absent."}];
+        optional LocalizableText message = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional first line, resolved to the player's language like any other text field"}];
+        optional LocalizableText detail = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional second line, resolved to the player's language like any other text field"}];
+      }
+      optional EmptyState empty_state = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional content for this section when no offers remain. Send it with the section's header, and send the section even when it has no items."}];
     }
     repeated Section sections = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "List of catalog sections to be displayed in the order they are provided"}];
     repeated CatalogTrigger triggers = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional UI triggers (e.g. floating buttons) that open catalog sections by guid"}];
