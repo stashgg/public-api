@@ -14,20 +14,25 @@ enum PurchaseRegistrationStatus {
   PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED = 1;
   // Registration failed due to invalid offer
   PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER = 2;
-  // Registration failed due to insufficient inventory
+  // Registration failed because a stock shared across players has run out, so
+  // no player can buy the item. When only this player's own remaining count is
+  // too low, use PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED
   PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY = 3;
-  // Registration failed due to purchase limit exceeded
+  // Registration failed because this player cannot buy this many more of the
+  // item: the item's own remaining count, which the catalog sends as
+  // max_purchasable, is lower than the quantity, for example 0
   PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED = 4;
   // Registration failed due to invalid pricing
   PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_PRICE = 5;
   // Registration failed due to purchase being locked, e.g. in-app
   PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LOCKED = 6;
-  // Registration failed because the purchase allowance shared by every item of
-  // this item's purchase pack is exhausted, rather than the item's own limit.
-  // The pack is the purchase pack catalog item whose id was echoed as
-  // purchase_pack_id on the registration. Use
-  // PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the
-  // item's own limit is exceeded
+  // Registration failed because this player cannot buy this many more from the
+  // purchase pack this item belongs to: the pack's remaining count,
+  // max_purchasable on the pack, is lower than the quantity, for example 0,
+  // which applies to every item of the pack. The pack is the purchase pack
+  // catalog item whose id was echoed as purchase_pack_id on the registration.
+  // Use PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only
+  // the item's own count is too low
   PURCHASE_REGISTRATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED = 7;
 }
 
@@ -51,20 +56,27 @@ enum PurchaseConfirmationStatus {
   PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED = 0;
   // Confirmation was declined because the offer is invalid or no longer exists
   PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER = 1;
-  // Confirmation was declined due to insufficient inventory
+  // Confirmation was declined because a stock shared across players has run
+  // out, so no player can buy the item. When only this player's own remaining
+  // count is too low, use
+  // PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED
   PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY = 2;
-  // Confirmation was declined because the item's own purchase limit is exceeded
+  // Confirmation was declined because this player cannot buy this many more of
+  // the item: the item's own remaining count, which the catalog sends as
+  // max_purchasable, is lower than the quantity purchased, for example 0
   PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED = 3;
   // Confirmation was declined due to invalid pricing
   PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_PRICE = 4;
   // Confirmation was declined because the purchase is locked, e.g. in-app only
   PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LOCKED = 5;
-  // Confirmation was declined because the purchase allowance shared by every
-  // item of the purchase pack this item belongs to is exhausted, rather than
-  // the item's own limit. The pack is the purchase pack catalog item whose id
-  // was echoed as purchase_pack_id on the purchased item. Use
+  // Confirmation was declined because this player cannot buy this many more
+  // from the purchase pack this item belongs to: the pack's remaining count,
+  // max_purchasable on the pack, is lower than the quantity purchased, for
+  // example 0, which applies to every item of the pack. The pack is the
+  // purchase pack catalog item whose id was echoed as purchase_pack_id on the
+  // purchased item. Use
   // PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED when only the
-  // item's own limit is exceeded
+  // item's own count is too low
   PURCHASE_CONFIRMATION_STATUS_FAILED_PACK_LIMIT_EXCEEDED = 6;
 }
 
