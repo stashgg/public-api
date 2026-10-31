@@ -14,8 +14,8 @@ enum PurchaseRegistrationStatus {
   PURCHASE_REGISTRATION_STATUS_SUCCESS_REGISTERED = 1;
   // Registration failed due to invalid offer
   PURCHASE_REGISTRATION_STATUS_FAILED_INVALID_OFFER = 2;
-  // Registration failed because a stock shared across players has run out, so
-  // no player can buy the item. When only this player's own remaining count is
+  // Registration failed because a stock shared across players is lower than
+  // the quantity, for example 0. When only this player's own remaining count is
   // too low, use PURCHASE_REGISTRATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED
   PURCHASE_REGISTRATION_STATUS_FAILED_INSUFFICIENT_INVENTORY = 3;
   // Registration failed because this player cannot buy this many more of the
@@ -56,9 +56,9 @@ enum PurchaseConfirmationStatus {
   PURCHASE_CONFIRMATION_STATUS_UNSPECIFIED = 0;
   // Confirmation was declined because the offer is invalid or no longer exists
   PURCHASE_CONFIRMATION_STATUS_FAILED_INVALID_OFFER = 1;
-  // Confirmation was declined because a stock shared across players has run
-  // out, so no player can buy the item. When only this player's own remaining
-  // count is too low, use
+  // Confirmation was declined because a stock shared across players is lower
+  // than the quantity purchased, for example 0. When only this player's own
+  // remaining count is too low, use
   // PURCHASE_CONFIRMATION_STATUS_FAILED_PURCHASE_LIMIT_EXCEEDED
   PURCHASE_CONFIRMATION_STATUS_FAILED_INSUFFICIENT_INVENTORY = 2;
   // Confirmation was declined because this player cannot buy this many more of
