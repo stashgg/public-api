@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+package server.ingress.reports.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/reports/v1";
+
+// Partner-facing Reports API, authenticated with versioned HMAC over the SDK
+// surface (/sdk/studio/{shop_id}/...). It is pull-style: the partner creates a
+// transaction report, reads its status, and once the report is ready downloads
+// the file through a signed link.
+service ReportService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Reports"
+    description: "Endpoints for creating a shop's transaction report and downloading it when it is ready"
+  };
+  rpc CreateReport(CreateReportRequest) returns (CreateReportResponse) {
+    option (google.api.http) = {
+      post: "/sdk/studio/{shop_id}/reports"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create a report"
+      description: "Asks Stash to build a transaction report for the shop over the window [start_at, end_at), in the chosen type and format. The window takes any RFC 3339 times and is at most 31 days. The file covers [start_at, min(end_at, coverage_end)), where coverage_end is the UTC midnight at or before as_of, so the current UTC day is never included. A repeated identical request (same shop, report_type, report_format, start_at and end_at) returns the same report while the same export run is current. A report ID is tied to the export run the request was pinned to; once a new export run is written, the same request gets a new report ID and a fresh build. A report whose file is no longer kept is never returned: after the 7 days, an identical request builds the report again, possibly under the same report ID, and its status starts at REPORT_STATUS_PENDING. Repeated requests are safe, so retry after UNAVAILABLE or a timeout with a fresh timestamp and signature. The response is the report's current state: read it again with GetReport until status is REPORT_STATUS_READY, then download the file from download_url. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the time window, sent in the legacy header, or names a different shop or one Stash does not know; INVALID_ARGUMENT when report_type or report_format is unspecified or unknown, a time is missing or is not RFC 3339, end_at is not after start_at, or the window is longer than 31 days; and UNAVAILABLE when the request could not be accepted, in which case retry."
+      security: [
+        {
+          security_requirement: {key: "hmac"}
+        }
+      ]
+    };
+  }
+  rpc GetReport(GetReportRequest) returns (GetReportResponse) {
+    option (google.api.http) = {get: "/sdk/studio/{shop_id}/reports/{report_id}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a report"
+      description: "Returns the status of a report and, once it is ready, a signed link to download the file. Every call for a ready report returns a fresh download_url that is valid for 15 minutes, so call again when a link has expired. Stash keeps the report file for 7 days from when the report becomes ready; after that this method returns NOT_FOUND, and an identical CreateReport builds the report again. Rows of a month are preliminary (final is false) and can change until the final report exists, on day 5 (UTC) of the next month. This method accepts only the versioned x-stash-hmac-signature header, signed over the empty body; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the time window, sent in the legacy header, or names a different shop or one Stash does not know; INVALID_ARGUMENT when report_id is empty; NOT_FOUND when the shop has no report with this report_id or the report file is no longer kept; and UNAVAILABLE when the status could not be read, in which case retry."
+      security: [
+        {
+          security_requirement: {key: "hmac"}
+        }
+      ]
+    };
+  }
+}
+
+// Which transactions a report lists, and by which date.
+enum ReportType {
+  REPORT_TYPE_UNSPECIFIED = 0;
+  // Rows are dated by settlement. The report reconciles with the payout.
+  REPORT_TYPE_SETTLED = 1;
+  // Rows are dated by charge time. The report includes unsettled and failed charges.
+  REPORT_TYPE_CHARGE = 2;
+}
+
+// The file format of a report. Every format holds the same rows and columns:
+// record_id, a stable ID of the event that the row records, then the columns
+// of the transaction report in Stash Studio. When two reports hold the same
+// record_id, the row from the report with the later as_of wins.
+enum ReportFormat {
+  REPORT_FORMAT_UNSPECIFIED = 0;
+  // Comma-separated values.
+  REPORT_FORMAT_CSV = 1;
+  // JSON Lines: one JSON object per row.
+  REPORT_FORMAT_JSONL = 2;
+  // Apache Parquet.
+  REPORT_FORMAT_PARQUET = 3;
+}
+
+// Where a report is in its life.
+enum ReportStatus {
+  REPORT_STATUS_UNSPECIFIED = 0;
+  // Stash accepted the request and has not finished the file.
+  REPORT_STATUS_PENDING = 1;
+  // The file is ready. download_url is set.
+  REPORT_STATUS_READY = 2;
+  // The report could not be built. failure_reason says why. A failed report stays failed for its export run; once a new export run is written, the same request gets a new report ID and a fresh build.
+  REPORT_STATUS_FAILED = 3;
+}
+
+// Why a report could not be built.
+enum ReportFailureReason {
+  REPORT_FAILURE_REASON_UNSPECIFIED = 0;
+  // A transaction in the report has no transaction ID.
+  REPORT_FAILURE_REASON_TRANSACTION_ID_MISSING = 1;
+  // The report is inconsistent: its rows disagree with each other.
+  REPORT_FAILURE_REASON_INCONSISTENT_REPORT = 2;
+  // The export file is invalid.
+  REPORT_FAILURE_REASON_INVALID_EXPORT = 3;
+  // The run that builds the report expired before it finished.
+  REPORT_FAILURE_REASON_RUN_EXPIRED = 4;
+}
+
+message CreateReportRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Create Report Request"
+      description: "Request to create a transaction report for a window. The shop is taken from the path. Signed over the request body exactly as sent."
+      required: [
+        "shop_id",
+        "reportType",
+        "reportFormat",
+        "startAt",
+        "endAt"
+      ]
+    }
+  };
+  string shop_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio. Must equal the shop in the x-stash-hmac-signature header."}
+  ];
+  ReportType report_type = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).enum = {
+      defined_only: true
+      not_in: [0]
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Which transactions the report lists and by which date: REPORT_TYPE_SETTLED dates rows by settlement and reconciles with the payout; REPORT_TYPE_CHARGE dates rows by charge time and includes unsettled and failed charges."}
+  ];
+  ReportFormat report_format = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).enum = {
+      defined_only: true
+      not_in: [0]
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "File format of the report: REPORT_FORMAT_CSV, REPORT_FORMAT_JSONL or REPORT_FORMAT_PARQUET. All formats hold the same rows and columns. Each row is one event: a payment, a refund or a dispute step, named in its type column. A refund or a dispute step that comes later is a new row with its own date; it does not change the row of the payment. The first column, record_id, is an opaque ID of the event: the same event has the same record_id in every report. Use it to remove the rows that two overlapping reports share, and keep the row from the report with the later as_of, because a preliminary row can change until it is final. The other columns are the columns of the transaction report in Stash Studio."}
+  ];
+  google.protobuf.Timestamp start_at = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).timestamp = {required: true},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Start of the report window, inclusive (RFC 3339, any time zone offset). The window [start_at, end_at) is at most 31 days."}
+  ];
+  google.protobuf.Timestamp end_at = 5 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).timestamp = {required: true},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "End of the report window, exclusive (RFC 3339, any time zone offset). Must be after start_at. The file stops at coverage_end when that is earlier, because the current UTC day is never included. A window that lies entirely at or after coverage_end is not an error: the report becomes REPORT_STATUS_READY with a file that has zero rows."}
+  ];
+}
+
+message CreateReportResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Create Report Response"
+      description: "The state of the report that the request created, or of the existing report that an identical earlier request created."
+    }
+  };
+  string report_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the report. Pass it as report_id to GetReport."}
+  ];
+  ReportStatus status = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Where the report is: REPORT_STATUS_PENDING while Stash builds the file, REPORT_STATUS_READY when download_url is set, REPORT_STATUS_FAILED when failure_reason says why the report could not be built. A failed report stays failed for its export run: once a new export run is written, the same request gets a new report ID and a fresh build."}
+  ];
+  optional ReportFailureReason failure_reason = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Why the report could not be built. Set only when status is REPORT_STATUS_FAILED."}];
+  google.protobuf.Timestamp as_of = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The time the report's data is current to (RFC 3339, UTC). coverage_end is derived from it. Set when status is REPORT_STATUS_READY."}];
+  google.protobuf.Timestamp coverage_end = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Exclusive end of the data the file can hold (RFC 3339, UTC): the UTC midnight at or before as_of, so the current UTC day is never included. The file covers [start_at, min(end_at, coverage_end)). A window that lies entirely at or after coverage_end, for example inside the current UTC day, is not an error: the report becomes REPORT_STATUS_READY with a file that has zero rows. Set when status is REPORT_STATUS_READY."}];
+  optional bool final = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "true when the rows in the file are final. false while the rows are preliminary and can change: the rows of a month stay preliminary until the final report exists, on day 5 (UTC) of the next month. Set when status is REPORT_STATUS_READY."}];
+  optional string download_url = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Signed GET link to the report file. Set only when status is REPORT_STATUS_READY. Valid until download_url_expires_at."}];
+  google.protobuf.Timestamp download_url_expires_at = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When download_url stops working (RFC 3339, UTC), 15 minutes after the response. Set only when download_url is set."}];
+}
+
+message GetReportRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Report Request"
+      description: "Request to read a report. The shop and the report are taken from the path, so there is no body. Signed over the empty body."
+      required: [
+        "shop_id",
+        "report_id"
+      ]
+    }
+  };
+  string shop_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio. Must equal the shop in the x-stash-hmac-signature header."}
+  ];
+  string report_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the report, as CreateReport returned it."}
+  ];
+}
+
+message GetReportResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get Report Response"
+      description: "The state of a report and, when it is ready, a fresh signed link to its file."
+    }
+  };
+  string report_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Identifier of the report, as in the request."}
+  ];
+  ReportStatus status = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Where the report is: REPORT_STATUS_PENDING while Stash builds the file, REPORT_STATUS_READY when download_url is set, REPORT_STATUS_FAILED when failure_reason says why the report could not be built. A failed report stays failed for its export run: once a new export run is written, the same request gets a new report ID and a fresh build."}
+  ];
+  optional ReportFailureReason failure_reason = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Why the report could not be built. Set only when status is REPORT_STATUS_FAILED."}];
+  google.protobuf.Timestamp as_of = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The time the report's data is current to (RFC 3339, UTC). coverage_end is derived from it. Set when status is REPORT_STATUS_READY."}];
+  google.protobuf.Timestamp coverage_end = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Exclusive end of the data the file can hold (RFC 3339, UTC): the UTC midnight at or before as_of, so the current UTC day is never included. The file covers [start_at, min(end_at, coverage_end)). A window that lies entirely at or after coverage_end, for example inside the current UTC day, is not an error: the report becomes REPORT_STATUS_READY with a file that has zero rows. Set when status is REPORT_STATUS_READY."}];
+  optional bool final = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "true when the rows in the file are final. false while the rows are preliminary and can change: the rows of a month stay preliminary until the final report exists, on day 5 (UTC) of the next month. Set when status is REPORT_STATUS_READY."}];
+  optional string download_url = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Signed GET link to the report file. Set only when status is REPORT_STATUS_READY. Every call returns a fresh link, valid until download_url_expires_at."}];
+  google.protobuf.Timestamp download_url_expires_at = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When download_url stops working (RFC 3339, UTC), 15 minutes after the response. Set only when download_url is set."}];
+}
