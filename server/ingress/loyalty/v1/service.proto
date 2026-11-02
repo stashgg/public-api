@@ -49,7 +49,7 @@ service LoyaltyService {
     option (google.api.http) = {get: "/sdk/studio/{shop_id}/loyalty/config"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get loyalty configuration"
-      description: "Retrieves the shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts: display settings, bonus definitions, reward products with their status, and every campaign (season) with its status. Product rewards are returned by SKU. Use it to verify a sync. Returns NOT_FOUND when the shop has no loyalty program."
+      description: "Retrieves the shop's loyalty configuration in the shape UpdateLoyaltyConfig accepts: display settings, bonus definitions, reward products with their status, every campaign (season) with its status, and the spend conversion table with the rate derived per currency. Product rewards are returned by SKU. Use it to verify a sync. Returns NOT_FOUND when the shop has no loyalty program."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -64,7 +64,7 @@ service LoyaltyService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Configure a loyalty season"
-      description: "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions and reward products it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, FAILED_PRECONDITION also when the shop's loyalty program is bound to more than one shop, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop."
+      description: "Creates or updates one loyalty campaign (season) together with the shop-level display settings, bonus definitions, reward products and spend conversion table it depends on, and optionally activates the program. The campaign id is the upsert key: an existing id updates that season, a new id creates one. The request describes the whole season it names, so a tier or milestone omitted from it is removed from that season; bonuses and reward products are created or updated by id or SKU and never removed. Draft and scheduled seasons accept every change. An active season accepts names, descriptions, images, milestone rewards, tier earn rates and a new end date; thresholds, adding or removing tiers or milestones, the start date and reset rules are refused with FAILED_PRECONDITION listing the fields. Ended seasons are read-only. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. Applying is idempotent: after a 500, resend the same request. Returns INVALID_ARGUMENT with per-field violations when validation fails, FAILED_PRECONDITION also when the shop's loyalty program is bound to more than one shop, PERMISSION_DENIED when the shop is not enabled for configuration writes, ABORTED when another update for the shop is in progress, and NOT_FOUND for an unknown shop."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -299,6 +299,7 @@ message GetLoyaltyConfigResponse {
   repeated BonusDefinition bonuses = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every bonus defined for the shop."}];
   repeated RewardProduct products = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every reward-only product the shop holds, whether created through this API or in Studio, with its status; drafts are included. Not listed: sellable catalog products, and a Studio reward product that has no SKU (external id), which the API cannot address. Resending a draft in UpdateLoyaltyConfig publishes it."}];
   repeated CampaignConfig campaigns = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every campaign (season) of the program with its status, ordered by start date ascending; seasons without a start date come last."}];
+  SpendConversion spend_conversion = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The shop's spend conversion table as stored, with the rate derived per currency and when it last changed. Absent when the shop has no table."}];
 }
 
 message UpdateLoyaltyConfigRequest {
@@ -326,6 +327,7 @@ message UpdateLoyaltyConfigRequest {
     (validate.rules).message.required = true,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The season to create or update; its id is the upsert key. The season is replaced as a whole: a tier or milestone omitted from it is removed from that season. Other seasons are not touched."}
   ];
+  SpendConversion spend_conversion = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The shop's spend conversion table, which lets earning convert a purchase in a non-USD currency to its US dollar equivalent. Optional and program-level: it is not part of the season, applies whatever the season's status, and is not subject to the active-season edit lock. Sending it replaces the stored table; omitting it leaves the stored table unchanged; sending it with an empty tiers list removes the table. With a table stored, a purchase in a currency the table does not include earns no points (it is never blocked); without a table, earning is unchanged. A change reaches purchases within 30 seconds. A validation failure returns INVALID_ARGUMENT with per-field violations under spendConversion, for example spendConversion.tiers[0].prices.EUR."}];
 }
 
 message UpdateLoyaltyConfigResponse {
@@ -340,6 +342,49 @@ message UpdateLoyaltyConfigResponse {
   repeated RewardProduct products = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Every reward-only product the shop holds, with its status."}];
   CampaignConfig campaign = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The season as stored after the update, with its status."}];
   repeated string warnings = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Notes about parts of the request that were accepted but had no effect, for example activate on a program that is already live. Empty when there is nothing to report."}];
+  SpendConversion spend_conversion = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The spend conversion table as stored after the update, with the rate derived per currency and when it last changed. Absent when the shop has no table."}];
+}
+
+message SpendConversion {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Loyalty Spend Conversion"
+      description: "A shop's optional spend conversion table: one price row listing the same price point in every currency the partner sells in. Loyalty points are earned per US dollar; the table lets Stash convert a purchase in another currency to its US dollar equivalent at the ratio the row declares (the USD amount divided by the amount in that currency). Example: a 9.99 USD price point with the equivalents EUR 9.49, GBP 7.99 and JPY 1500."
+    }
+  };
+  repeated SpendConversionTier tiers = 1 [
+    (validate.rules).repeated.max_items = 1,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The price rows. Exactly one row in this version; the list shape is kept for later. The row must include USD. An empty list removes the stored table. Reads return the rows as stored, with the amounts exactly as sent."}
+  ];
+  map<string, string> rates_per_usd = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "For each non-USD currency in the row, the units of that currency per one US dollar, as a decimal string with exactly four decimal places, for example \"1.0000\" or \"150.1502\". Derived and for display only: Stash converts with the exact amounts of the row, never with a rounded rate. Ignored on input."}
+  ];
+  google.protobuf.Timestamp updated_at = 3 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When the stored table last changed (RFC 3339). Ignored on input."}
+  ];
+}
+
+message SpendConversionTier {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Loyalty Spend Conversion Tier"
+      description: "One price point expressed in several currencies."
+    }
+  };
+  map<string, string> prices = 1 [
+    (validate.rules).map = {
+      max_pairs: 200
+      keys: {
+        string: {pattern: "^[A-Z]{3}$"}
+      }
+      values: {
+        string: {pattern: "^[0-9]+(\\.[0-9]+)?$"}
+      }
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The price point's amount per currency, keyed by upper-case ISO 4217 code recognized by Stash, for example {\"USD\": \"9.99\", \"EUR\": \"9.49\", \"GBP\": \"7.99\", \"JPY\": \"1500\"}. Must include USD. Each amount is a positive decimal string whose digits past the currency's minor unit are zero, under the minor-unit standard configured for your shop (see `cents` in GetCatalog): JPY \"1500\" or \"1500.00\", not \"1500.5\". Under the default, Unicode CLDR release 32, IDR, COP, PKR and TZS accept only zeros after the point; a shop configured for CLDR release 47 or ISO 4217 may give them two places, for example IDR \"1000.50\". At most 200 currencies."}
+  ];
 }
 
 message DisplayConfig {
