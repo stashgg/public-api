@@ -196,9 +196,9 @@ Do not place a real signing key in command arguments, URLs, or logged output in 
 
 ## 32. amount-field-units (D1)
 
-A new money amount field carries integer minor units, its ISO 4217 currency and decimal places travel in the same message or in an enclosing message, and its description says so with an example and names where the currency and scale come from, as `RegisterPaymentRequest.PurchaseRegistration.cents` in `server/egress/shop/purchase/v1/service.proto` is scaled by the enclosing request's `decimalPlaces` for its `currency`. Flag a new amount whose consumer cannot find its currency or scale anywhere in the message that carries it. Never use `float`, `double`, or a major-unit decimal string for an amount. Non-money ratios such as the buff `percentage` in `server/egress/shop/catalog/v1/service.proto` are outside this rule, and `minor-unit-scale` governs the existing amount fields.
+A new money amount field carries integer minor units, its ISO 4217 currency and decimal places travel in the same message or in an enclosing message, and its description says so with an example and names where the currency and scale come from, as `RegisterPaymentRequest.PurchaseRegistration.cents` in `server/egress/shop/purchase/v1/service.proto` is scaled by the enclosing request's `decimalPlaces` for its `currency`. Flag a new amount whose consumer cannot find its currency or scale anywhere in the message that carries it. `minor-unit-scale` governs the existing amount fields.
 
-**Failure:** A consumer charges or displays a different amount than intended because the new amount's unit, scale, or currency is not carried with it, or floating-point rounding changed it.
+**Failure:** A consumer charges or displays a different amount than intended because the new amount's unit, scale, or currency is not carried with it.
 
 ## 33. minor-unit-scale (D1)
 
@@ -206,13 +206,19 @@ Preserve integer CLDR minor-unit meaning for `PriceAmountOrId.PriceAmount.cents`
 
 **Failure:** A game backend or partner charges or displays an amount different from the intended exact minor-unit price.
 
-## 34. money-nonnegative-types (D1)
+## 34. money-float-arithmetic (D1)
 
-For a new amount or quantity that can never be negative, use an unsigned type (`uint32`, `uint64`), as the `cents`, `tax`, and `total` fields in `server/egress/shop/purchase/v1/service.proto` do. Use a signed type only for a value that can legitimately be negative, and say in its description when it is.
+Never declare a new money amount as `float` or `double`, or as a decimal string in major units; use integer minor units as `amount-field-units` describes. Non-money ratios such as the buff `percentage` in `server/egress/shop/catalog/v1/service.proto` are outside this rule.
+
+**Failure:** Binary floating-point rounding changes a price, tax, or total between the side that sends it and the side that charges, grants, or displays it.
+
+## 35. money-nonnegative-types (D1)
+
+For a new amount or quantity that can never be negative, use an unsigned type (`uint32`, `uint64`), as the `cents`, `tax`, and `total` fields in `server/egress/shop/purchase/v1/service.proto` do. A quantity that can exceed `uint64` may instead be a string validated as a non-negative integer, as `Item.quantity` in `server/ingress/studio/v1/service.proto` is, with a `pattern` of digits only. Use a signed type only for a value that can legitimately be negative, and say in its description when it is.
 
 **Failure:** A negative value enters a price or quantity field that has no valid negative meaning, and a consumer charges, grants, or displays it.
 
-## 35. zero-decimal-presence (D1)
+## 36. zero-decimal-presence (D1)
 
 Keep `decimal_places` present even when its value is zero in `RegisterPaymentRequest`, `CancelPaymentRequest`, and `ConfirmPaymentRequest` in `server/egress/shop/purchase/v1/service.proto`. Their `optional uint32` fields and required OpenAPI descriptions encode the zero-decimal currency case; a plain proto3 scalar or JSON omission loses it.
 
