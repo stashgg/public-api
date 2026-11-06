@@ -52,7 +52,7 @@ Give a new enum's `<ENUM>_UNSPECIFIED = 0` value a documented meaning, either th
 
 ## 8. error-status-contract (B4)
 
-When a diff adds an operation or changes how one fails, its `openapiv2_operation` `description` names each error status the caller can receive, the condition behind each, and whether to retry, as `LocalizationService.RefreshLocalizations` in `server/ingress/localization/v1/service.proto` does: `UNAUTHENTICATED` for a missing, invalid, stale, legacy, or wrong-shop signature, `FAILED_PRECONDITION` when the shop has no enabled localization source, and `UNAVAILABLE`, after which the caller retries. A condition the caller must handle differently from success, such as a shop that is not set up for the feature or a request that can never be satisfied, gets its own status or a documented result; flag a contract that answers it with a success indistinguishable from an ordinary empty or not-yet-ready result. For an operation that reports failure inline in an HTTP 200 body, as `RegisterPayment` and `CancelPayment` do (`purchase-inline-status`), the same applies to each inline status value: its comment names the condition and whether to retry.
+When a diff adds an operation or changes how one fails, its `openapiv2_operation` names each error status the caller can receive, the condition behind each, and whether to retry, in its `description` or in its `responses` entries, as `LocalizationService.RefreshLocalizations` in `server/ingress/localization/v1/service.proto` does: `UNAUTHENTICATED` for a missing, invalid, stale, legacy, or wrong-shop signature, `FAILED_PRECONDITION` when the shop has no enabled localization source, and `UNAVAILABLE`, after which the caller retries. A condition the caller must handle differently from success, such as a shop that is not set up for the feature or a request that can never be satisfied, gets its own status or a documented result; flag a contract that answers it with a success indistinguishable from an ordinary empty or not-yet-ready result. For an operation that reports failure inline in an HTTP 200 body, as `RegisterPayment` and `CancelPayment` do (`purchase-inline-status`), the same applies to each inline status value: its comment names the condition and whether to retry.
 
 **Failure:** A caller cannot tell the real failure apart from success or from another failure, so it applies the wrong recovery, such as retrying forever on a condition that will never change.
 
@@ -160,9 +160,9 @@ Keep player-specific loyalty reads scoped by both shop and player in `LoyaltySer
 
 ## 26. endpoint-authentication (C3)
 
-Every new operation declares the versioned `hmac` security requirement in its `openapiv2_operation`, as every operation in `server/ingress/localization/v1/service.proto` and `server/egress/shop/purchase/v1/service.proto` does, and its description says which signature header it accepts. Neither swagger declares a default security requirement, so an operation without its own is published as unauthenticated. A new operation does not accept the deprecated `legacyHmac` scheme; the `legacyHmac` description in `server/ingress/server.proto` lists the only endpoints that still do.
+Every new operation declares the versioned `hmac` security requirement in its `openapiv2_operation`, as every operation in `server/ingress/localization/v1/service.proto` and `server/egress/shop/purchase/v1/service.proto` does, and its description says which signature header it accepts. Neither swagger declares a default security requirement, so an operation without its own is published as unauthenticated.
 
-**Failure:** A new operation is published without its signature requirement, so a game backend implements it without verifying the caller, or a partner's generated client calls it unsigned or with the replayable legacy header.
+**Failure:** A new operation is published without its signature requirement, so a game backend implements it without verifying the caller, or a partner's generated client calls it unsigned.
 
 ## 27. hmac-body-integrity (C3)
 
@@ -182,49 +182,55 @@ Keep the Ingress key for partner-backend-to-Stash calls and the Egress key for S
 
 **Failure:** A key issued for one API direction is reused to authenticate the other direction.
 
-## 30. secret-example-placeholders (C3)
+## 30. legacy-signature-rejection (C3)
+
+A new operation, and an existing one that does not accept it today, does not accept the deprecated `legacyHmac` scheme: it declares only the versioned `hmac` requirement, and its description says the legacy `stash-hmac-signature` header is rejected, as `LocalizationService.RefreshLocalizations` in `server/ingress/localization/v1/service.proto` does. The `legacyHmac` descriptions in `server/ingress/server.proto` and `docs/config/swagger-merger-ingress-config.json` list the only endpoints that still accept it; adding one to that list is a finding.
+
+**Failure:** An operation accepts the untimestamped legacy signature, so a captured request to it can be replayed at any later time.
+
+## 31. secret-example-placeholders (C3)
 
 Every API key, signature, and token value written into an example under `server/`, `docs/config/`, or `README.md` is an obvious placeholder, such as `YOUR_API_KEY` or `{signature}`, never a value copied from a real shop, a test environment, or a log. An example that reads the reader's own key at runtime from a local file, as the signing example in `docs/config/swagger-merger-ingress-config.json` reads `~/.stash/ingress-key`, and computes the signature from it publishes no credential and is outside this rule.
 
 **Failure:** A real credential is published in the public repository, and anyone who reads it can sign new requests or replay a captured one as that shop.
 
-## 31. secret-observable-surfaces (C3)
+## 32. secret-observable-surfaces (C3)
 
 Carry API keys, HMAC signatures, and session or access tokens in headers or the signed body, never in a path or query parameter of a new operation. A time-limited signed download link that a response returns, whose description says when it expires, is outside this rule.
 
 **Failure:** A credential is copied into proxy, server, or browser logs through the request URL and can be recovered by an unintended reader.
 
-## 32. signing-secret-exposure (C3)
+## 33. signing-secret-exposure (C3)
 
 Do not place a real signing key in command arguments, URLs, or logged output in examples for `docs/config/swagger-merger-ingress-config.json`. Its signing example reads the key from an owner-only file inside the signing process and says never to pass it as a command-line argument; changes to signing guidance must keep that pattern.
 
 **Failure:** A partner's Ingress key becomes visible through a process list or captured command log.
 
-## 33. amount-field-units (D1)
+## 34. amount-field-units (D1)
 
-A new money amount field carries an exact amount, either integer minor units, as `RegisterPaymentRequest.PurchaseRegistration.cents` in `server/egress/shop/purchase/v1/service.proto` does, or a decimal string validated by a `pattern`, as `SpendConversionTier.prices` in `server/ingress/loyalty/v1/service.proto` does. Its ISO 4217 currency and its scale travel in the same message or in an enclosing message, and its description says so with an example and names where they come from, as `PurchaseRegistration.cents` is scaled by the enclosing request's `decimalPlaces` for its `currency`. Flag a new amount whose consumer cannot find its currency or scale anywhere in the message that carries it. `minor-unit-scale` governs the existing amount fields.
+A new money amount field carries an exact amount, either integer minor units, as `RegisterPaymentRequest.PurchaseRegistration.cents` in `server/egress/shop/purchase/v1/service.proto` does, or a decimal string in major units, as `SpendConversionTier.prices` in `server/ingress/loyalty/v1/service.proto` does. Its ISO 4217 currency and its scale travel in the same message or in an enclosing message, and its description says so with an example and names where they come from, as `PurchaseRegistration.cents` is scaled by the enclosing request's `decimalPlaces` for its `currency`. Flag a new amount whose consumer cannot find its currency or scale anywhere in the message that carries it. `minor-unit-scale` governs the existing amount fields.
 
 **Failure:** A consumer charges or displays a different amount than intended because the new amount's unit, scale, or currency is not carried with it.
 
-## 34. minor-unit-scale (D1)
+## 35. minor-unit-scale (D1)
 
 Preserve integer CLDR minor-unit meaning for `PriceAmountOrId.PriceAmount.cents` in `server/egress/shop/catalog/v1/service.proto`, purchase `cents`, `tax`, and `total` in `server/egress/shop/purchase/v1/service.proto`, and `Price.cents` in `server/ingress/studio/v1/service.proto`. Keep the ISO currency and applicable CLDR fraction digits tied to the same amount; do not recast these wire values as floating major units.
 
 **Failure:** A game backend or partner charges or displays an amount different from the intended exact minor-unit price.
 
-## 35. money-float-arithmetic (D1)
+## 36. money-float-arithmetic (D1)
 
 Never declare a new money amount as `float` or `double`; use an exact representation as `amount-field-units` describes. Non-money ratios such as the buff `percentage` in `server/egress/shop/catalog/v1/service.proto` are outside this rule.
 
 **Failure:** Binary floating-point rounding changes a price, tax, or total between the side that sends it and the side that charges, grants, or displays it.
 
-## 36. money-nonnegative-types (D1)
+## 37. money-nonnegative-types (D1)
 
 For a new amount or quantity that can never be negative, use an unsigned type (`uint32`, `uint64`), as the `cents`, `tax`, and `total` fields in `server/egress/shop/purchase/v1/service.proto` do. A value the contract carries as a string, such as a quantity that can exceed `uint64` (`Item.quantity` in `server/ingress/studio/v1/service.proto`) or a decimal amount (`SpendConversionTier.prices` in `server/ingress/loyalty/v1/service.proto`), has a `pattern` that admits no minus sign, as both of those do. Use a signed type only for a value that can legitimately be negative, and say in its description when it is.
 
 **Failure:** A negative value enters a price or quantity field that has no valid negative meaning, and a consumer charges, grants, or displays it.
 
-## 37. zero-decimal-presence (D1)
+## 38. zero-decimal-presence (D1)
 
 Keep `decimal_places` present even when its value is zero in `RegisterPaymentRequest`, `CancelPaymentRequest`, and `ConfirmPaymentRequest` in `server/egress/shop/purchase/v1/service.proto`. Their `optional uint32` fields and required OpenAPI descriptions encode the zero-decimal currency case; a plain proto3 scalar or JSON omission loses it.
 
