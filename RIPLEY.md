@@ -112,7 +112,7 @@ Keep `ManagedCatalogService.GetProduct` and `Product.product_id` in `server/ingr
 
 ## 18. wire-value-naming (B4)
 
-When a diff adds an enum, or another set of two or more values that consumers compare against (status values, documented error reasons, type or format names), spell each subject one way across the set and its sibling sets: one stem for the same outcome and one noun for the same subject. Follow `PurchaseRegistrationStatus` and `PurchaseConfirmationStatus` in `server/egress/shop/purchase/v1/enums.proto`, which share the `SUCCESS_` and `FAILED_` stems and give the same reason the same name in both (`INVALID_OFFER`, `INSUFFICIENT_INVENTORY`, `PURCHASE_LIMIT_EXCEEDED`). Flag a set that names one subject two ways, such as `FAILED_INVALID_OFFER` beside `DECLINED_OFFER_NOT_VALID` for the same cause. Buf lint already enforces the enum-name prefix and the `_UNSPECIFIED` zero value; values that name different subjects need no shared stem, and a value added to an existing set is checked only against that set's spelling.
+When a diff adds an enum, or another set of two or more values that consumers compare against (status values, documented error reasons, type or format names), spell each subject one way across the set and its sibling sets: one stem for the same outcome and one noun for the same subject. Follow the enums in `server/egress/shop/purchase/v1/enums.proto`: `PurchaseRegistrationStatus` and `PurchaseCancellationStatus` share the `SUCCESS_` and `FAILED_` stems, and `PurchaseRegistrationStatus` and `PurchaseConfirmationStatus` give the same reason the same name after `FAILED_` (`INVALID_OFFER`, `INSUFFICIENT_INVENTORY`, `PURCHASE_LIMIT_EXCEEDED`). Flag a set that names one subject two ways, such as `FAILED_INVALID_OFFER` beside `DECLINED_OFFER_NOT_VALID` for the same cause. Buf lint already enforces the enum-name prefix and the `_UNSPECIFIED` zero value; values that name different subjects need no shared stem, and a value added to an existing set is checked only against that set's spelling.
 
 **Failure:** A consumer mirrors the inconsistent spelling, so the later rename that fixes it breaks every integration that matches on the old value.
 
@@ -122,103 +122,97 @@ When a diff adds a scalar field whose zero value carries its own meaning (a `fal
 
 **Failure:** A consumer receives no value where the contract meant `false` or `0`, and reads the field as unknown or applies its own default.
 
-## 20. static-analysis-bypass (B5)
-
-Do not add `// buf:lint:ignore` comments, which `buf.yaml` permits through `allow_comment_ignores`, or `ignore`, `ignore_only`, or `except` entries in the `lint` section of `buf.yaml`, to silence a lint finding on a contract; fix the proto instead. The `PACKAGE_VERSION_SUFFIX` ignores on the packages in `server/ingress/server.proto` and `server/egress/server.proto` predate this rule and are not a precedent.
-
-**Failure:** A suppression hides a contract defect from the `buf lint` gate that should stop it from shipping.
-
-## 21. zero-decimal-regression (B5)
+## 20. zero-decimal-regression (B5)
 
 When changing purchase request serialization or `optional decimal_places` in `server/egress/shop/purchase/v1/service.proto`, pin a regression check that emits a zero-decimal request with `decimalPlaces: 0`. `make check` in `Makefile` cannot prove that emitted JSON retains the literal zero.
 
 **Failure:** A later schema or generator change again omits `decimalPlaces: 0` and valid zero-decimal purchases are rejected.
 
-## 22. cross-scope-isolation (C1)
+## 21. cross-scope-isolation (C1)
 
 A new ingress operation that reads or changes one shop's data takes the shop from the `{shop_id}` path parameter, and both its operation description and its `shop_id` field description state that the shop in the `x-stash-hmac-signature` header must equal it, as `LocalizationService.RefreshLocalizations` and `RefreshLocalizationsRequest.shop_id` in `server/ingress/localization/v1/service.proto` do. Do not accept the shop, or a second shop identifier, from the request body or a query parameter.
 
 **Failure:** A key issued for one shop is accepted for a request that reads or changes another shop's data.
 
-## 23. internal-reference-disclosure (C1)
+## 22. internal-reference-disclosure (C1)
 
 Describe behavior in published contract text through the public API only: proto comments and `openapiv2` descriptions under `server/`, the hand-written docs and examples in `docs/config/`, and `README.md`. Flag the names of Stash's internal services, code symbols, private repositories or their file paths, internal hostnames and URLs, databases, tables, storage buckets, feature flags, internal ticket links, and references to past incidents. Say what the caller sees and does, for example "Stash rejects the request with `FAILED_PRECONDITION`", not which internal component does it. Stash's documented public hostnames, such as the API base URLs, are fine. A ticket ID in a PR title or branch name and a ticket link in a PR description follow this repository's convention and are outside this rule.
 
 **Failure:** The public contract discloses details of Stash's internal systems to every reader of the repository.
 
-## 24. partner-name-disclosure (C1)
+## 23. partner-name-disclosure (C1)
 
 Keep partner, game, and customer names out of everything this repository and its pull requests publish: proto comments under `server/`, docs and examples under `docs/`, commit messages, branch names, and PR titles and descriptions. The repository and its PRs are public, so a name written in any of them is visible to everyone. Write "the partner", "a game", or a generic example instead. Flag a name as a finding wherever it appears, including when it appears only in the PR title or description.
 
 **Failure:** A partner, game, or customer is publicly identified through a proto comment, doc, example, commit message, branch name, or PR title or description.
 
-## 25. shop-player-scope (C1)
+## 24. shop-player-scope (C1)
 
 Keep player-specific loyalty reads scoped by both shop and player in `LoyaltyService.GetPlayerLoyalty` and `GetPlayerLoyaltyRequest` in `server/ingress/loyalty/v1/service.proto`. Do not recast `player_id` alone as sufficient to select a loyalty standing.
 
 **Failure:** A request for one shop exposes another shop's player's loyalty balance or tier.
 
-## 26. endpoint-authentication (C2)
+## 25. endpoint-authentication (C2)
 
 Every new operation declares the versioned `hmac` security requirement in its `openapiv2_operation`, as every operation in `server/ingress/localization/v1/service.proto` and `server/egress/shop/purchase/v1/service.proto` does, and its description says which signature header it accepts. Neither swagger declares a default security requirement, so an operation without its own is published as unauthenticated. A new operation does not accept the deprecated `legacyHmac` scheme; the `legacyHmac` description in `server/ingress/server.proto` lists the only endpoints that still do.
 
 **Failure:** A new operation is published without its signature requirement, so a game backend implements it without verifying the caller, or a partner's generated client calls it unsigned or with the replayable legacy header.
 
-## 27. hmac-body-integrity (C3)
+## 26. hmac-body-integrity (C3)
 
 Keep the versioned HMAC descriptions in `server/ingress/server.proto` and `server/egress/server.proto` bound to the exact request body, including the documented empty body for ingress GET requests. A changed signing format must not make the signature independent of the payload it authenticates.
 
 **Failure:** A request body is altered after signing and still appears authenticated.
 
-## 28. hmac-replay-window (C3)
+## 27. hmac-replay-window (C3)
 
 Keep the signed timestamp and five-minute acceptance window in the versioned HMAC descriptions in `server/ingress/server.proto` and `server/egress/server.proto`. A changed signing format must still let receivers reject a captured old request.
 
 **Failure:** A stale signed request is replayed and accepted outside its intended time window.
 
-## 29. ingress-egress-key-scope (C3)
+## 28. ingress-egress-key-scope (C3)
 
 Keep the Ingress key for partner-backend-to-Stash calls and the Egress key for Stash-to-game-backend calls, as defined separately in `server/ingress/server.proto` and `server/egress/server.proto`. Do not present either key as interchangeable in API descriptions or signing examples.
 
 **Failure:** A key issued for one API direction is reused to authenticate the other direction.
 
-## 30. secret-example-placeholders (C3)
+## 29. secret-example-placeholders (C3)
 
 Every API key, signature, and token in an example under `server/`, `docs/config/`, or `README.md` is an obvious placeholder, such as `{shop_id}`, a key file path like `~/.stash/ingress-key`, or `YOUR_API_KEY`, never a value copied from a real shop, a test environment, or a log. A computed signature in an example is computed from a placeholder key the example states.
 
 **Failure:** A real credential is published in the public repository, and anyone who reads it can sign requests as that shop.
 
-## 31. secret-observable-surfaces (C3)
+## 30. secret-observable-surfaces (C3)
 
 Carry API keys, HMAC signatures, and session or access tokens in headers or the signed body, never in a path or query parameter of a new operation. A time-limited signed download link that a response returns, whose description says when it expires, is outside this rule.
 
 **Failure:** A credential is copied into proxy, server, or browser logs through the request URL and can be recovered by an unintended reader.
 
-## 32. signing-secret-exposure (C3)
+## 31. signing-secret-exposure (C3)
 
 Do not place a real signing key in command arguments, URLs, or logged output in examples for `docs/config/swagger-merger-ingress-config.json`. Its signing example reads the key from an owner-only file inside the signing process and says never to pass it as a command-line argument; changes to signing guidance must keep that pattern.
 
 **Failure:** A partner's Ingress key becomes visible through a process list or captured command log.
 
-## 33. amount-field-units (D1)
+## 32. amount-field-units (D1)
 
-A new money amount field carries integer minor units, with its ISO 4217 currency and its decimal places in the same message, and its description says so with an example, as `RegisterPaymentRequest` in `server/egress/shop/purchase/v1/service.proto` carries `currency` and `decimal_places` beside each `PurchaseRegistration.cents`. Never use `float`, `double`, or a major-unit decimal string for an amount. Non-money ratios such as the buff `percentage` in `server/egress/shop/catalog/v1/service.proto` are outside this rule, and `minor-unit-scale` governs the existing amount fields.
+A new money amount field carries integer minor units, its ISO 4217 currency and decimal places travel in the same message or in an enclosing message, and its description says so with an example and names where the currency and scale come from, as `RegisterPaymentRequest.PurchaseRegistration.cents` in `server/egress/shop/purchase/v1/service.proto` is scaled by the enclosing request's `decimalPlaces` for its `currency`. Flag a new amount whose consumer cannot find its currency or scale anywhere in the message that carries it. Never use `float`, `double`, or a major-unit decimal string for an amount. Non-money ratios such as the buff `percentage` in `server/egress/shop/catalog/v1/service.proto` are outside this rule, and `minor-unit-scale` governs the existing amount fields.
 
 **Failure:** A consumer charges or displays a different amount than intended because the new amount's unit, scale, or currency is not carried with it, or floating-point rounding changed it.
 
-## 34. minor-unit-scale (D1)
+## 33. minor-unit-scale (D1)
 
 Preserve integer CLDR minor-unit meaning for `PriceAmountOrId.PriceAmount.cents` in `server/egress/shop/catalog/v1/service.proto`, purchase `cents`, `tax`, and `total` in `server/egress/shop/purchase/v1/service.proto`, and `Price.cents` in `server/ingress/studio/v1/service.proto`. Keep the ISO currency and applicable CLDR fraction digits tied to the same amount; do not recast these wire values as floating major units.
 
 **Failure:** A game backend or partner charges or displays an amount different from the intended exact minor-unit price.
 
-## 35. money-nonnegative-types (D1)
+## 34. money-nonnegative-types (D1)
 
 For a new amount or quantity that can never be negative, use an unsigned type (`uint32`, `uint64`), as the `cents`, `tax`, and `total` fields in `server/egress/shop/purchase/v1/service.proto` do. Use a signed type only for a value that can legitimately be negative, and say in its description when it is.
 
 **Failure:** A negative value enters a price or quantity field that has no valid negative meaning, and a consumer charges, grants, or displays it.
 
-## 36. zero-decimal-presence (D1)
+## 35. zero-decimal-presence (D1)
 
 Keep `decimal_places` present even when its value is zero in `RegisterPaymentRequest`, `CancelPaymentRequest`, and `ConfirmPaymentRequest` in `server/egress/shop/purchase/v1/service.proto`. Their `optional uint32` fields and required OpenAPI descriptions encode the zero-decimal currency case; a plain proto3 scalar or JSON omission loses it.
 
