@@ -64,9 +64,9 @@ Preserve the `GetCatalogResponse.CatalogItem.FreeItem.claim_id` contract in `ser
 
 ## 10. legacy-surface-requirement (B4)
 
-When a diff fixes or extends an operation, field, or header the contract marks deprecated or legacy, such as the `legacyHmac` security scheme in `server/ingress/server.proto` and `server/egress/server.proto` or `GetPlayerResponse.Player.in_game_currency` in `server/egress/shop/user/v1/service.proto`, the PR states the recorded requirement to keep supporting it, without naming the partner (`partner-name-disclosure`). With no such requirement, recommend leaving the work out or removing the surface; `legacy-surface-removal-reach` covers what a removal must reach. A change that touches the surface only incidentally, such as regenerated output or a moved file, and the removal itself are exempt.
+When a diff extends an operation, field, or header the contract marks deprecated or legacy, by adding fields, values, or behavior to it, such as the `legacyHmac` security scheme in `server/ingress/server.proto` and `server/egress/server.proto` or `GetPlayerResponse.Player.in_game_currency` in `server/egress/shop/user/v1/service.proto`, the PR states the recorded requirement for the new capability, without naming the partner (`partner-name-disclosure`). With no such requirement, ask whether the capability belongs on the surface that replaces it, such as the versioned `hmac` scheme or `wallet`. A fix that keeps existing integrations on the deprecated surface working, a change that touches it only incidentally (regenerated output, a moved file), and its removal are exempt. Recommend removing a deprecated surface only with evidence that its consumers have migrated; `legacy-surface-removal-reach` covers what a removal must reach.
 
-**Failure:** Work extends a deprecated surface that no recorded requirement keeps, so it stays published with its defects instead of being removed.
+**Failure:** New capability lands on a deprecated surface that no recorded requirement needs, so new integrations adopt the surface being retired instead of its replacement.
 
 ## 11. loyalty-payload-presence (B4)
 
@@ -112,9 +112,9 @@ Keep `ManagedCatalogService.GetProduct` and `Product.product_id` in `server/ingr
 
 ## 18. wire-value-naming (B4)
 
-When a diff adds an enum, or another set of two or more values that consumers compare against (status values, documented error reasons, type or format names), spell each subject one way across the set and its sibling sets: one stem for the same outcome and one noun for the same subject. Follow the enums in `server/egress/shop/purchase/v1/enums.proto`: `PurchaseRegistrationStatus` and `PurchaseCancellationStatus` share the `SUCCESS_` and `FAILED_` stems, and `PurchaseRegistrationStatus` and `PurchaseConfirmationStatus` give the same reason the same name after `FAILED_` (`INVALID_OFFER`, `INSUFFICIENT_INVENTORY`, `PURCHASE_LIMIT_EXCEEDED`). Flag a set that names one subject two ways, such as `FAILED_INVALID_OFFER` beside `DECLINED_OFFER_NOT_VALID` for the same cause. Buf lint already enforces the enum-name prefix and the `_UNSPECIFIED` zero value; values that name different subjects need no shared stem, and a value added to an existing set is checked only against that set's spelling.
+When a diff adds an enum, or another set of two or more values that consumers compare against (status values, documented error reasons, type or format names), spell each subject one way across the set and its sibling sets: one stem for the same outcome and one noun for the same subject. Follow the enums in `server/egress/shop/purchase/v1/enums.proto`: `PurchaseRegistrationStatus` and `PurchaseCancellationStatus` share the `SUCCESS_` and `FAILED_` stems, and `PurchaseRegistrationStatus` and `PurchaseConfirmationStatus` give the same reason the same name after `FAILED_` (`INVALID_OFFER`, `INSUFFICIENT_INVENTORY`, `PURCHASE_LIMIT_EXCEEDED`). Flag a set that names one subject two ways where a consumer reading the names and their comments cannot tell whether the two values mean the same thing, such as `FAILED_INVALID_OFFER` in one enum beside `DECLINED_OFFER_NOT_VALID` in a sibling enum with no comment saying they are the same cause. Differently spelled values whose comments make the meaning unambiguous are not a finding. Buf lint already enforces the enum-name prefix and the `_UNSPECIFIED` zero value; values that name different subjects need no shared stem, and a value added to an existing set is checked only against that set's spelling.
 
-**Failure:** A consumer mirrors the inconsistent spelling, so the later rename that fixes it breaks every integration that matches on the old value.
+**Failure:** A consumer cannot tell whether two differently spelled values name the same cause, and handles one of them as a different outcome.
 
 ## 19. zero-value-presence (B4)
 
@@ -152,7 +152,7 @@ Keep player-specific loyalty reads scoped by both shop and player in `LoyaltySer
 
 **Failure:** A request for one shop exposes another shop's player's loyalty balance or tier.
 
-## 25. endpoint-authentication (C2)
+## 25. endpoint-authentication (C3)
 
 Every new operation declares the versioned `hmac` security requirement in its `openapiv2_operation`, as every operation in `server/ingress/localization/v1/service.proto` and `server/egress/shop/purchase/v1/service.proto` does, and its description says which signature header it accepts. Neither swagger declares a default security requirement, so an operation without its own is published as unauthenticated. A new operation does not accept the deprecated `legacyHmac` scheme; the `legacyHmac` description in `server/ingress/server.proto` lists the only endpoints that still do.
 
@@ -178,7 +178,7 @@ Keep the Ingress key for partner-backend-to-Stash calls and the Egress key for S
 
 ## 29. secret-example-placeholders (C3)
 
-Every API key, signature, and token in an example under `server/`, `docs/config/`, or `README.md` is an obvious placeholder, such as `{shop_id}`, a key file path like `~/.stash/ingress-key`, or `YOUR_API_KEY`, never a value copied from a real shop, a test environment, or a log. A computed signature in an example is computed from a placeholder key the example states.
+Every API key, signature, and token value written into an example under `server/`, `docs/config/`, or `README.md` is an obvious placeholder, such as `YOUR_API_KEY` or `{signature}`, never a value copied from a real shop, a test environment, or a log. An example that reads the reader's own key at runtime from a local file, as the signing example in `docs/config/swagger-merger-ingress-config.json` reads `~/.stash/ingress-key`, and computes the signature from it publishes no credential and is outside this rule.
 
 **Failure:** A real credential is published in the public repository, and anyone who reads it can sign requests as that shop.
 
