@@ -124,7 +124,7 @@ When a diff adds an enum, or another set of two or more values that consumers co
 
 ## 20. zero-value-presence (B4)
 
-When a diff adds a scalar field whose zero value carries its own meaning (a `false`, a `0`, or an empty string that differs from "not sent"), declare it `optional` so the JSON can carry the zero, and say in its description that the sender always sets it, the zero included, since an `optional` field the sender leaves unset is still absent from the JSON, as `ConfirmPaymentRequest.tax` in `server/egress/shop/purchase/v1/service.proto` does ("Always sent, including the literal 0 when the purchase has no tax"). Proto3 JSON omits a plain scalar's zero value unless its encoder is told to emit defaults. `zero-decimal-presence` governs the existing `decimal_places` fields.
+When a diff adds a scalar field whose zero value carries its own meaning (a `false`, a `0`, or an empty string that differs from "not sent"), declare it `optional` so the JSON can carry the zero, and say in its description that the sender sets it whenever zero is the intended value, since an `optional` field the sender leaves unset is still absent from the JSON, as `ConfirmPaymentRequest.tax` in `server/egress/shop/purchase/v1/service.proto` does ("Always sent, including the literal 0 when the purchase has no tax"). A field whose absence has its own meaning documents both, as `max_purchasable` in `server/egress/shop/catalog/v1/service.proto` does: absent means no per-player limit, and 0 means none left. Proto3 JSON omits a plain scalar's zero value unless its encoder is told to emit defaults. `zero-decimal-presence` governs the existing `decimal_places` fields.
 
 **Failure:** A consumer receives no value where the contract meant `false`, `0`, or an empty string, and reads the field as unknown or applies its own default.
 
@@ -136,7 +136,7 @@ When changing purchase request serialization or `optional decimal_places` in `se
 
 ## 22. cross-scope-isolation (C1)
 
-A new ingress operation that reads or changes one shop's data takes the shop from the `{shop_id}` path parameter, and both its operation description and its `shop_id` field description state that the shop in the `x-stash-hmac-signature` header must equal it, as `LocalizationService.RefreshLocalizations` and `RefreshLocalizationsRequest.shop_id` in `server/ingress/localization/v1/service.proto` do. Do not accept the shop, or a second shop identifier, from the request body or a query parameter.
+A new ingress operation that reads or changes one shop's data documents, in its operation description and in the description of whichever field selects the shop, that the shop in the `x-stash-hmac-signature` header must equal that field, as `LocalizationService.RefreshLocalizations` and `RefreshLocalizationsRequest.shop_id` in `server/ingress/localization/v1/service.proto` do for the `{shop_id}` path parameter every current ingress operation uses. Flag an operation that accepts a shop identifier, or a second one, with no such binding.
 
 **Failure:** A key issued for one shop is accepted for a request that reads or changes another shop's data.
 
@@ -196,7 +196,7 @@ Every API key, signature, and token value written into an example under `server/
 
 ## 32. secret-observable-surfaces (C3)
 
-Carry API keys, HMAC signatures, and session or access tokens in headers or the signed body, never in a path or query parameter of a new operation. A time-limited signed download link that a response returns, whose description says when it expires, is outside this rule.
+Carry HMAC signatures in their request header, and API keys and session or access tokens in headers or the signed body, never in a path or query parameter of a new operation. A time-limited signed download link that a response returns, whose description says when it expires, is outside this rule.
 
 **Failure:** A credential is copied into proxy, server, or browser logs through the request URL and can be recovered by an unintended reader.
 
