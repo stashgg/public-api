@@ -124,7 +124,7 @@ When a diff adds an enum, or another set of two or more values that consumers co
 
 ## 20. zero-value-presence (B4)
 
-When a diff adds a scalar field whose zero value carries its own meaning (a `false`, a `0`, or an empty string that differs from "not sent"), declare it `optional` so the JSON carries the zero, and say in its description that the zero is sent, as `ConfirmPaymentRequest.tax` in `server/egress/shop/purchase/v1/service.proto` does ("Always sent, including the literal 0 when the purchase has no tax"). Proto3 JSON omits a plain scalar's zero value unless its encoder is told to emit defaults. `zero-decimal-presence` governs the existing `decimal_places` fields.
+When a diff adds a scalar field whose zero value carries its own meaning (a `false`, a `0`, or an empty string that differs from "not sent"), declare it `optional` so the JSON can carry the zero, and say in its description that the sender always sets it, the zero included, since an `optional` field the sender leaves unset is still absent from the JSON, as `ConfirmPaymentRequest.tax` in `server/egress/shop/purchase/v1/service.proto` does ("Always sent, including the literal 0 when the purchase has no tax"). Proto3 JSON omits a plain scalar's zero value unless its encoder is told to emit defaults. `zero-decimal-presence` governs the existing `decimal_places` fields.
 
 **Failure:** A consumer receives no value where the contract meant `false`, `0`, or an empty string, and reads the field as unknown or applies its own default.
 
