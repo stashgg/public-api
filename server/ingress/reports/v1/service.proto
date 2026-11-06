@@ -25,7 +25,7 @@ service ReportService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List report files"
-      description: "Returns one entry for each UTC day in [start_date, end_date] that has a file, in date order, each with a signed GET link to that day's file. A day with no transactions still has a file, with no rows. A day with no entry is a day the export has not written yet, such as the current UTC day or a day whose export is late; it does not mean the day had no transactions, so call again later for that day. The files are the transaction report files that Stash Studio offers for the shop. Each row is one event: a payment, a refund or a dispute step. A later refund or dispute step is a new row on its own day; it does not change the payment's row. The first column, record_id, is a stable ID of the event: the same event has the same record_id in every file. Use it to remove rows that two pulls share, and keep the row from the later pull. Columns are added only at the end, and a column is renamed or removed only with advance notice, so read the files by column name, not by position. A day that is not final can still change; pull it again until is_final is true. Every link is valid until download_url_expires_at, 15 minutes after the response; call again for fresh links. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. Repeated calls are safe, so retry after UNAVAILABLE or a timeout with a fresh timestamp and signature. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the time window, sent in the legacy header, or names a different shop or one Stash does not know; INVALID_ARGUMENT when report_type or report_format is unspecified or unknown, a date is missing or is not YYYY-MM-DD, end_date is before start_date, or the range is longer than 31 days; and UNAVAILABLE when the files could not be listed, in which case retry."
+      description: "Returns one entry for each UTC day in [start_date, end_date] that has a file, in date order, each with a signed GET link to that day's file. A day with no transactions still has a file, with no rows. A day with no entry is a day the export has not written yet, such as the current UTC day or a day whose export is late; it does not mean the day had no transactions, so call again later for that day. The files are the transaction report files that Stash Studio offers for the shop. Each row is one event: a payment, a refund or a dispute step. A later refund or dispute step is a new row on its own day; it does not change the payment's row. The first column, record_id, is a stable ID of the event: the same event has the same record_id in every file. Use it to remove rows that two pulls share, and keep the row from the later pull. Columns are added only at the end, and a column is renamed or removed only with advance notice, so read the files by column name, not by position. A day that is not final can still change; pull it again until is_final is true. SETTLED days become final together with their UTC calendar month, when Stash closes the month, usually 1 to 5 days after it ends. CHARGE days are never final, because their rows change while their charges settle, so pull recent CHARGE days again. Every link is valid until download_url_expires_at, 15 minutes after the response; call again for fresh links. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. Repeated calls are safe, so retry after UNAVAILABLE or a timeout with a fresh timestamp and signature. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the time window, sent in the legacy header, or names a different shop or one Stash does not know; INVALID_ARGUMENT when report_type or report_format is unspecified or unknown, a date is missing or is not YYYY-MM-DD, end_date is before start_date, or the range is longer than 31 days; and UNAVAILABLE when the files could not be listed, in which case retry."
       security: [
         {
           security_requirement: {key: "hmac"}
@@ -50,7 +50,8 @@ enum ReportFormat {
   REPORT_FORMAT_UNSPECIFIED = 0;
   // Comma-separated values with a header row.
   REPORT_FORMAT_CSV = 1;
-  // JSON Lines: one JSON object per row.
+  // JSON Lines: one JSON object per row. A field with no value is left out of
+  // the object, not written as null.
   REPORT_FORMAT_JSONL = 2;
   // Apache Parquet.
   REPORT_FORMAT_PARQUET = 3;
@@ -89,7 +90,7 @@ message ListReportFilesRequest {
       defined_only: true
       not_in: [0]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "File format of each link. CSV, JSONL and PARQUET hold the same rows and columns."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "File format of each link. CSV, JSONL and PARQUET hold the same rows and columns. JSONL leaves a field with no value out of the row's object."}
   ];
   string start_date = 4 [
     (google.api.field_behavior) = REQUIRED,
@@ -127,7 +128,7 @@ message ReportFile {
   ];
   optional bool is_final = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "true when the day's rows are final and no longer change. false while they are preliminary; pull the day again later."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "true when the day's rows are final and no longer change: a SETTLED day becomes final when Stash closes its UTC calendar month. false while the rows can still change; pull the day again later. Always false for CHARGE."}
   ];
   optional int64 size_bytes = 3 [
     (google.api.field_behavior) = REQUIRED,
