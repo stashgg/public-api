@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package server.ingress.reports.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/stashgg/public-api/gen/proto/server/ingress/reports/v1";
+
+// Partner-facing Reports API, authenticated with versioned HMAC over the SDK
+// surface (/sdk/studio/{shop_id}/...). It lets a partner list a shop's daily
+// transaction files and download them through signed links.
+service ReportService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Reports"
+    description: "Endpoints for listing a shop's daily transaction files and downloading them through signed links"
+  };
+  rpc ListReportFiles(ListReportFilesRequest) returns (ListReportFilesResponse) {
+    option (google.api.http) = {
+      post: "/sdk/studio/{shop_id}/reports/files"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List report files"
+      description: "Returns one entry for each UTC day in [start_date, end_date] that has a file, in date order, each with a signed GET link to that day's file. A day with no transactions still has a file, with no rows. A day with no entry is a day the export has not written yet, such as the current UTC day or a day whose export is late; it does not mean the day had no transactions, so call again later for that day. Days before first_date never get a file, because the shop's export of that type and format started on first_date. A shop that has no file of the requested type and format on any day gets FAILED_PRECONDITION instead, because Stash does not export that report for the shop yet; do not retry, contact Stash, which tells you when the export starts. The files use the same columns as the transaction reports in Stash Studio. Each row is one event: a payment, a refund or a dispute step. A later refund or dispute step is a new row on its own day; it does not change the payment's row. The record_id column is a stable ID of the event: the same event has the same record_id in every file. Use it to remove rows that two pulls share, and keep the row from the later pull. Columns are added only at the end, and a column is renamed or removed only with advance notice, so read the files by column name, not by position. A day that is not final can still change; pull it again until is_final is true. SETTLED days become final together with their UTC calendar month, when Stash closes the month, usually 1 to 5 days after it ends. CHARGE days are never final, because their rows change while their charges settle. To know when to download a day again, compare its content_hash with the copy you hold: the hash changes only when the file's bytes change. as_of is the time of the data snapshot that each file was written from. Every link is valid until download_url_expires_at, 15 minutes after the response; call again for fresh links. This method accepts only the versioned x-stash-hmac-signature header, signed over the request body exactly as sent; the legacy stash-hmac-signature header is rejected with UNAUTHENTICATED, because it carries no timestamp and a captured request could be replayed. The shop in the signature header must equal the shop_id in the path. Repeated calls are safe, so retry after UNAVAILABLE or a timeout with a fresh timestamp and signature. Returns UNAUTHENTICATED when the signature is missing, invalid, outside the time window, sent in the legacy header, or names a different shop or one Stash does not know; INVALID_ARGUMENT when report_type or report_format is unspecified or unknown, a date is missing or is not YYYY-MM-DD, end_date is before start_date, or the range is longer than 31 days; FAILED_PRECONDITION when the shop has no file of the requested type and format on any day; and UNAVAILABLE when the files could not be listed, in which case retry."
+      security: [
+        {
+          security_requirement: {key: "hmac"}
+        }
+      ]
+    };
+  }
+}
+
+enum ReportType {
+  // Refused with INVALID_ARGUMENT.
+  REPORT_TYPE_UNSPECIFIED = 0;
+  // One file per UTC settlement day; rows are dated by settlement and reconcile with the payout.
+  REPORT_TYPE_SETTLED = 1;
+  // One file per UTC charge day; rows are dated by charge time and include unsettled and failed charges.
+  REPORT_TYPE_CHARGE = 2;
+}
+
+// The file format of a report file. Every format holds the same rows and columns.
+enum ReportFormat {
+  // Refused with INVALID_ARGUMENT.
+  REPORT_FORMAT_UNSPECIFIED = 0;
+  // Comma-separated values with a header row.
+  REPORT_FORMAT_CSV = 1;
+  // JSON Lines: one JSON object per row. A field with no value is left out of
+  // the object, not written as null.
+  REPORT_FORMAT_JSONL = 2;
+  // Apache Parquet.
+  REPORT_FORMAT_PARQUET = 3;
+}
+
+message ListReportFilesRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "List Report Files Request"
+      description: "Request to list a shop's report files for a range of UTC days. The shop is taken from the path. Signed over the request body exactly as sent."
+      required: [
+        "shop_id",
+        "reportType",
+        "reportFormat",
+        "startDate",
+        "endDate"
+      ]
+    }
+  };
+  string shop_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {min_len: 1},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Shop identifier from Stash Studio. Must equal the shop in the x-stash-hmac-signature header."}
+  ];
+  ReportType report_type = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).enum = {
+      defined_only: true
+      not_in: [0]
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Which report to list. SETTLED has one file per UTC settlement day, with rows dated by settlement. CHARGE has one file per UTC charge day, with rows dated by charge time."}
+  ];
+  ReportFormat report_format = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).enum = {
+      defined_only: true
+      not_in: [0]
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "File format of each link. CSV, JSONL and PARQUET hold the same rows and columns. JSONL leaves a field with no value out of the row's object."}
+  ];
+  string start_date = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "First UTC day of the range, inclusive, as YYYY-MM-DD. The range [start_date, end_date] is at most 31 days."}
+  ];
+  string end_date = 5 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string = {pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Last UTC day of the range, inclusive, as YYYY-MM-DD. Must not be before start_date."}
+  ];
+}
+
+message ListReportFilesResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "List Report Files Response"
+      description: "The shop's report files for the requested days, with one signed link each."
+    }
+  };
+  repeated ReportFile files = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "One entry for each day in the range that has a file, in date order. A day with no transactions has an entry with an empty file. A day before first_date, or a day the export has not written yet, has no entry."}];
+  google.protobuf.Timestamp download_url_expires_at = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "When every download_url in this response stops working (RFC 3339, UTC), 15 minutes after the response."}];
+  string first_date = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The first UTC day, as YYYY-MM-DD, that has a file of the requested type and format for the shop, even when it is outside the range. Days before it never get a file; a later day with no entry is not written yet."}
+  ];
+}
+
+message ReportFile {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Report File"
+      description: "One day's report file and a signed link to download it."
+    }
+  };
+  string date = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The UTC day the file holds, as YYYY-MM-DD."}
+  ];
+  optional bool is_final = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "true when the day's rows are final and no longer change: a SETTLED day becomes final when Stash closes its UTC calendar month. false while the rows can still change; pull the day again later. Always false for CHARGE."}
+  ];
+  optional int64 size_bytes = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Size of the file in bytes. JSON carries it as a decimal string."}
+  ];
+  string download_url = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Signed GET link to the day's file. Valid until download_url_expires_at."}
+  ];
+  google.protobuf.Timestamp as_of = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The report cut: the time of the source data snapshot that the file was written from (RFC 3339, UTC). Every row in the file comes from that snapshot. Absent for a file the export wrote before it recorded its snapshot time."}];
+  string content_hash = 6 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "An opaque hash of the file's bytes. It changes only when the file changes, so download a day again only when its content_hash differs from the copy you hold."}
+  ];
+}
