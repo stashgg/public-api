@@ -1293,7 +1293,7 @@ message GetCatalogResponse {
           uri: true
           ignore_empty: true
         },
-        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional absolute http or https URL of an icon shown beside the section header, for example https://example.com/icons/gems.png. An empty value, or any other value, draws no icon."}
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional absolute http or https URL of an icon shown beside the section header, for example https://example.com/icons/gems.png. Leave it empty for no icon; any other value is not supported."}
       ];
       message EmptyState {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
