@@ -104,7 +104,7 @@ Merged Swagger and Redoc HTML are written to `docs/gen/`.
 
 ### Managed Catalog API
 
-The Managed Catalog read API is a partner-facing ingress API: `GET /sdk/studio/{shop_id}/products` and `GET /sdk/studio/{shop_id}/products/{product_id}`, authenticated with an HMAC-SHA256 signature in the `stash-hmac-signature` header. Products are addressed by the partner-defined product ID (SKU). It is defined by `server/ingress/studio/v1/service.proto` and `server/ingress/server.proto` in this repo.
+The Managed Catalog read API is a partner-facing ingress API: `GET /sdk/studio/{shop_id}/products` and `GET /sdk/studio/{shop_id}/products/{product_id}`, authenticated with an HMAC-SHA256 signature in the versioned `x-stash-hmac-signature` header, signed over a millisecond timestamp and the empty request body. The legacy `stash-hmac-signature` header is deprecated; only ListProducts, GetProduct, GetLoyalty and GetPlayerLoyalty still accept it, so sign new integrations with the versioned header. Products are addressed by the partner-defined product ID (SKU). It is defined by `server/ingress/studio/v1/service.proto` and `server/ingress/server.proto` in this repo.
 
 Documentation is generated from the `server/ingress` protos:
 
@@ -117,11 +117,11 @@ When the Managed Catalog endpoints or schemas change, edit the `server/ingress` 
 
 ### Loyalty Config API
 
-The Loyalty Config API lets a partner backend configure a shop's loyalty program: `GET /sdk/studio/{shop_id}/loyalty/config` reads the configuration in the shape `PUT /sdk/studio/{shop_id}/loyalty/config` accepts, and the `PUT` creates or updates one season with the display settings, bonuses and reward products it depends on. Both are defined by `server/ingress/loyalty/v1/service.proto` and published in the same merged ingress docs as the Managed Catalog API.
+The Loyalty Config API lets a partner backend configure a shop's loyalty program: `GET /sdk/studio/{shop_id}/loyalty/config` reads the configuration in the shape `PUT /sdk/studio/{shop_id}/loyalty/config` accepts, and the `PUT` creates or updates one season with the display settings, bonuses and reward products it depends on, can set or remove the shop's spend conversion table (`spend_conversion`), and can turn the program on (`activate`). Both are defined by `server/ingress/loyalty/v1/service.proto` and published in the same merged ingress docs as the Managed Catalog API.
 
-- **Signing:** the `PUT` accepts only the versioned `x-stash-hmac-signature` header, signed over the request body exactly as sent. The signing steps are in the ingress description in `docs/config/swagger-merger-ingress-config.json`.
-- **Body size:** Stash verifies a signature against the exact bytes for bodies up to 18 KiB (18,432 bytes); a larger body may be refused with `401` even when it is correctly signed.
-- **Bonuses:** a shop holds at most one bonus of each kind, so a configuration that would create a second bonus of the same kind is refused with `INVALID_ARGUMENT`.
+- **Signing:** both the `GET` and the `PUT` accept only the versioned `x-stash-hmac-signature` header, signed over the request body exactly as sent (empty for the `GET`); the legacy `stash-hmac-signature` header is rejected with `401` (`UNAUTHENTICATED`). The signing steps are in the ingress description in `docs/config/swagger-merger-ingress-config.json`.
+- **Body size:** Stash verifies a signature against the exact bytes for bodies up to 18 KiB (18,432 bytes); a larger body may be refused with `401` (`UNAUTHENTICATED`) even when it is correctly signed.
+- **Bonuses:** a shop holds at most one bonus of each kind, so a configuration that would create a second bonus of the same kind is refused with `400` (`INVALID_ARGUMENT`).
 
 ### About Swagger Files
 
