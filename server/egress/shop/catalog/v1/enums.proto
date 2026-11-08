@@ -189,3 +189,13 @@ enum InformationType {
   // The drop rates (the odds disclosure) of what a reward can grant
   INFORMATION_TYPE_DROP_RATES = 2;
 }
+
+enum TextEmphasis {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "How the shop emphasizes the text one format argument inserts, so a value can stand out from the text around it. The shop's design decides how each kind looks"};
+  // No emphasis: shown like the text around it. A value the shop does not recognize is shown the same way
+  TEXT_EMPHASIS_UNSPECIFIED = 0;
+  // The value the text is about, such as the number in 'Up to 5 ingredients', drawn prominently (for example larger or bolder)
+  TEXT_EMPHASIS_HIGHLIGHT = 1;
+  // A value from before a boost, followed later in the same text by the value that replaces it, drawn struck through like an original_amount. Display only: it never changes what is granted or charged
+  TEXT_EMPHASIS_STRIKETHROUGH = 2;
+}
