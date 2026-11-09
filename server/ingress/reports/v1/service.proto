@@ -40,7 +40,8 @@ enum ReportType {
   REPORT_TYPE_UNSPECIFIED = 0;
   // One file per UTC settlement day; rows are dated by settlement and reconcile with the payout.
   REPORT_TYPE_SETTLED = 1;
-  // One file per UTC charge day; rows are dated by charge time and include unsettled and failed charges.
+  // One file per UTC day. Each row is dated by its own Transaction Date: a payment by its charge time, a refund or
+  // dispute step by its own time. Includes unsettled and failed charges.
   REPORT_TYPE_CHARGE = 2;
 }
 
@@ -82,7 +83,7 @@ message ListReportFilesRequest {
       defined_only: true
       not_in: [0]
     },
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Which report to list. SETTLED has one file per UTC settlement day, with rows dated by settlement. CHARGE has one file per UTC charge day, with rows dated by charge time."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Which report to list. SETTLED has one file per UTC settlement day, with rows dated by settlement. CHARGE has one file per UTC day, with each row dated by its own Transaction Date: a payment by its charge time, a refund or dispute step by its own time."}
   ];
   ReportFormat report_format = 3 [
     (google.api.field_behavior) = REQUIRED,
@@ -104,11 +105,16 @@ message ListReportFilesRequest {
   ];
 }
 
+// Response fields carry no validation rules: the server builds every value.
 message ListReportFilesResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       title: "List Report Files Response"
       description: "The shop's report files for the requested days, with one signed link each."
+      required: [
+        "downloadUrlExpiresAt",
+        "firstDate"
+      ]
     }
   };
   repeated ReportFile files = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "One entry for each day in the range that has a file, in date order. A day with no transactions has an entry whose file has no transaction rows: a CSV file still has its header row, and a JSONL file is 0 bytes. A day before first_date, or a day the export has not written yet, has no entry."}];
@@ -127,6 +133,13 @@ message ReportFile {
     json_schema: {
       title: "Report File"
       description: "One day's report file and a signed link to download it."
+      required: [
+        "date",
+        "isFinal",
+        "sizeBytes",
+        "downloadUrl",
+        "contentHash"
+      ]
     }
   };
   string date = 1 [
