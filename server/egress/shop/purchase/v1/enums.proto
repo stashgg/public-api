@@ -120,3 +120,13 @@ enum PaymentMethodType {
   // Amazon Pay wallet payment
   PAYMENT_METHOD_TYPE_AMAZON_PAY = 7;
 }
+
+enum ValueCodeRewardKind {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "How a value code reward computes its extra"};
+  // Never sent: every reward names its kind
+  VALUE_CODE_REWARD_KIND_UNSPECIFIED = 0;
+  // The extra is a percentage of the bonus's full quantity in the purchase, sent as `multiplier_permille`
+  VALUE_CODE_REWARD_KIND_PERCENT = 1;
+  // The extra is a flat number of units of the bonus, sent as `amount`
+  VALUE_CODE_REWARD_KIND_AMOUNT = 2;
+}
