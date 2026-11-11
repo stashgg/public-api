@@ -123,7 +123,7 @@ enum PaymentMethodType {
 
 enum ValueCodeRewardKind {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {description: "How a value code reward computes its extra"};
-  // Never sent: every reward names its kind
+  // Never sent: every reward names its kind. Treat a reward with this kind as invalid: skip it and grant the rest of the purchase
   VALUE_CODE_REWARD_KIND_UNSPECIFIED = 0;
   // The extra is a percentage of the bonus's full quantity in the purchase, sent as `multiplier_permille`
   VALUE_CODE_REWARD_KIND_PERCENT = 1;
