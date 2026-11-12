@@ -557,7 +557,7 @@ message GetCatalogResponse {
             gte: 1
             lte: 10
           },
-          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional rarity of this reward as a level from 1, the lowest, to 10, for a shop to show with the reward, for example as that many stars or crowns in the bubble of an info button whose information_type is INFORMATION_TYPE_RARITY. Send a whole number from 1 to 10; any other value is ignored. Display only: it never changes what is granted or charged. Optional, so omitting it leaves an existing response valid."}
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional rarity of this reward as a level from 1, the lowest, to 10, for a shop to show with the reward, for example as that many stars or crowns. A shop shows it in the bubble of this reward's own info button whose information_type is INFORMATION_TYPE_RARITY, so send it together with that info button; without one it is not shown. Send a whole number from 1 to 10; any other value is ignored. Display only: it never changes what is granted or charged. Optional, so omitting it leaves an existing response valid."}
         ];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
@@ -1213,7 +1213,7 @@ message GetCatalogResponse {
               gte: 1
               lte: 10
             },
-            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional rarity of this reward as a level from 1, the lowest, to 10, for a shop to show with the reward, for example as that many stars or crowns in the bubble of an info button whose information_type is INFORMATION_TYPE_RARITY. Send a whole number from 1 to 10; any other value is ignored. Display only: it never changes what is granted or charged. Optional, so omitting it leaves an existing response valid."}
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional rarity of this reward as a level from 1, the lowest, to 10, for a shop to show with the reward, for example as that many stars or crowns. A shop shows it in the bubble of this reward's own info button whose information_type is INFORMATION_TYPE_RARITY, so send it together with that info button; without one it is not shown. Send a whole number from 1 to 10; any other value is ignored. Display only: it never changes what is granted or charged. Optional, so omitting it leaves an existing response valid."}
           ];
         }
         repeated PurchasePackContentItem contents = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items this item grants. On the item that buys the whole offer, the combined rewards of every price point. Optional on every type, as on a standalone item: an item with no contents is described by its name and image alone"}];
