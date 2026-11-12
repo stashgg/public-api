@@ -534,7 +534,7 @@ message GetCatalogResponse {
           },
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
         ];
-        optional Button info_button = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this reward, with the same fields and rules as an offer's info button: information_type says what it explains (e.g. INFORMATION_TYPE_RARITY or INFORMATION_TYPE_DROP_RATES), and a tap opens its tooltip, otherwise its link_url"}];
+        optional Button info_button = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this reward, with the same fields and rules as an offer's info button: information_type says what it explains (e.g. INFORMATION_TYPE_RARITY or INFORMATION_TYPE_DROP_RATES), and a tap opens its tooltip, otherwise its link_url. With INFORMATION_TYPE_RARITY, send this reward's rarity level in rarity"}];
         optional Callout callout = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional callout highlighting special features"}];
         optional Background primary_background = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional primary background styling for item"}];
         optional Background secondary_background = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary background styling for item, layered on top of the primary background"}];
@@ -552,6 +552,13 @@ message GetCatalogResponse {
           (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
         ];
         optional bool hide_quantity = 19 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display hint for this reward. When true, a supporting shop shows the reward without its quantity, for example when its picture already shows what it is. A shop without support may continue to show the quantity. quantity is still required and remains the amount granted; this hint never changes what is granted or charged. Absent or false shows the quantity as usual, so omitting it leaves an existing response valid. Send a JSON boolean; any other value is ignored and the quantity is shown."}];
+        optional uint32 rarity = 20 [
+          (validate.rules).uint32 = {
+            gte: 1
+            lte: 10
+          },
+          (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional rarity of this reward as a level from 1, the lowest, to 10, for a shop to show with the reward, for example as that many stars or crowns in the bubble of an info button whose information_type is INFORMATION_TYPE_RARITY. Send a whole number from 1 to 10; any other value is ignored. Display only: it never changes what is granted or charged. Optional, so omitting it leaves an existing response valid."}
+        ];
       }
       repeated ContentItem contents = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Contents of the item if it's a bundle"}];
 
@@ -1183,7 +1190,7 @@ message GetCatalogResponse {
             },
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional URL to unit image (used to display a single item)"}
           ];
-          optional Button info_button = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this reward, with the same fields and rules as an offer's info button: information_type says what it explains (e.g. INFORMATION_TYPE_RARITY or INFORMATION_TYPE_DROP_RATES), and a tap opens its tooltip, otherwise its link_url"}];
+          optional Button info_button = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional info button for this reward, with the same fields and rules as an offer's info button: information_type says what it explains (e.g. INFORMATION_TYPE_RARITY or INFORMATION_TYPE_DROP_RATES), and a tap opens its tooltip, otherwise its link_url. With INFORMATION_TYPE_RARITY, send this reward's rarity level in rarity"}];
           optional Callout callout = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional callout highlighting special features"}];
           optional Background primary_background = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional primary background styling for item"}];
           optional Background secondary_background = 12 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional secondary background styling for item, layered on top of the primary background"}];
@@ -1201,6 +1208,13 @@ message GetCatalogResponse {
             (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional key naming the reward slot of the offer's template that this item fills, compared exactly and case-sensitively against the slot keys agreed for your shop's offer templates. At most 128 characters; an empty or longer key is treated as absent. Optional, and ignored when absent or when the template names no reward slots, so omitting it leaves an existing response valid"}
           ];
           optional bool hide_quantity = 19 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional display hint for this reward. When true, a supporting shop shows the reward without its quantity, for example when its picture already shows what it is. A shop without support may continue to show the quantity. quantity is still required and remains the amount granted; this hint never changes what is granted or charged. Absent or false shows the quantity as usual, so omitting it leaves an existing response valid. Send a JSON boolean; any other value is ignored and the quantity is shown."}];
+          optional uint32 rarity = 20 [
+            (validate.rules).uint32 = {
+              gte: 1
+              lte: 10
+            },
+            (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional rarity of this reward as a level from 1, the lowest, to 10, for a shop to show with the reward, for example as that many stars or crowns in the bubble of an info button whose information_type is INFORMATION_TYPE_RARITY. Send a whole number from 1 to 10; any other value is ignored. Display only: it never changes what is granted or charged. Optional, so omitting it leaves an existing response valid."}
+          ];
         }
         repeated PurchasePackContentItem contents = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "In-game items this item grants. On the item that buys the whole offer, the combined rewards of every price point. Optional on every type, as on a standalone item: an item with no contents is described by its name and image alone"}];
 
