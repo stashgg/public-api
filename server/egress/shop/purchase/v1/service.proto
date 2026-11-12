@@ -499,6 +499,61 @@ message ConfirmPaymentRequest {
   // Additive, optional. Present only for shops with an active loyalty campaign;
   // absent otherwise, so the request is byte-identical to before for non-loyalty shops.
   server.egress.shop.v1.PlayerLoyaltyState loyalty = 25 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The player's loyalty program standing that applied to this purchase. Present only for shops with an active loyalty campaign."}];
+
+  message ValueCode {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Value Code"
+        description: "A value code that the player applied to this purchase: a code that grants more of a bonus at the full price. It never changes the price."
+        required: [
+          "code",
+          "rewards"
+        ]
+      }
+    };
+    message Reward {
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          title: "Value Code Reward"
+          description: "The extra that the code grants on 1 bonus."
+          required: [
+            "bonus_id",
+            "kind"
+          ]
+        }
+      };
+      string bonus_id = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 1,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The bonus this reward adds to: the id of the bonus in your catalog's bonus items. For a percent reward, it is also an `id` in `bonus_items`, unless the purchase has none of this bonus; then `extra_quantity` is 0. A flat-amount reward can name a bonus that the purchase does not hold, so its id is not always in `bonus_items`"}
+      ];
+      ValueCodeRewardKind kind = 2 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).enum = {
+          defined_only: true
+          not_in: [0]
+        },
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "How the extra is computed: from `multiplier_permille` for a percent reward, or `amount` for a flat amount"}
+      ];
+      optional uint32 multiplier_permille = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Sent for a percent reward only. The multiplier for the full quantity of this bonus in the purchase, the offer's own bonus included, in thousandths: 1200 means 1.2 times, so +20%. The unrounded extra is that quantity times (multiplier_permille - 1000) / 1000. The extra to grant is `extra_quantity`. Grant the bonus in `bonus_items` and `extra_quantity`; the extra is not in `bonus_items`, so nothing counts twice."}];
+      optional uint32 extra_quantity = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Sent for a percent reward only. The extra units to grant, computed by Stash from `multiplier_permille` and rounded to a whole number under the rounding rule agreed for your shop (by default up, to 2 significant digits and never finer than 1 unit: 20% of 333 is 67, 20% of 33 is 7). You can also compute your own from `multiplier_permille` to cross-check. Always sent for a percent reward, including the literal 0 when the purchase has none of this bonus; absent only when the extra does not fit in 32 bits, and then grant from `multiplier_permille`."}];
+      optional uint32 amount = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Sent for a flat-amount reward only. The extra units of this bonus to grant, also when the purchase has none of this bonus. Always more than 0: a reward of 0 is not sent. Not a money amount."}];
+    }
+    string code = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).string.min_len = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The code as it is configured for the shop (e.g., 'WELCOME20'), not as the player typed it"}
+    ];
+    repeated Reward rewards = 2 [
+      (google.api.field_behavior) = REQUIRED,
+      (validate.rules).repeated.min_items = 1,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "1 entry per bonus that the code adds to"}
+    ];
+  }
+  // Additive, optional. Present only when the player applied a value code to
+  // this purchase; absent otherwise, so the request is byte-identical to before
+  // for every other purchase.
+  ValueCode value_code = 26 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The value code that the player applied to this purchase, and the extra it grants. Absent when the purchase has no value code. A retry with the same `transaction_id` sends the same block."}];
 }
 
 message ConfirmPaymentResponse {
