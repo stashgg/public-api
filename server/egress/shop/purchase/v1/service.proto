@@ -379,7 +379,7 @@ message ConfirmPaymentRequest {
   optional string checkout_link_id = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Optional checkout link identifier if purchase was made through a checkout link"}];
   optional string order_id = 27 [
     (validate.rules).string.min_len = 1,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Stash's order ID for this purchase: the same value as `orderId` in the `PURCHASE_SUCCEEDED` webhook for it, so you can record it at confirmation without waiting for the webhook. Each payment attempt can have its own order ID: if the player pays again after a failed attempt, the new confirmation can carry the same `transaction_id` with a different `order_id`, and the webhook carries the `order_id` of the attempt that was paid. On a web shop cart purchase it equals `transaction_id`."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Stash's order ID for this purchase: the same value as `orderId` in the `PURCHASE_SUCCEEDED` webhook for it, so you can record it at confirmation without waiting for the webhook. Each payment attempt can have its own order ID: if the player pays again after a failed attempt, the new confirmation can carry the same `transaction_id` with a different `order_id`, and the webhook carries the `order_id` of the attempt that was paid. On a web shop cart purchase it equals `transaction_id`. Always sent. A confirmation without it is still valid; take the order ID from the webhook then."}
   ];
   // The originating Stash shop, mirroring the shopId already sent in webhooks,
   // so the game backend can attribute the request to a specific shop.
