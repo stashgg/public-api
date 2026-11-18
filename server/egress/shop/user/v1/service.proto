@@ -87,7 +87,7 @@ message GetPlayerResponse {
     ];
     uint32 in_game_currency = 6 [
       (validate.rules).uint32.gte = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DEPRECATED: use wallet instead. Amount of in-game currency owned by player (must be non-negative, default 0). Holds a single currency only, and a value above 4294967295 fails the player lookup, so send large balances in wallet. Ignored for currency balances whenever wallet has at least one entry"}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DEPRECATED: use wallet instead. Amount of in-game currency owned by player (must be non-negative, default 0). Holds a single currency only, and a value from 4294967296 to 18446744073709551615 is ignored as if it were not sent, so send large balances in wallet. Ignored for currency balances whenever wallet has at least one entry"}
     ];
     string region = 7 [
       (validate.rules).string = {
