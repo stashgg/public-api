@@ -360,6 +360,7 @@ message ConfirmPaymentRequest {
         "currency",
         "decimal_places",
         "tax",
+        "tax_inclusive",
         "total",
         "time_millis",
         "items"
@@ -403,10 +404,14 @@ message ConfirmPaymentRequest {
     (validate.rules).uint32.gte = 0,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Tax as integer minor units for this ISO 4217 currency (e.g. 99 for $0.99 in USD; can be 0), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog). Always sent, including the literal 0 when the purchase has no tax."}
   ];
+  optional bool tax_inclusive = 28 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Whether `tax` is already included in the item prices. When true, `tax` is the share of `total` that is tax. When false, `tax` is added on top. False when `tax` is 0. For a purchase without a cash coupon, you can check before granting that `total`, minus `tax` when `taxInclusive` is false, equals the sum of `cents` × `quantity`. A cash coupon lowers `total` by its discount, and this request does not carry the discount yet, so these fields alone cannot validate a purchase with a cash coupon. Always sent, including `false`."}
+  ];
   uint32 total = 6 [
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).uint32.gt = 0,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Total including tax, as integer minor units for this ISO 4217 currency (e.g. 1098 for $10.98 in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Amount charged, as integer minor units for this ISO 4217 currency (e.g. 1098 for $10.98 in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog). Includes `tax`: added on top of the item prices when `taxInclusive` is false, already inside them when true."}
   ];
   int64 time_millis = 7 [
     (google.api.field_behavior) = REQUIRED,
@@ -446,7 +451,7 @@ message ConfirmPaymentRequest {
     uint32 cents = 4 [
       (google.api.field_behavior) = REQUIRED,
       (validate.rules).uint32.gt = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Integer minor units per item for this ISO 4217 currency (e.g. 999 per item in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Unit price before any cash coupon, as integer minor units per item for this ISO 4217 currency (e.g. 999 per item in USD), scaled by this request's `decimalPlaces` under the minor-unit standard configured for your shop, the same standard Stash reads your catalog prices with (see `cents` in GetCatalog)."}
     ];
     optional string purchase_pack_id = 6 [
       (validate.rules).string.min_len = 1,
