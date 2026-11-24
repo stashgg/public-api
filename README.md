@@ -220,7 +220,7 @@ The protobuf definitions include comprehensive validation:
 - **String fields**: Required fields have `min_len=1` validation
 - **Currency codes**: Exactly 3 characters (e.g., "USD", "EUR")
 - **Price amounts**: Must match decimal number pattern
-- **Unsigned integers**: Player level, in-game currency, and purchase limits use `uint32`
+- **Unsigned integers**: Player level and purchase limits use `uint32`. The player's balances use `uint64`: the deprecated single `in_game_currency` and each `wallet` balance
 - **Dual identifiers**: Catalog items have both `guid` (optional UUID v4) and `product_id` (required SKU)
 - **UUID validation**: GUID fields use `validate.rules.string.uuid = true` constraint
 - **Consolidated structure**: Response messages inline all sub-types to prevent namespace conflicts

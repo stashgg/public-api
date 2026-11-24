@@ -85,9 +85,9 @@ message GetPlayerResponse {
       },
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Player's in-game level, such as a power level. The web shop can show it on the player's profile. Must be positive; omit it when the game has no level, and the web shop then shows none"}
     ];
-    uint32 in_game_currency = 6 [
-      (validate.rules).uint32.gte = 0,
-      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DEPRECATED: use wallet instead. Amount of in-game currency owned by player (must be non-negative, default 0). Holds a single currency only, and a value from 4294967296 to 18446744073709551615 is ignored as if it were not sent, so send large balances in wallet. Ignored for currency balances whenever wallet has at least one entry"}
+    uint64 in_game_currency = 6 [
+      (validate.rules).uint64.gte = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DEPRECATED: use wallet instead. Amount of in-game currency the player owns, a non-negative 64-bit integer (default 0). Send it as a JSON integer or as a decimal string; use a string for values above 9007199254740991, which many JSON parsers cannot represent exactly. Holds a single currency only. Ignored for currency balances whenever wallet has at least one entry. A negative, fractional or non-numeric value fails the whole player lookup, as it does for every numeric field of the player"}
     ];
     string region = 7 [
       (validate.rules).string = {
